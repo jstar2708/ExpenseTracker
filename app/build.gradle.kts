@@ -10,7 +10,7 @@ android {
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.expensetracker"
+        applicationId = "com.jaideep.expensetracker"
         minSdk = 24
         targetSdk = 34
         versionCode = 1
