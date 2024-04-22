@@ -1,7 +1,6 @@
-package com.example.expensetracker.presentation.screens.home_screen
+package com.jaideep.expensetracker.presentation.screens.home_screen
 
 
-import android.app.Application
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -17,6 +16,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.outlined.AccountCircle
@@ -32,6 +32,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -53,21 +54,21 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavHostController
-import com.example.expensetracker.R
-import com.example.expensetracker.presentation.screens.transaction_screen.TransactionItem
-import com.example.expensetracker.presentation.theme.AppTheme
+import com.jaideep.expensetracker.R
+import com.jaideep.expensetracker.presentation.screens.transaction_screen.TransactionItem
+import com.jaideep.expensetracker.presentation.theme.AppTheme
+import com.jaideep.expensetracker.presentation.theme.md_theme_light_surface
 
 @Preview
 @Composable
 private fun HomeScreenPreview() {
     AppTheme {
-        HomeScreen(navController = NavHostController(Application()))
+        HomeScreen()
     }
 }
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(navController: NavHostController) {
+fun HomeScreen() {
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.background
@@ -217,22 +218,28 @@ fun SummaryCard() {
             .fillMaxWidth()
             .padding(8.dp),
         shape = CardDefaults.elevatedShape,
-        colors = CardDefaults.cardColors(Color.LightGray)
     ) {
         Column {
-            Row(
-                Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = "Total\nBalance",
-                    fontSize = 30.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier
-                        .wrapContentWidth()
-                        .padding(8.dp)
-                )
 
+            Row (
+                verticalAlignment = Alignment.CenterVertically
+            ){
+                Column(
+                ) {
+                    Text(
+                        text = "Balance",
+                        fontSize = 30.sp,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier
+                            .wrapContentWidth()
+                            .padding(8.dp)
+                    )
+
+                    Text(
+                        text = "Monthly Limit $6000",
+                        modifier = Modifier.padding(start = 8.dp, end = 8.dp, bottom = 8.dp)
+                    )
+                }
                 Text(
                     text = "$4500",
                     fontWeight = FontWeight.ExtraBold,
@@ -242,14 +249,7 @@ fun SummaryCard() {
                 )
             }
 
-            Text(
-                text = "Monthly Limit $6000",
-                color = Color.DarkGray,
-                modifier = Modifier.padding(start = 8.dp, end = 8.dp, bottom = 8.dp)
-            )
-
             CategoryCard()
-
         }
     }
 }
@@ -315,12 +315,20 @@ fun AccountSelectionSpinner() {
     }
 
     ExposedDropdownMenuBox(expanded = isExpanded, onExpandedChange = { isExpanded = it}) {
-        TextField(
+        OutlinedTextField(
             value = selectedAccount,
             onValueChange = {},
             readOnly = true,
-            colors = ExposedDropdownMenuDefaults.textFieldColors(),
-            modifier = Modifier.menuAnchor()
+            colors = ExposedDropdownMenuDefaults.textFieldColors(
+                focusedContainerColor = md_theme_light_surface,
+                unfocusedContainerColor = md_theme_light_surface
+            ),
+            modifier = Modifier
+                .menuAnchor()
+                .padding(8.dp),
+            trailingIcon = {
+                Icon(imageVector = Icons.Filled.ArrowDropDown, contentDescription = "Down arrow")
+            }
         )
 
         ExposedDropdownMenu(

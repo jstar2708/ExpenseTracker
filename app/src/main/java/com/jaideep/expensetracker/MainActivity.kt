@@ -1,4 +1,4 @@
-package com.example.expensetracker
+package com.jaideep.expensetracker
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -29,14 +29,14 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.expensetracker.common.AppComponents
-import com.example.expensetracker.common.Routes
-import com.example.expensetracker.presentation.screens.category_screen.CategoryScreen
-import com.example.expensetracker.presentation.screens.home_screen.HomeScreen
-import com.example.expensetracker.presentation.screens.settings.SettingsScreen
-import com.example.expensetracker.presentation.screens.transaction_screen.TransactionScreen
-import com.example.expensetracker.presentation.screens.transaction_screen.addtransactionscreen.AddTransaction
-import com.example.expensetracker.presentation.theme.AppTheme
+import com.jaideep.expensetracker.common.AppComponents
+import com.jaideep.expensetracker.common.Routes
+import com.jaideep.expensetracker.presentation.screens.category_screen.CategoryScreen
+import com.jaideep.expensetracker.presentation.screens.home_screen.HomeScreen
+import com.jaideep.expensetracker.presentation.screens.settings.SettingsScreen
+import com.jaideep.expensetracker.presentation.screens.transaction_screen.TransactionScreen
+import com.jaideep.expensetracker.presentation.screens.transaction_screen.addtransactionscreen.AddTransaction
+import com.jaideep.expensetracker.presentation.theme.AppTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -66,7 +66,7 @@ fun App() {
         ) {
             composable(Routes.HOME) {
                 bottomBarState.value = true
-                HomeScreen(navController)
+                HomeScreen()
             }
             composable(Routes.TRANSACTIONS) {
                 bottomBarState.value = true

@@ -1,9 +1,11 @@
-package com.example.expensetracker.data.entities
+package com.jaideep.expensetracker.data.entities
 
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.ForeignKey.Companion.CASCADE
 import androidx.room.PrimaryKey
+import com.jaideep.expensetracker.data.entities.Account
+import com.jaideep.expensetracker.data.entities.Category
 
 @Entity(foreignKeys = [
     ForeignKey(

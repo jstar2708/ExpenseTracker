@@ -1,6 +1,7 @@
-package com.example.expensetracker.presentation.screens.transaction_screen
+package com.jaideep.expensetracker.presentation.screens.transaction_screen
 
 import android.app.Application
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
@@ -42,14 +43,19 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.expensetracker.R
-import com.example.expensetracker.common.Routes
-import com.example.expensetracker.presentation.screens.home_screen.AccountSelectionSpinner
+import com.jaideep.expensetracker.R
+import com.jaideep.expensetracker.common.Routes
+import com.jaideep.expensetracker.presentation.screens.home_screen.AccountSelectionSpinner
+import com.jaideep.expensetracker.presentation.theme.AppTheme
+import com.jaideep.expensetracker.presentation.theme.md_theme_light_onPrimaryContainer
+import com.jaideep.expensetracker.presentation.theme.md_theme_light_primary
 
 @Preview(showSystemUi = true, showBackground = true)
 @Composable
 fun TransactionScreenPreview() {
-    TransactionScreen(NavController(Application()))
+    AppTheme {
+        TransactionScreen(NavController(Application()))
+    }
 }
 //@Preview(showSystemUi = true, showBackground = true)
 @Composable
@@ -86,14 +92,19 @@ fun TransactionScreen(navController: NavController) {
                             selected = index == selectedTab,
                             modifier = if (index == selectedTab) Modifier
                                 .clip(RoundedCornerShape(10.dp))
+                                .background(md_theme_light_primary)
 
                                 .wrapContentWidth() else Modifier.clip(RoundedCornerShape(10.dp)),
                             onClick = {
                                 selectedTab = index
                             },
-                            selectedContentColor = Color.White
+                            selectedContentColor = Color.White,
+                            unselectedContentColor = Color.Black
                         ) {
-                            Text(text = title, modifier = Modifier.padding(8.dp))
+                            Text(
+                                text = title,
+                                modifier = Modifier.padding(8.dp)
+                            )
                         }
                     }
                 }
@@ -160,11 +171,10 @@ fun TransactionAppBar(onAddButtonClick : ()-> Unit) {
 
 @Composable
 fun TransactionItem() {
-    Card(
+    Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp),
-        shape = CardDefaults.elevatedShape
+            .padding(8.dp)
     ) {
         Row(
             Modifier

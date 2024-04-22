@@ -1,8 +1,8 @@
-package com.example.expensetracker.domain.repository
+package com.jaideep.expensetracker.domain.repository
 
-import com.example.expensetracker.data.entities.Account
-import com.example.expensetracker.data.entities.Category
-import com.example.expensetracker.data.entities.Transaction
+import com.jaideep.expensetracker.data.entities.Account
+import com.jaideep.expensetracker.data.entities.Category
+import com.jaideep.expensetracker.data.entities.Transaction
 
 interface EtRepository {
 

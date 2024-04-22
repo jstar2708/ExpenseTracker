@@ -1,4 +1,4 @@
-package com.example.expensetracker.common
+package com.jaideep.expensetracker.common
 
 sealed class Resource<T> {
     class Loading<T> : Resource<T>()

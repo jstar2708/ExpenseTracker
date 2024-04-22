@@ -1,9 +1,9 @@
-package com.example.expensetracker.di
+package com.jaideep.expensetracker.di
 
 import android.app.Application
-import com.example.expensetracker.data.dao.EtDao
-import com.example.expensetracker.data.database.EtDatabase
-import com.example.expensetracker.domain.repository.repositoryimpl.EtRepositoryImpl
+import com.jaideep.expensetracker.data.dao.EtDao
+import com.jaideep.expensetracker.data.database.EtDatabase
+import com.jaideep.expensetracker.domain.repository.repositoryimpl.EtRepositoryImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

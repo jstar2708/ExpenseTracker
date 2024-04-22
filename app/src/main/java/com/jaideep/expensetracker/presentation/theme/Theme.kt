@@ -1,4 +1,4 @@
-package com.example.expensetracker.presentation.theme
+package com.jaideep.expensetracker.presentation.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme

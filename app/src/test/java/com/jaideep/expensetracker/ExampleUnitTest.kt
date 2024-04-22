@@ -1,4 +1,4 @@
-package com.example.expensetracker
+package com.jaideep.expensetracker
 
 import org.junit.Test
 

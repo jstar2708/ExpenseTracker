@@ -1,12 +1,12 @@
-package com.example.expensetracker.data.dao
+package com.jaideep.expensetracker.data.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.example.expensetracker.data.entities.Account
-import com.example.expensetracker.data.entities.Category
-import com.example.expensetracker.data.entities.Transaction
+import com.jaideep.expensetracker.data.entities.Account
+import com.jaideep.expensetracker.data.entities.Category
+import com.jaideep.expensetracker.data.entities.Transaction
 
 @Dao
 interface EtDao {

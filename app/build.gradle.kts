@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.expensetracker"
+    namespace = "com.jaideep.expensetracker"
     compileSdk = 34
 
     defaultConfig {

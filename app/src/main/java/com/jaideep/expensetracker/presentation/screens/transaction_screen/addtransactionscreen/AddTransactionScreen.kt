@@ -1,4 +1,4 @@
-package com.example.expensetracker.presentation.screens.transaction_screen.addtransactionscreen
+package com.jaideep.expensetracker.presentation.screens.transaction_screen.addtransactionscreen
 
 import android.app.Application
 import androidx.compose.foundation.Image
@@ -31,9 +31,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.example.expensetracker.R
-import com.example.expensetracker.presentation.screens.RadioButtonWithText
-import com.example.expensetracker.presentation.screens.TextFieldWithIcon
+import com.jaideep.expensetracker.R
+import com.jaideep.expensetracker.presentation.screens.RadioButtonWithText
+import com.jaideep.expensetracker.presentation.screens.TextFieldWithIcon
 
 @Preview(showSystemUi = true, showBackground = true)
 @Composable

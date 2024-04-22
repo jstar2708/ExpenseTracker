@@ -1,10 +1,10 @@
-package com.example.expensetracker.domain.repository.repositoryimpl
+package com.jaideep.expensetracker.domain.repository.repositoryimpl
 
-import com.example.expensetracker.data.dao.EtDao
-import com.example.expensetracker.data.entities.Account
-import com.example.expensetracker.data.entities.Category
-import com.example.expensetracker.data.entities.Transaction
-import com.example.expensetracker.domain.repository.EtRepository
+import com.jaideep.expensetracker.data.dao.EtDao
+import com.jaideep.expensetracker.data.entities.Account
+import com.jaideep.expensetracker.data.entities.Category
+import com.jaideep.expensetracker.data.entities.Transaction
+import com.jaideep.expensetracker.domain.repository.EtRepository
 import javax.inject.Inject
 
 class EtRepositoryImpl @Inject constructor(

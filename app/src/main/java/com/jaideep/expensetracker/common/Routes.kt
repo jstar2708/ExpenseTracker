@@ -1,4 +1,4 @@
-package com.example.expensetracker.common
+package com.jaideep.expensetracker.common
 
 object Routes {
     const val HOME = "HOME"
