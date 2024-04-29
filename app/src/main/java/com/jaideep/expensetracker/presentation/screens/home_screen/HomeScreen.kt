@@ -1,6 +1,8 @@
 package com.jaideep.expensetracker.presentation.screens.home_screen
 
 
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -23,6 +25,7 @@ import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -218,14 +221,18 @@ fun SummaryCard() {
             .fillMaxWidth()
             .padding(8.dp),
         shape = CardDefaults.elevatedShape,
+        border = BorderStroke(1.dp, Color.Black),
+        colors = CardDefaults.cardColors(
+            MaterialTheme.colorScheme.surface
+        )
     ) {
         Column {
-
+            Spacer(modifier = Modifier.height(20.dp))
             Row (
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.padding(start = 10.dp)
             ){
-                Column(
-                ) {
+                Column {
                     Text(
                         text = "Balance",
                         fontSize = 30.sp,
@@ -248,8 +255,8 @@ fun SummaryCard() {
                     textAlign = TextAlign.Center
                 )
             }
-
             CategoryCard()
+            Spacer(modifier = Modifier.height(20.dp))
         }
     }
 }

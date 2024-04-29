@@ -3,21 +3,26 @@ package com.jaideep.expensetracker.presentation.screens.transaction_screen.addtr
 import android.app.Application
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBalanceWallet
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,13 +37,18 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.jaideep.expensetracker.R
+import com.jaideep.expensetracker.presentation.screens.HeadingTextBold
 import com.jaideep.expensetracker.presentation.screens.RadioButtonWithText
+import com.jaideep.expensetracker.presentation.screens.SimpleText
 import com.jaideep.expensetracker.presentation.screens.TextFieldWithIcon
+import com.jaideep.expensetracker.presentation.theme.AppTheme
 
 @Preview(showSystemUi = true, showBackground = true)
 @Composable
 fun AddTransactionPreview() {
-    AddTransaction(navController = NavHostController(Application()))
+    AppTheme {
+        AddTransaction(navController = NavHostController(Application()))
+    }
 }
 @Composable
 fun AddTransaction(navController: NavHostController) {
@@ -64,16 +74,14 @@ fun AddTransaction(navController: NavHostController) {
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.SpaceEvenly
                 ) {
-                    Text(
+                    Spacer(modifier = Modifier.height(10.dp))
+                    HeadingTextBold(
                         text = "Add Transaction",
-                        fontSize = 35.sp,
-                        color = Color.White,
-                        fontWeight = FontWeight.Bold
+                        MaterialTheme.colorScheme.onPrimary
                     )
-                    Text(
-                        text = "Please provide your transaction details",
-                        fontSize = 18.sp,
-                        color = Color.White
+                    SimpleText(
+                        text = "Please provide transaction details",
+                        color = MaterialTheme.colorScheme.onPrimary
                     )
 
                     Row (
@@ -103,36 +111,38 @@ fun AddTransaction(navController: NavHostController) {
                     TextFieldWithIcon(
                         label = "Choose Account",
                         icon = Icons.Filled.AccountBalanceWallet,
-                        iconColor = Color.Blue,
+                        iconColor = MaterialTheme.colorScheme.onSecondaryContainer,
                         borderColor = Color.Black
                     )
                     TextFieldWithIcon(
                         label = "Choose Account",
                         icon = Icons.Filled.AccountBalanceWallet,
-                        iconColor = Color.Blue,
+                        iconColor = MaterialTheme.colorScheme.onSecondaryContainer,
                         borderColor = Color.Black
                     )
                     TextFieldWithIcon(
                         label = "Choose Account",
                         icon = Icons.Filled.AccountBalanceWallet,
-                        iconColor = Color.Blue,
+                        iconColor = MaterialTheme.colorScheme.onSecondaryContainer,
                         borderColor = Color.Black
                     )
                     TextFieldWithIcon(
                         label = "Choose Account",
                         icon = Icons.Filled.AccountBalanceWallet,
-                        iconColor = Color.Blue,
+                        iconColor = MaterialTheme.colorScheme.onSecondaryContainer,
                         borderColor = Color.Black
                     )
                     TextFieldWithIcon(
                             label = "Choose Account",
                     icon = Icons.Filled.AccountBalanceWallet,
-                    iconColor = Color.Blue,
+                    iconColor = MaterialTheme.colorScheme.onSecondaryContainer,
                     borderColor = Color.Black
                     )
 
                     Button(
-                        modifier = Modifier.fillMaxWidth().padding(8.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(8.dp),
                         colors = ButtonColors(Color.White, Color.Blue, Color.White, Color.White),
                         onClick = { /*TODO*/ }
                     ) {
@@ -160,9 +170,7 @@ fun BlueBackground(modifier: Modifier, content: @Composable ()-> Unit) {
                 )
             )
             .fillMaxWidth(1f)
-            .background(
-                color = Color.Blue
-            )
+            .background(MaterialTheme.colorScheme.primary)
     ) {
         content()
     }

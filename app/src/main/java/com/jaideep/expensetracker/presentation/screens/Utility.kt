@@ -1,25 +1,34 @@
 package com.jaideep.expensetracker.presentation.screens
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Wallet
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.RadioButtonColors
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 //@Preview(showBackground = true, showSystemUi = true)
@@ -60,11 +69,7 @@ fun RadioButtonWithText(
                 Color.Unspecified,
                 Color.Unspecified)
         )
-        Text(
-            text = text,
-            color = textColor,
-            fontSize = 18.sp
-        )
+        SimpleText(text = text, color = textColor)
     }
 }
 
@@ -90,15 +95,25 @@ fun TextFieldWithIcon(
         mutableStateOf(TextFieldValue(""))
     }
 
-    OutlinedTextField(
-        modifier = Modifier.fillMaxWidth(),
+    val isFocused = remember {
+        mutableStateOf(false)
+    }
+
+    TextField(
+        modifier = Modifier
+            .fillMaxWidth()
+            .onFocusChanged {
+                isFocused.value = it.hasFocus
+            },
         value = text.value,
         onValueChange = {
             text.value = it
         },
         label = {
-            Text(
-                text = label
+            SimpleSmallText(
+                text = label,
+                color = if (isFocused.value) MaterialTheme.colorScheme.secondary else Color.Gray,
+                modifier = Modifier.background(MaterialTheme.colorScheme.surface)
             )
         },
         leadingIcon = {
@@ -114,5 +129,81 @@ fun TextFieldWithIcon(
             focusedContainerColor = Color.White,
             unfocusedContainerColor = Color.White
         )
+    )
+}
+
+@Preview(showSystemUi = true)
+@Composable
+private fun HeadingTextBoldPreview() {
+    HeadingTextBold(text = "Add Account")
+}
+@Composable
+fun HeadingTextBold(text: String, color: Color = Color.Black) {
+    Text(
+        text = text,
+        style = MaterialTheme.typography.headlineMedium,
+        fontWeight = FontWeight.Bold,
+        fontFamily = FontFamily.Serif,
+        color = color
+    )
+}
+
+@Preview(showSystemUi = true)
+@Composable
+private fun HeadingTextPreview() {
+    HeadingText(text = "Cash Account")
+}
+@Composable
+fun HeadingText(text: String, color: Color = Color.Black) {
+    Text(
+        text = text,
+        style = MaterialTheme.typography.headlineSmall,
+        fontFamily = FontFamily.Serif,
+        color = color
+    )
+}
+
+@Preview(showSystemUi = true)
+@Composable
+private fun SimpleTextBoldPreview() {
+    SimpleTextBold(text = "This is a line.")
+}
+@Composable
+fun SimpleTextBold(text: String, color: Color = Color.Black) {
+    Text(
+        text = text,
+        style = MaterialTheme.typography.bodyMedium,
+        fontWeight = FontWeight.SemiBold,
+        fontFamily = FontFamily.Serif,
+        color = color
+    )
+}
+
+@Preview(showSystemUi = true)
+@Composable
+private fun SimpleTextPreview() {
+    SimpleText(text = "This is a line.", modifier = Modifier.padding(0.dp))
+}
+@Composable
+fun SimpleText(modifier: Modifier = Modifier.Companion, text: String, color: Color = Color.Black) {
+    Text(
+        modifier = modifier,
+        text = text,
+        style = MaterialTheme.typography.bodyMedium,
+        fontFamily = FontFamily.Serif,
+        color = color
+
+    )
+}
+
+@Composable
+fun SimpleSmallText(modifier: Modifier = Modifier.Companion, text: String, color: Color = Color.Black) {
+    Text(
+        modifier = modifier,
+        text = text,
+        style = MaterialTheme.typography.bodySmall,
+        fontFamily = FontFamily.Serif,
+        color = color
+
     )
 }
