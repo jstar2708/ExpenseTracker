@@ -3,7 +3,7 @@ object Versions {
     const val splashScreen = "1.0.0-alpha01"
     const val material3 = "1.2.0-rc01"
     const val coroutines = "1.7.3"
-    const val hiltNavigation = "1.1.0"
+    const val hiltNavigation = "1.2.0"
     const val hiltCompiler = "1.1.0"
     const val hilt = "2.50"
     const val appCompat = "1.6.1"

@@ -3,7 +3,7 @@ package com.jaideep.expensetracker.di
 import android.app.Application
 import com.jaideep.expensetracker.data.dao.EtDao
 import com.jaideep.expensetracker.data.database.EtDatabase
-import com.jaideep.expensetracker.domain.repository.repositoryimpl.EtRepositoryImpl
+import com.jaideep.expensetracker.data.repositoryimpl.EtRepositoryImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

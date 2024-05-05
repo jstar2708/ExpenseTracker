@@ -21,25 +21,25 @@ object AppComponents {
             "Home",
             Icons.Filled.Home,
             Icons.Outlined.Home,
-            Routes.HOME
+            MainScreen.HOME
         ),
         BottomNavigationItem(
             "Transactions",
             Icons.Filled.CurrencyRupee,
             Icons.Outlined.CurrencyRupee,
-            Routes.TRANSACTIONS
+            MainScreen.TRANSACTIONS
         ),
         BottomNavigationItem(
             "Category",
             Icons.Filled.Category,
             Icons.Outlined.Category,
-            Routes.CATEGORY
+            MainScreen.CATEGORY
         ),
         BottomNavigationItem(
             "Settings",
             Icons.Filled.Settings,
             Icons.Outlined.Settings,
-            Routes.SETTINGS
+            MainScreen.SETTINGS
         )
     )
 

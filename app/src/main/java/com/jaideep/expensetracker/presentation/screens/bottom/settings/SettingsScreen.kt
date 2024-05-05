@@ -1,11 +1,11 @@
-package com.jaideep.expensetracker.presentation.screens.settings
+package com.jaideep.expensetracker.presentation.screens.bottom.settings
 
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavController
-import com.jaideep.expensetracker.common.Routes
+import com.jaideep.expensetracker.common.MainScreen
 
 @Composable
 fun SettingsScreen(navController: NavController) {
-    Text(text = Routes.SETTINGS)
+    Text(text = MainScreen.SETTINGS)
 }

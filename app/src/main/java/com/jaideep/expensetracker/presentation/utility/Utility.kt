@@ -1,7 +1,6 @@
-package com.jaideep.expensetracker.presentation.screens
+package com.jaideep.expensetracker.presentation.utility
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -10,7 +9,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Wallet
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.RadioButtonColors
@@ -27,9 +25,10 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 
 //@Preview(showBackground = true, showSystemUi = true)
 @Composable
@@ -138,8 +137,15 @@ private fun HeadingTextBoldPreview() {
     HeadingTextBold(text = "Add Account")
 }
 @Composable
-fun HeadingTextBold(text: String, color: Color = Color.Black) {
+fun HeadingTextBold(
+    modifier: Modifier = Modifier,
+    text: String,
+    color: Color = Color.Black,
+    textAlignment: TextAlign = TextAlign.Start
+) {
     Text(
+        modifier = modifier,
+        textAlign = textAlignment,
         text = text,
         style = MaterialTheme.typography.headlineMedium,
         fontWeight = FontWeight.Bold,
@@ -169,8 +175,14 @@ private fun SimpleTextBoldPreview() {
     SimpleTextBold(text = "This is a line.")
 }
 @Composable
-fun SimpleTextBold(text: String, color: Color = Color.Black) {
+fun SimpleTextBold(
+    modifier: Modifier = Modifier,
+    text: String,
+    color: Color = Color.Black,
+    overflow: TextOverflow = TextOverflow.Clip
+) {
     Text(
+        modifier = modifier,
         text = text,
         style = MaterialTheme.typography.bodyMedium,
         fontWeight = FontWeight.SemiBold,
@@ -185,19 +197,26 @@ private fun SimpleTextPreview() {
     SimpleText(text = "This is a line.", modifier = Modifier.padding(0.dp))
 }
 @Composable
-fun SimpleText(modifier: Modifier = Modifier.Companion, text: String, color: Color = Color.Black) {
+fun SimpleText(
+    modifier: Modifier = Modifier,
+    text: String,
+    color: Color = Color.Black,
+    textAlignment: TextAlign = TextAlign.Start,
+    overflow: TextOverflow = TextOverflow.Clip
+) {
     Text(
         modifier = modifier,
         text = text,
         style = MaterialTheme.typography.bodyMedium,
         fontFamily = FontFamily.Serif,
-        color = color
-
+        color = color,
+        textAlign = textAlignment,
+        overflow = overflow
     )
 }
 
 @Composable
-fun SimpleSmallText(modifier: Modifier = Modifier.Companion, text: String, color: Color = Color.Black) {
+fun SimpleSmallText(modifier: Modifier = Modifier, text: String, color: Color = Color.Black) {
     Text(
         modifier = modifier,
         text = text,

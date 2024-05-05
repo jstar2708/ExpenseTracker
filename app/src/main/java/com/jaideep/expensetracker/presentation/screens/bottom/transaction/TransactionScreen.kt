@@ -1,4 +1,4 @@
-package com.jaideep.expensetracker.presentation.screens.transaction_screen
+package com.jaideep.expensetracker.presentation.screens.bottom.transaction
 
 import android.app.Application
 import androidx.compose.foundation.background
@@ -17,8 +17,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -44,11 +42,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.jaideep.expensetracker.R
-import com.jaideep.expensetracker.common.Routes
-import com.jaideep.expensetracker.presentation.screens.home_screen.AccountSelectionSpinner
+import com.jaideep.expensetracker.common.DetailScreen
+import com.jaideep.expensetracker.presentation.screens.bottom.home.AccountSelectionSpinner
 import com.jaideep.expensetracker.presentation.theme.AppTheme
-import com.jaideep.expensetracker.presentation.theme.md_theme_light_onPrimaryContainer
 import com.jaideep.expensetracker.presentation.theme.md_theme_light_primary
+import com.jaideep.expensetracker.presentation.utility.SimpleText
+import com.jaideep.expensetracker.presentation.utility.SimpleTextBold
 
 @Preview(showSystemUi = true, showBackground = true)
 @Composable
@@ -63,7 +62,7 @@ fun TransactionScreen(navController: NavController) {
     Scaffold(
         topBar = {
             TransactionAppBar {
-                navController.navigate(Routes.ADD_TRANSACTIONS)
+                navController.navigate(DetailScreen.ADD_TRANSACTION)
             }
         }
     ) {
@@ -101,9 +100,10 @@ fun TransactionScreen(navController: NavController) {
                             selectedContentColor = Color.White,
                             unselectedContentColor = Color.Black
                         ) {
-                            Text(
+                            SimpleText(
                                 text = title,
-                                modifier = Modifier.padding(8.dp)
+                                modifier = Modifier.padding(8.dp),
+                                color = Color.Unspecified
                             )
                         }
                     }
@@ -119,7 +119,7 @@ fun TransactionScreen(navController: NavController) {
                     ) {
                         Icon(painter = painterResource(id = R.drawable.filter), contentDescription = "Filter",
                             modifier = Modifier.size(30.dp), tint = Color.Unspecified)
-                        Text(text = "Filter", Modifier.padding(8.dp))
+                        SimpleText(text = "Filter", modifier = Modifier.padding(8.dp))
                 }
 
             }
@@ -141,9 +141,9 @@ fun TransactionScreen(navController: NavController) {
 @Composable
 fun TransactionAppBar(onAddButtonClick : ()-> Unit) {
     TopAppBar(title = {
-        Text(
-            text = "Transactions",
-            modifier = Modifier.padding(start = 4.dp, end = 4.dp)
+        SimpleTextBold(
+            modifier = Modifier.padding(start = 4.dp, end = 4.dp),
+            text = "Transactions"
         )
     },
         navigationIcon = {
@@ -192,18 +192,15 @@ fun TransactionItem() {
             )
 
             Column(Modifier.weight(1f)) {
-                Text(
+                SimpleTextBold(
                     text = "Food",
-                    fontSize = 18.sp,
                     modifier = Modifier
                         .padding(4.dp),
-                    overflow = TextOverflow.Ellipsis,
-                    fontWeight = FontWeight.ExtraBold
+                    overflow = TextOverflow.Ellipsis
                 )
 
-                Text(
+                SimpleText(
                     text = "Burger at Burger Singh",
-                    fontSize = 16.sp,
                     modifier = Modifier
                         .padding(4.dp),
                     overflow = TextOverflow.Ellipsis,
@@ -211,14 +208,12 @@ fun TransactionItem() {
                 )
             }
 
-            Text(
+            SimpleTextBold(
                 text = "$49",
-                fontSize = 20.sp,
                 modifier = Modifier
                     .padding(4.dp),
                 overflow = TextOverflow.Ellipsis,
-                color = Color.Red,
-                fontWeight = FontWeight.ExtraBold
+                color = Color.Red
             )
         }
     }

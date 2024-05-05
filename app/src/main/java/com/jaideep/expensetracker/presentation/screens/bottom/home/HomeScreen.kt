@@ -1,8 +1,8 @@
-package com.jaideep.expensetracker.presentation.screens.home_screen
+package com.jaideep.expensetracker.presentation.screens.bottom.home
 
 
+import android.app.Application
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -25,7 +25,6 @@ import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -39,7 +38,6 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -57,21 +55,26 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.jaideep.expensetracker.R
-import com.jaideep.expensetracker.presentation.screens.transaction_screen.TransactionItem
+import com.jaideep.expensetracker.common.DetailScreen
+import com.jaideep.expensetracker.presentation.screens.bottom.transaction.TransactionItem
 import com.jaideep.expensetracker.presentation.theme.AppTheme
 import com.jaideep.expensetracker.presentation.theme.md_theme_light_surface
+import com.jaideep.expensetracker.presentation.utility.HeadingTextBold
+import com.jaideep.expensetracker.presentation.utility.SimpleText
+import com.jaideep.expensetracker.presentation.utility.SimpleTextBold
 
 @Preview
 @Composable
 private fun HomeScreenPreview() {
     AppTheme {
-        HomeScreen()
+        HomeScreen(NavController(Application()))
     }
 }
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen() {
+fun HomeScreen(navController: NavController) {
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.background
@@ -94,8 +97,12 @@ fun HomeScreen() {
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceEvenly
                     ) {
-                        BigBlueButton("Add\nAccount", {}, Modifier.weight(1f))
-                        BigBlueButton("Add\nTransaction", {}, Modifier.weight(1f))
+                        BigBlueButton("Add\nAccount", {
+                            navController.navigate(DetailScreen.ADD_ACCOUNT)
+                        }, Modifier.weight(1f))
+                        BigBlueButton("Add\nTransaction", {
+                            navController.navigate(DetailScreen.ADD_TRANSACTION)
+                        }, Modifier.weight(1f))
                     }
                     AccountSelectionSpinner()
                     SummaryCard()
@@ -131,11 +138,9 @@ fun SpentAccordingToDuration() {
 //@Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun TransactionSummary() {
-    Text(
-        text = "Last Transactions",
-        fontSize = 20.sp,
-        fontWeight = FontWeight.Bold,
-        modifier = Modifier.padding(8.dp)
+    SimpleTextBold(
+        modifier = Modifier.padding(8.dp),
+        text = "Last Transactions"
     )
 
     val scrollState = rememberScrollState()
@@ -156,9 +161,9 @@ fun TransactionSummary() {
 fun AppBar() {
     TopAppBar(
         title = {
-            Text(
-                text = "Hello, Jaideep",
-                modifier = Modifier.padding(start = 4.dp, end = 4.dp)
+            SimpleTextBold(
+                modifier = Modifier.padding(start = 4.dp, end = 4.dp),
+                text = "Hello, Jaideep"
             )
         },
         navigationIcon = {
@@ -197,10 +202,11 @@ fun BigBlueButton(name: String, onClick: () -> Unit, modifier: Modifier) {
             MaterialTheme.colorScheme.onPrimary
         )
     ) {
-        Text(
+        SimpleText(
             text = name,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.padding(8.dp)
+            textAlignment = TextAlign.Center,
+            modifier = Modifier.padding(8.dp),
+            color = MaterialTheme.colorScheme.onPrimary
         )
         Spacer(
             modifier = Modifier.size(5.dp)
@@ -233,26 +239,21 @@ fun SummaryCard() {
                 modifier = Modifier.padding(start = 10.dp)
             ){
                 Column {
-                    Text(
+                    HeadingTextBold(
                         text = "Balance",
-                        fontSize = 30.sp,
-                        fontWeight = FontWeight.Bold,
                         modifier = Modifier
                             .wrapContentWidth()
                             .padding(8.dp)
                     )
-
-                    Text(
-                        text = "Monthly Limit $6000",
+                    SimpleText(
+                        text = "Monthly Limit \$6000",
                         modifier = Modifier.padding(start = 8.dp, end = 8.dp, bottom = 8.dp)
                     )
                 }
-                Text(
+                HeadingTextBold(
                     text = "$4500",
-                    fontWeight = FontWeight.ExtraBold,
-                    fontSize = 40.sp,
                     modifier = Modifier.weight(1f),
-                    textAlign = TextAlign.Center
+                    textAlignment = TextAlign.Center
                 )
             }
             CategoryCard()
@@ -279,21 +280,19 @@ fun CategoryCard() {
                 tint = Color.Unspecified
             )
 
-            Text(
+            SimpleText(
                 text = "Food",
-                fontSize = 18.sp,
                 modifier = Modifier
                     .weight(1f)
                     .padding(8.dp),
                 overflow = TextOverflow.Ellipsis
             )
 
-            Text(
+            SimpleText(
                 text = "$0 / $1000",
-                fontSize = 18.sp,
                 modifier = Modifier
                     .padding(8.dp),
-                textAlign = TextAlign.End
+                textAlignment = TextAlign.End
             )
         }
 
@@ -343,13 +342,13 @@ fun AccountSelectionSpinner() {
             onDismissRequest = { isExpanded = false }
         ) {
             DropdownMenuItem(text = {
-                Text(text = "All Accounts")
+                SimpleText(text = "All Accounts")
             }, onClick = {
                 selectedAccount = "All Accounts"
                 isExpanded = false
             })
             DropdownMenuItem(text = {
-                                    Text(text = "Cash")
+                                    SimpleText(text = "Cash")
             }, onClick = {
                 selectedAccount = "Cash"
                 isExpanded = false
