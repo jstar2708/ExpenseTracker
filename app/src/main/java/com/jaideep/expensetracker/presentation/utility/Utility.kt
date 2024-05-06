@@ -29,6 +29,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.jaideep.expensetracker.presentation.theme.OpenSansFont
 
 //@Preview(showBackground = true, showSystemUi = true)
 @Composable
@@ -148,8 +149,8 @@ fun HeadingTextBold(
         textAlign = textAlignment,
         text = text,
         style = MaterialTheme.typography.headlineMedium,
-        fontWeight = FontWeight.Bold,
-        fontFamily = FontFamily.Serif,
+        fontWeight = FontWeight.ExtraBold,
+        fontFamily = OpenSansFont.openSans,
         color = color
     )
 }
@@ -164,7 +165,7 @@ fun HeadingText(text: String, color: Color = Color.Black) {
     Text(
         text = text,
         style = MaterialTheme.typography.headlineSmall,
-        fontFamily = FontFamily.Serif,
+        fontFamily = OpenSansFont.openSans,
         color = color
     )
 }
@@ -185,8 +186,8 @@ fun SimpleTextBold(
         modifier = modifier,
         text = text,
         style = MaterialTheme.typography.bodyMedium,
-        fontWeight = FontWeight.SemiBold,
-        fontFamily = FontFamily.Serif,
+        fontWeight = FontWeight.Bold,
+        fontFamily = OpenSansFont.openSans,
         color = color
     )
 }
@@ -208,7 +209,7 @@ fun SimpleText(
         modifier = modifier,
         text = text,
         style = MaterialTheme.typography.bodyMedium,
-        fontFamily = FontFamily.Serif,
+        fontFamily = OpenSansFont.openSans,
         color = color,
         textAlign = textAlignment,
         overflow = overflow
@@ -221,8 +222,7 @@ fun SimpleSmallText(modifier: Modifier = Modifier, text: String, color: Color = 
         modifier = modifier,
         text = text,
         style = MaterialTheme.typography.bodySmall,
-        fontFamily = FontFamily.Serif,
+        fontFamily = OpenSansFont.openSans,
         color = color
-
     )
 }
