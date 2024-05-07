@@ -17,5 +17,8 @@ interface EtRepository {
     suspend fun getTransaction(transactionId: Int) : Transaction
 
     suspend fun getCategory(categoryId: Int) : Category
+    suspend fun saveAccount(account: Account)
+    suspend fun saveCategory(category: Category)
+    suspend fun saveTransaction(transaction: Transaction)
 
 }

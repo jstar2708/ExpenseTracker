@@ -185,7 +185,7 @@ fun SimpleTextBold(
     Text(
         modifier = modifier,
         text = text,
-        style = MaterialTheme.typography.bodyMedium,
+        style = MaterialTheme.typography.bodyLarge,
         fontWeight = FontWeight.Bold,
         fontFamily = OpenSansFont.openSans,
         color = color
@@ -208,7 +208,7 @@ fun SimpleText(
     Text(
         modifier = modifier,
         text = text,
-        style = MaterialTheme.typography.bodyMedium,
+        style = MaterialTheme.typography.bodyLarge,
         fontFamily = OpenSansFont.openSans,
         color = color,
         textAlign = textAlignment,
@@ -221,7 +221,7 @@ fun SimpleSmallText(modifier: Modifier = Modifier, text: String, color: Color = 
     Text(
         modifier = modifier,
         text = text,
-        style = MaterialTheme.typography.bodySmall,
+        style = MaterialTheme.typography.bodyMedium,
         fontFamily = OpenSansFont.openSans,
         color = color
     )

@@ -4,8 +4,6 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.ForeignKey.Companion.CASCADE
 import androidx.room.PrimaryKey
-import com.jaideep.expensetracker.data.entities.Account
-import com.jaideep.expensetracker.data.entities.Category
 
 @Entity(foreignKeys = [
     ForeignKey(
@@ -30,6 +28,6 @@ data class Transaction(
     val accountId: Int,
     val categoryId: Int,
     val message: String,
-    val dateTime: Long,
+    val createdTime: Long,
     val isCredit: Int
 )

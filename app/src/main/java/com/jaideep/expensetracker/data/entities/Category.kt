@@ -7,5 +7,5 @@ import androidx.room.PrimaryKey
 data class Category(
     @PrimaryKey(autoGenerate = true) val id: Int,
     val categoryName: String,
-    val icon: Int
+    val iconName: String
 )

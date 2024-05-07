@@ -4,7 +4,10 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.jaideep.expensetracker.data.dao.AccountDao
+import com.jaideep.expensetracker.data.dao.CategoryDao
 import com.jaideep.expensetracker.data.dao.EtDao
+import com.jaideep.expensetracker.data.dao.TransactionDao
 import com.jaideep.expensetracker.data.entities.Account
 import com.jaideep.expensetracker.data.entities.Category
 import com.jaideep.expensetracker.data.entities.Transaction
@@ -13,6 +16,9 @@ import com.jaideep.expensetracker.data.entities.Transaction
 abstract class EtDatabase : RoomDatabase(){
 
     abstract fun getEtDao(): EtDao
+    abstract fun getCategoryDao(): CategoryDao
+    abstract fun getTransactionDao(): TransactionDao
+    abstract fun getAccountDao(): AccountDao
 
     companion object {
         @Volatile
