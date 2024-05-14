@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -15,10 +14,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.jaideep.expensetracker.presentation.component.ExpenseTrackerAppBar
+import com.jaideep.expensetracker.presentation.component.ExpenseTrackerCategoryCard
+import com.jaideep.expensetracker.presentation.component.ExpenseTrackerSpinner
 import com.jaideep.expensetracker.R
-import com.jaideep.expensetracker.presentation.screens.component.ExpenseTrackerAppBar
-import com.jaideep.expensetracker.presentation.screens.component.ExpenseTrackerCategoryCard
-import com.jaideep.expensetracker.presentation.screens.component.ExpenseTrackerSpinner
 
 @Preview
 @Composable

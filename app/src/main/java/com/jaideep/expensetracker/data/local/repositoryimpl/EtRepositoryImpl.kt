@@ -1,12 +1,12 @@
-package com.jaideep.expensetracker.data.repositoryimpl
+package com.jaideep.expensetracker.data.local.repositoryimpl
 
-import com.jaideep.expensetracker.data.dao.AccountDao
-import com.jaideep.expensetracker.data.dao.CategoryDao
-import com.jaideep.expensetracker.data.dao.EtDao
-import com.jaideep.expensetracker.data.dao.TransactionDao
-import com.jaideep.expensetracker.data.entities.Account
-import com.jaideep.expensetracker.data.entities.Category
-import com.jaideep.expensetracker.data.entities.Transaction
+import com.jaideep.expensetracker.data.local.dao.AccountDao
+import com.jaideep.expensetracker.data.local.dao.CategoryDao
+import com.jaideep.expensetracker.data.local.dao.EtDao
+import com.jaideep.expensetracker.data.local.dao.TransactionDao
+import com.jaideep.expensetracker.data.local.entities.Account
+import com.jaideep.expensetracker.data.local.entities.Category
+import com.jaideep.expensetracker.data.local.entities.Transaction
 import com.jaideep.expensetracker.domain.repository.EtRepository
 import javax.inject.Inject
 
@@ -27,10 +27,6 @@ class EtRepositoryImpl @Inject constructor(
 
     override suspend fun getAllCategories(): List<Category> {
         return categoryDao.getAllCategories()
-    }
-
-    override suspend fun getAllTransactions(): List<Transaction> {
-        return transactionDao.getAllTransactions()
     }
 
     override suspend fun getAccount(accountId: Int): Account {

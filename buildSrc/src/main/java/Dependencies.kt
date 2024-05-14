@@ -33,4 +33,6 @@ object Dependencies {
     val ktx by lazy { "androidx.room:room-ktx:${Versions.room}" }
     val icons by lazy { "androidx.compose.material:material-icons-extended" }
 
+    val paging by lazy { "androidx.paging:paging-runtime:${Versions.paging}" }
+    val pagingCompose by lazy { "androidx.paging:paging-compose:${Versions.paging}" }
 }

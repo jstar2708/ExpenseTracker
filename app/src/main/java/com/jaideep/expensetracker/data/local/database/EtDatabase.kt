@@ -1,16 +1,16 @@
-package com.jaideep.expensetracker.data.database
+package com.jaideep.expensetracker.data.local.database
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.jaideep.expensetracker.data.dao.AccountDao
-import com.jaideep.expensetracker.data.dao.CategoryDao
-import com.jaideep.expensetracker.data.dao.EtDao
-import com.jaideep.expensetracker.data.dao.TransactionDao
-import com.jaideep.expensetracker.data.entities.Account
-import com.jaideep.expensetracker.data.entities.Category
-import com.jaideep.expensetracker.data.entities.Transaction
+import com.jaideep.expensetracker.data.local.dao.AccountDao
+import com.jaideep.expensetracker.data.local.dao.CategoryDao
+import com.jaideep.expensetracker.data.local.dao.EtDao
+import com.jaideep.expensetracker.data.local.dao.TransactionDao
+import com.jaideep.expensetracker.data.local.entities.Account
+import com.jaideep.expensetracker.data.local.entities.Category
+import com.jaideep.expensetracker.data.local.entities.Transaction
 
 @Database(entities = [Account::class, Transaction::class, Category::class], version = 1)
 abstract class EtDatabase : RoomDatabase(){

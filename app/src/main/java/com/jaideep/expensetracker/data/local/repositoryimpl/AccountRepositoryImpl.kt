@@ -1,7 +1,7 @@
-package com.jaideep.expensetracker.data.repositoryimpl
+package com.jaideep.expensetracker.data.local.repositoryimpl
 
-import com.jaideep.expensetracker.data.dao.AccountDao
-import com.jaideep.expensetracker.data.entities.Account
+import com.jaideep.expensetracker.data.local.dao.AccountDao
+import com.jaideep.expensetracker.data.local.entities.Account
 import com.jaideep.expensetracker.domain.repository.AccountRepository
 import javax.inject.Inject
 

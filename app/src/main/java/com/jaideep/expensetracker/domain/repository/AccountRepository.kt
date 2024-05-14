@@ -1,6 +1,6 @@
 package com.jaideep.expensetracker.domain.repository
 
-import com.jaideep.expensetracker.data.entities.Account
+import com.jaideep.expensetracker.data.local.entities.Account
 
 interface AccountRepository {
     suspend fun getAccounts() : List<Account>

@@ -1,11 +1,11 @@
-package com.jaideep.expensetracker.data.dao
+package com.jaideep.expensetracker.data.local.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.jaideep.expensetracker.common.CategorySql.GET_CATEGORY_BY_ID
-import com.jaideep.expensetracker.data.entities.Category
+import com.jaideep.expensetracker.data.local.entities.Category
 
 @Dao
 interface CategoryDao {

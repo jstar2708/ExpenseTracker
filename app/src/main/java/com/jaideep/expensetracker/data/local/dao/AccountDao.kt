@@ -1,11 +1,11 @@
-package com.jaideep.expensetracker.data.dao
+package com.jaideep.expensetracker.data.local.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
-import com.jaideep.expensetracker.data.entities.Account
+import com.jaideep.expensetracker.data.local.entities.Account
 import com.jaideep.expensetracker.common.AccountSql.GET_ALL_ACCOUNTS;
 import com.jaideep.expensetracker.common.AccountSql.GET_ACCOUNT_BY_ID;
 

@@ -11,7 +11,7 @@ android {
 
     defaultConfig {
         applicationId = "com.jaideep.expensetracker"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -88,5 +88,7 @@ dependencies {
     implementation(Dependencies.ktx)
 
     implementation(Dependencies.icons)
+    implementation(Dependencies.paging)
+    implementation(Dependencies.pagingCompose)
 
 }

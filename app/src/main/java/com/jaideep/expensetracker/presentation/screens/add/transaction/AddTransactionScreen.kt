@@ -33,13 +33,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import com.jaideep.expensetracker.R
-import com.jaideep.expensetracker.presentation.utility.HeadingTextBold
-import com.jaideep.expensetracker.presentation.utility.RadioButtonWithText
-import com.jaideep.expensetracker.presentation.utility.SimpleText
-import com.jaideep.expensetracker.presentation.utility.TextFieldWithIcon
+import com.jaideep.expensetracker.presentation.component.HeadingTextBold
+import com.jaideep.expensetracker.presentation.component.RadioButtonWithText
+import com.jaideep.expensetracker.presentation.component.SimpleText
+import com.jaideep.expensetracker.presentation.component.TextFieldWithIcon
 import com.jaideep.expensetracker.presentation.theme.AppTheme
 import com.jaideep.expensetracker.presentation.viewmodel.AddTransactionViewModel
+import com.jaideep.expensetracker.R
 import kotlinx.coroutines.DelicateCoroutinesApi
 
 @Preview(showSystemUi = true, showBackground = true)

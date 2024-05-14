@@ -1,4 +1,4 @@
-package com.jaideep.expensetracker.data.entities
+package com.jaideep.expensetracker.data.local.entities
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

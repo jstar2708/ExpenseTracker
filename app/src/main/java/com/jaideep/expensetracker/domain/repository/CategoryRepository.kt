@@ -1,6 +1,6 @@
 package com.jaideep.expensetracker.domain.repository
 
-import com.jaideep.expensetracker.data.entities.Category
+import com.jaideep.expensetracker.data.local.entities.Category
 
 interface CategoryRepository {
     suspend fun getCategoryById(categoryId: Int) : Category

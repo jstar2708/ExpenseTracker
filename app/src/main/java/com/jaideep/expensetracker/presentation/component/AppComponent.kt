@@ -1,6 +1,7 @@
-package com.jaideep.expensetracker.presentation.screens.component
+package com.jaideep.expensetracker.presentation.component
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -13,6 +14,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.Wallet
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.DropdownMenuItem
@@ -24,10 +26,16 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.RadioButton
+import androidx.compose.material3.RadioButtonColors
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -36,18 +44,20 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.jaideep.expensetracker.R
+import com.jaideep.expensetracker.presentation.theme.OpenSansFont
 import com.jaideep.expensetracker.presentation.theme.md_theme_light_primary
 import com.jaideep.expensetracker.presentation.theme.md_theme_light_surface
-import com.jaideep.expensetracker.presentation.utility.SimpleText
-import com.jaideep.expensetracker.presentation.utility.SimpleTextBold
+import com.jaideep.expensetracker.R
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -60,7 +70,6 @@ fun ExpenseTrackerAppBar(
     actionIcon: ImageVector,
     actionDescription: String,
     onActionIconClick: () -> Unit,
-
     ) {
     TopAppBar(title = {
         SimpleTextBold(
@@ -71,7 +80,7 @@ fun ExpenseTrackerAppBar(
             Icon(
                 imageVector = navigationIcon,
                 contentDescription = navigationDescription,
-                modifier = Modifier.size(40.dp)
+                modifier = Modifier.size(40.dp),
             )
         }
     }, actions = {
@@ -334,3 +343,203 @@ fun ExpenseTrackerTabLayout(
     }
 }
 
+//@Preview(showBackground = true, showSystemUi = true)
+@Composable
+private fun RadioButtonWithTextPreview() {
+    RadioButtonWithText(
+        isSelected = true,
+        text = "Income",
+        selectedColor = Color.Blue,
+        unselectedColor = Color.Gray,
+        textColor = Color.Black
+    ) {
+
+    }
+}
+
+@Composable
+fun RadioButtonWithText(
+    isSelected: Boolean,
+    text: String,
+    selectedColor: Color,
+    unselectedColor: Color,
+    textColor: Color,
+    onClick: () -> Unit
+) {
+    Row (
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        RadioButton(
+            selected = isSelected,
+            onClick = {
+                onClick()
+            },
+            colors = RadioButtonColors(
+                selectedColor,
+                unselectedColor,
+                Color.Unspecified,
+                Color.Unspecified)
+        )
+        SimpleText(text = text, color = textColor)
+    }
+}
+
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+private fun TextFieldWithIconPreview() {
+    TextFieldWithIcon(
+        label = "Username",
+        icon = Icons.Filled.Wallet,
+        iconColor = Color.Blue,
+        borderColor = Color.Black
+    )
+}
+
+@Composable
+fun TextFieldWithIcon(
+    label: String,
+    icon: ImageVector,
+    iconColor: Color,
+    borderColor: Color,
+    text: MutableState<TextFieldValue> = remember {
+        mutableStateOf(TextFieldValue(""))
+    },
+    isError: MutableState<Boolean> = remember {
+        mutableStateOf(false)
+    }
+) {
+
+    val isFocused = remember {
+        mutableStateOf(false)
+    }
+
+    TextField(
+        modifier = Modifier
+            .fillMaxWidth()
+            .onFocusChanged {
+                isFocused.value = it.hasFocus
+            },
+        value = text.value,
+        onValueChange = {
+            text.value = it
+        },
+        label = {
+            SimpleSmallText(
+                text = label,
+                color = if (isError.value) Color.Red else if (isFocused.value) MaterialTheme.colorScheme.secondary else Color.Gray,
+                modifier = Modifier.background(MaterialTheme.colorScheme.surface)
+            )
+        },
+        leadingIcon = {
+            Icon(
+                imageVector = icon,
+                contentDescription = "Icon",
+                tint = iconColor
+            )
+        },
+        colors = OutlinedTextFieldDefaults.colors(
+            focusedBorderColor = borderColor,
+            unfocusedBorderColor = borderColor,
+            focusedContainerColor = Color.White,
+            unfocusedContainerColor = Color.White,
+            errorContainerColor = Color.White
+        ),
+        isError = isError.value
+    )
+}
+
+@Preview(showSystemUi = true)
+@Composable
+private fun HeadingTextBoldPreview() {
+    HeadingTextBold(text = "Add Account")
+}
+@Composable
+fun HeadingTextBold(
+    modifier: Modifier = Modifier,
+    text: String,
+    color: Color = Color.Black,
+    textAlignment: TextAlign = TextAlign.Start
+) {
+    Text(
+        modifier = modifier,
+        textAlign = textAlignment,
+        text = text,
+        style = MaterialTheme.typography.headlineMedium,
+        fontWeight = FontWeight.ExtraBold,
+        fontFamily = OpenSansFont.openSans,
+        color = color
+    )
+}
+
+@Preview(showSystemUi = true)
+@Composable
+private fun HeadingTextPreview() {
+    HeadingText(text = "Cash Account")
+}
+@Composable
+fun HeadingText(text: String, color: Color = Color.Black) {
+    Text(
+        text = text,
+        style = MaterialTheme.typography.headlineSmall,
+        fontFamily = OpenSansFont.openSans,
+        color = color
+    )
+}
+
+@Preview(showSystemUi = true)
+@Composable
+private fun SimpleTextBoldPreview() {
+    SimpleTextBold(text = "This is a line.")
+}
+@Composable
+fun SimpleTextBold(
+    modifier: Modifier = Modifier,
+    text: String,
+    color: Color = Color.Black,
+    overflow: TextOverflow = TextOverflow.Clip
+) {
+    Text(
+        modifier = modifier,
+        text = text,
+        style = MaterialTheme.typography.bodyLarge,
+        fontWeight = FontWeight.Bold,
+        fontFamily = OpenSansFont.openSans,
+        color = color
+    )
+}
+
+@Preview(showSystemUi = true)
+@Composable
+private fun SimpleTextPreview() {
+    SimpleText(text = "This is a line.", modifier = Modifier.padding(0.dp))
+}
+@Composable
+fun SimpleText(
+    modifier: Modifier = Modifier,
+    text: String,
+    color: Color = Color.Black,
+    textAlignment: TextAlign = TextAlign.Start,
+    overflow: TextOverflow = TextOverflow.Clip
+) {
+    Text(
+        modifier = modifier,
+        text = text,
+        style = MaterialTheme.typography.bodyLarge,
+        fontFamily = OpenSansFont.openSans,
+        color = color,
+        textAlign = textAlignment,
+        overflow = overflow
+    )
+}
+
+@Composable
+fun SimpleSmallText(modifier: Modifier = Modifier, text: String, color: Color = Color.Black) {
+    Text(
+        modifier = modifier,
+        text = text,
+        style = MaterialTheme.typography.bodyMedium,
+        fontFamily = OpenSansFont.openSans,
+        color = color
+    )
+}

@@ -11,13 +11,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AddTransactionViewModel @Inject constructor(): ViewModel() {
-    private val _isCardHidden: MutableLiveData<Boolean> = MutableLiveData(false);
-    var isCardHidden: LiveData<Boolean> = _isCardHidden;
+    public fun createTransaction() {
 
-    public fun startTime() {
-        viewModelScope.launch {
-            delay(200)
-            _isCardHidden.value = true
-        }
     }
 }

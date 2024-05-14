@@ -11,22 +11,15 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
-import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.outlined.AccountCircle
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -41,17 +34,17 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.jaideep.expensetracker.R
 import com.jaideep.expensetracker.common.DetailScreen
-import com.jaideep.expensetracker.presentation.screens.component.ExpenseTrackerAppBar
-import com.jaideep.expensetracker.presentation.screens.component.ExpenseTrackerBlueButton
-import com.jaideep.expensetracker.presentation.screens.component.ExpenseTrackerCategoryCard
-import com.jaideep.expensetracker.presentation.screens.component.ExpenseTrackerSpinner
-import com.jaideep.expensetracker.presentation.screens.component.ExpenseTrackerTransactionCardItem
+import com.jaideep.expensetracker.presentation.component.ExpenseTrackerAppBar
+import com.jaideep.expensetracker.presentation.component.ExpenseTrackerBlueButton
+import com.jaideep.expensetracker.presentation.component.ExpenseTrackerCategoryCard
+import com.jaideep.expensetracker.presentation.component.ExpenseTrackerSpinner
+import com.jaideep.expensetracker.presentation.component.ExpenseTrackerTransactionCardItem
+import com.jaideep.expensetracker.presentation.component.HeadingTextBold
+import com.jaideep.expensetracker.presentation.component.SimpleText
+import com.jaideep.expensetracker.presentation.component.SimpleTextBold
 import com.jaideep.expensetracker.presentation.theme.AppTheme
-import com.jaideep.expensetracker.presentation.utility.HeadingTextBold
-import com.jaideep.expensetracker.presentation.utility.SimpleText
-import com.jaideep.expensetracker.presentation.utility.SimpleTextBold
+import com.jaideep.expensetracker.R
 
 @Preview
 @Composable

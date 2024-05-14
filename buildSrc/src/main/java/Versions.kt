@@ -1,4 +1,5 @@
 object Versions {
+    const val paging = "3.2.1"
     const val room = "2.6.1"
     const val splashScreen = "1.0.0-alpha01"
     const val material3 = "1.2.0-rc01"
