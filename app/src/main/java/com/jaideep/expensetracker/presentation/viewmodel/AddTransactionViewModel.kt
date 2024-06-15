@@ -13,6 +13,7 @@ import com.jaideep.expensetracker.data.local.entities.Category
 import com.jaideep.expensetracker.data.local.entities.Transaction
 import com.jaideep.expensetracker.domain.repository.TransactionRepository
 import com.jaideep.expensetracker.domain.usecase.GetAllAccountsUseCase
+import com.jaideep.expensetracker.domain.usecase.GetAllCategoriesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -26,7 +27,8 @@ import javax.inject.Inject
 @HiltViewModel
 class AddTransactionViewModel @Inject constructor(
     private val transactionRepository: TransactionRepository,
-    private val getAllAccountsUseCase: GetAllAccountsUseCase
+    private val getAllAccountsUseCase: GetAllAccountsUseCase,
+    private val getAllCategoriesUseCase: GetAllCategoriesUseCase
 ) : ViewModel() {
 
     private val _accounts: MutableStateFlow<List<Account>> = MutableStateFlow(ArrayList())
@@ -35,8 +37,63 @@ class AddTransactionViewModel @Inject constructor(
     private val _categories: MutableStateFlow<List<Category>> = MutableStateFlow(ArrayList())
     var categories: StateFlow<List<Category>> = _categories
 
+    var screenTitle by mutableStateOf("Add Transaction")
+        private set
+    var radioButtonValue by mutableStateOf("Income")
+        private set
+    var screenDetail by mutableStateOf("Please provide transaction details")
+        private set
+    var accountName = mutableStateOf(TextFieldValue(""))
+        private set
+    var categoryName = mutableStateOf(TextFieldValue(""))
+        private set
+    var amount = mutableStateOf(TextFieldValue(""))
+        private set
+    var isAmountIncorrect = mutableStateOf(false)
+        private set
+    var isDateIncorrect = mutableStateOf(false)
+        private set
+    var date = mutableStateOf(TextFieldValue(""))
+        private set
+    var note = mutableStateOf(TextFieldValue(""))
+        private set
+    var dataRetrievalError = mutableStateOf(false)
+        private set
+    var isLoading = mutableStateOf(true)
+        private set
+    var errorMessage = mutableStateOf("")
+        private set
+
     init {
         getAllAccounts()
+        getAllCategories()
+    }
+
+    private fun getAllCategories() = viewModelScope.launch(EtDispatcher.io) {
+        getAllCategoriesUseCase().collect {
+            when (it) {
+                is Resource.Error -> {
+                    withContext(EtDispatcher.main) {
+                        errorMessage.value = it.message
+                        dataRetrievalError.value = true
+                        isLoading.value = false
+                    }
+                }
+
+                is Resource.Success -> {
+                    withContext(EtDispatcher.main) {
+                        _categories.value = it.data
+                        isLoading.value = false
+                    }
+                }
+
+                is Resource.Loading -> {
+                    withContext(EtDispatcher.main) {
+                        isLoading.value = true
+                    }
+                }
+            }
+        }
     }
 
     private fun getAllAccounts() {
@@ -111,31 +168,4 @@ class AddTransactionViewModel @Inject constructor(
             isDateIncorrect.value = true
         }
     }
-
-    var screenTitle by mutableStateOf("Add Transaction")
-        private set
-    var radioButtonValue by mutableStateOf("Income")
-        private set
-    var screenDetail by mutableStateOf("Please provide transaction details")
-        private set
-    var accountName = mutableStateOf(TextFieldValue(""))
-        private set
-    var categoryName = mutableStateOf(TextFieldValue(""))
-        private set
-    var amount = mutableStateOf(TextFieldValue(""))
-        private set
-    var isAmountIncorrect = mutableStateOf(false)
-        private set
-    var isDateIncorrect = mutableStateOf(false)
-        private set
-    var date = mutableStateOf(TextFieldValue(""))
-        private set
-    var note = mutableStateOf(TextFieldValue(""))
-        private set
-    var dataRetrievalError = mutableStateOf(false)
-        private set
-    var isLoading = mutableStateOf(true)
-        private set
-    var errorMessage = mutableStateOf("")
-        private set
 }
