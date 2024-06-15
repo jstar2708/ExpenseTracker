@@ -154,9 +154,7 @@ fun AddAccountScreen(
                             saveAccount(
                                 accountName.value.text,
                                 initialBalance.value.text
-                            ).apply {
-                                backPress()
-                            }
+                            )
                         }) {
                         SimpleTextBold(
                             text = "Save", color = Color.Blue

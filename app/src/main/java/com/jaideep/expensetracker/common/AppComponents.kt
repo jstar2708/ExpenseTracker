@@ -45,15 +45,29 @@ object AppComponents {
 
     fun Long.convertMilliSecondsToDate() : String {
         val date = Date(this)
+        val format = SimpleDateFormat("yyyy.MM.dd", Locale.ENGLISH)
+        return format.format(date)
+    }
+
+    fun Long.convertMilliSecondsToDateTime() : String {
+        val date = Date(this)
         val format = SimpleDateFormat("yyyy.MM.dd HH:mm", Locale.ENGLISH)
         return format.format(date)
     }
 
     fun String.convertDateToMilliseconds() : Long {
+        val format = SimpleDateFormat("yyyy.MM.dd", Locale.ENGLISH)
+        val mDate: Date? = format.parse(this)
+        return mDate?.time ?: 0
+    }
+
+    fun String.convertDateTimeToMilliseconds() : Long {
         val format = SimpleDateFormat("yyyy.MM.dd HH:mm", Locale.ENGLISH)
         val mDate: Date? = format.parse(this)
         return mDate?.time ?: 0
     }
+
+
 }
 
 data class BottomNavigationItem(

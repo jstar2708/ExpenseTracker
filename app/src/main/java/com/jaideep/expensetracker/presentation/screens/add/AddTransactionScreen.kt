@@ -45,6 +45,7 @@ import com.jaideep.expensetracker.R
 import com.jaideep.expensetracker.presentation.component.HeadingTextBold
 import com.jaideep.expensetracker.presentation.component.RadioButtonWithText
 import com.jaideep.expensetracker.presentation.component.SimpleText
+import com.jaideep.expensetracker.presentation.component.TextFieldDatePicker
 import com.jaideep.expensetracker.presentation.component.TextFieldWithDropDown
 import com.jaideep.expensetracker.presentation.component.TextFieldWithIcon
 import com.jaideep.expensetracker.presentation.theme.AppTheme
@@ -212,7 +213,7 @@ fun AddTransactionScreen(
                         text = amount,
                         isError = isAmountIncorrect
                     )
-                    TextFieldWithIcon(
+                    TextFieldDatePicker(
                         label = "Date",
                         icon = Icons.Filled.CalendarMonth,
                         iconColor = MaterialTheme.colorScheme.onSecondaryContainer,

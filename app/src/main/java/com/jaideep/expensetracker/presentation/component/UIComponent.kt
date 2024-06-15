@@ -1,6 +1,8 @@
 package com.jaideep.expensetracker.presentation.component
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -11,15 +13,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.Accessible
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Wallet
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -37,6 +39,7 @@ import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
@@ -51,9 +54,7 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -63,6 +64,7 @@ import com.jaideep.expensetracker.presentation.theme.OpenSansFont
 import com.jaideep.expensetracker.presentation.theme.md_theme_light_primary
 import com.jaideep.expensetracker.presentation.theme.md_theme_light_surface
 import com.jaideep.expensetracker.R
+import com.jaideep.expensetracker.common.AppComponents.convertMilliSecondsToDate
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -444,6 +446,102 @@ fun TextFieldWithDropDown(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun TextFieldDatePicker(
+    modifier: Modifier = Modifier,
+    label: String,
+    icon: ImageVector,
+    iconColor: Color,
+    borderColor: Color,
+    text: MutableState<TextFieldValue> = remember {
+        mutableStateOf(TextFieldValue(""))
+    },
+    isError: MutableState<Boolean> = remember {
+        mutableStateOf(false)
+    }
+) {
+
+    val isFocused = remember {
+        mutableStateOf(false)
+    }
+    val showDatePicker = remember {
+        mutableStateOf(false)
+    }
+
+    val dateState = rememberDatePickerState()
+
+    if (showDatePicker.value) {
+        DatePickerDialog(
+            onDismissRequest = { showDatePicker.value = false },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        text.value = TextFieldValue(dateState.selectedDateMillis?.convertMilliSecondsToDate() ?: "")
+                        showDatePicker.value = false
+                    }
+                ) {
+                    Text(text = "Ok")
+                }
+            },
+            dismissButton = {
+                Button(
+                    onClick = {
+                        showDatePicker.value = false
+                    }
+                ) {
+                    Text(text = "Cancel")
+                }
+            }
+        ) {
+            DatePicker(state = dateState)
+        }
+    }
+
+
+    TextField(
+        modifier = modifier
+            .focusable()
+            .fillMaxWidth()
+            .onFocusChanged {
+                isFocused.value = it.hasFocus
+            }
+            .clickable {
+                showDatePicker.value = true
+            },
+        value = text.value,
+        onValueChange = { text.value = it },
+        readOnly = true,
+        enabled = false,
+        label = {
+            SimpleSmallText(
+                text = label,
+                color = if (isError.value) Color.Red else if (isFocused.value) MaterialTheme.colorScheme.secondary else Color.Gray,
+                modifier = Modifier.background(MaterialTheme.colorScheme.surface)
+            )
+        },
+        leadingIcon = {
+            Icon(
+                imageVector = icon,
+                contentDescription = "Icon",
+                tint = iconColor
+            )
+        },
+        colors = OutlinedTextFieldDefaults.colors(
+            focusedBorderColor = borderColor,
+            unfocusedBorderColor = borderColor,
+            disabledBorderColor = borderColor,
+            errorBorderColor = Color.Red,
+            focusedContainerColor = Color.White,
+            unfocusedContainerColor = Color.White,
+            errorContainerColor = Color.White,
+            disabledContainerColor = Color.White,
+            disabledTextColor = Color.Black
+        ),
+        isError = isError.value,
+    )
+}
+
 @Composable
 fun TextFieldWithIcon(
     modifier: Modifier = Modifier,
@@ -493,6 +591,7 @@ fun TextFieldWithIcon(
         colors = OutlinedTextFieldDefaults.colors(
             focusedBorderColor = borderColor,
             unfocusedBorderColor = borderColor,
+            errorBorderColor = Color.Red,
             focusedContainerColor = Color.White,
             unfocusedContainerColor = Color.White,
             errorContainerColor = Color.White
