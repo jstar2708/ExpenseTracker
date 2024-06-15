@@ -14,10 +14,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.jaideep.expensetracker.R
+import com.jaideep.expensetracker.common.DetailScreen
 import com.jaideep.expensetracker.presentation.component.ExpenseTrackerAppBar
 import com.jaideep.expensetracker.presentation.component.ExpenseTrackerCategoryCard
 import com.jaideep.expensetracker.presentation.component.ExpenseTrackerSpinner
-import com.jaideep.expensetracker.R
 
 @Preview
 @Composable
@@ -36,7 +37,7 @@ fun CategoryScreen(navController: NavController) {
             actionIcon = Icons.Filled.Add,
             actionDescription = "Add Category icon"
         ) {
-
+            navController.navigate(DetailScreen.ADD_CATEGORY)
         }
     }) {
         Column(Modifier.padding(it)) {

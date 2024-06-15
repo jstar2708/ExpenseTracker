@@ -30,7 +30,7 @@ class EtRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getAccount(accountId: Int): Account {
-        return accountDao.getAccountById(accountId);
+        return accountDao.getAccountById(accountId)
     }
 
     override suspend fun getTransaction(transactionId: Int): Transaction {
@@ -38,18 +38,18 @@ class EtRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getCategory(categoryId: Int): Category {
-        return categoryDao.getCategoryById(categoryId);
+        return categoryDao.getCategoryById(categoryId)
     }
 
     override suspend fun saveAccount(account: Account) {
-        TODO("Not yet implemented")
+
     }
 
     override suspend fun saveCategory(category: Category) {
-        TODO("Not yet implemented")
+
     }
 
     override suspend fun saveTransaction(transaction: Transaction) {
-        TODO("Not yet implemented")
+
     }
 }

@@ -1,6 +1,5 @@
-package com.jaideep.expensetracker.presentation.screens.add.transaction
+package com.jaideep.expensetracker.presentation.screens.add
 
-import android.app.Application
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -14,14 +13,21 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Note
 import androidx.compose.material.icons.filled.AccountBalanceWallet
+import androidx.compose.material.icons.filled.CalendarMonth
+import androidx.compose.material.icons.filled.Category
+import androidx.compose.material.icons.filled.CurrencyRupee
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -29,32 +35,107 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.jaideep.expensetracker.R
 import com.jaideep.expensetracker.presentation.component.HeadingTextBold
 import com.jaideep.expensetracker.presentation.component.RadioButtonWithText
 import com.jaideep.expensetracker.presentation.component.SimpleText
+import com.jaideep.expensetracker.presentation.component.TextFieldWithDropDown
 import com.jaideep.expensetracker.presentation.component.TextFieldWithIcon
 import com.jaideep.expensetracker.presentation.theme.AppTheme
 import com.jaideep.expensetracker.presentation.viewmodel.AddTransactionViewModel
-import com.jaideep.expensetracker.R
-import kotlinx.coroutines.DelicateCoroutinesApi
+import java.util.stream.Collectors
 
 @Preview(showSystemUi = true, showBackground = true)
 @Composable
 fun AddTransactionPreview() {
     AppTheme {
-        AddTransactionScreen(navController = NavHostController(Application()))
+        AddTransactionScreen(radioButtonValue = "Income",
+            detailsMessage = "Please provide transaction details",
+            screenTitle = "Add Transaction",
+            accountName = remember {
+                mutableStateOf(TextFieldValue(""))
+            },
+            categoryName = remember {
+                mutableStateOf(TextFieldValue(""))
+            },
+            amount = remember {
+                mutableStateOf(TextFieldValue(""))
+            },
+            date = remember {
+                mutableStateOf(TextFieldValue(""))
+            },
+            note = remember {
+                mutableStateOf(TextFieldValue(""))
+            },
+            isDateIncorrect = remember {
+                mutableStateOf(false)
+            },
+            isAmountIncorrect = remember {
+                mutableStateOf(false)
+            },
+            toggleRadioButton = {},
+            accounts = listOf(),
+            categories = listOf(),
+            saveTransaction = { _, _, _, _, _, _ ->
+
+            })
     }
 }
 
-@OptIn(DelicateCoroutinesApi::class)
+@Composable
+fun AddTransactionScreenRoot(
+    navController: NavHostController,
+    viewModel: AddTransactionViewModel = hiltViewModel()
+) {
+    AddTransactionScreen(
+        radioButtonValue = viewModel.radioButtonValue,
+        detailsMessage = viewModel.screenDetail,
+        screenTitle = viewModel.screenTitle,
+        toggleRadioButton = viewModel::toggleRadioButton,
+        accountName = viewModel.accountName,
+        categoryName = viewModel.categoryName,
+        amount = viewModel.amount,
+        date = viewModel.date,
+        note = viewModel.note,
+        isAmountIncorrect = viewModel.isAmountIncorrect,
+        isDateIncorrect = viewModel.isDateIncorrect,
+        accounts = viewModel.accounts.collectAsState().value.stream().map { it.accountName }
+            .collect(Collectors.toList()),
+        categories = viewModel.categories.collectAsState().value.stream().map { it.categoryName }
+            .collect(Collectors.toList()),
+        saveTransaction = viewModel::saveTransaction
+    )
+}
+
 @Composable
 fun AddTransactionScreen(
-    navController: NavHostController,
-    addTransactionViewModel: AddTransactionViewModel = hiltViewModel()
+    radioButtonValue: String,
+    detailsMessage: String,
+    screenTitle: String,
+    accountName: MutableState<TextFieldValue>,
+    categoryName: MutableState<TextFieldValue>,
+    amount: MutableState<TextFieldValue>,
+    date: MutableState<TextFieldValue>,
+    note: MutableState<TextFieldValue>,
+    isAmountIncorrect: MutableState<Boolean>,
+    isDateIncorrect: MutableState<Boolean>,
+    toggleRadioButton: (value: String) -> Unit,
+    accounts: List<String>,
+    categories: List<String>,
+    saveTransaction: (
+        accountName: String,
+        categoryName: String,
+        amount: String,
+        date: String,
+        note: String,
+        isCredit: Boolean
+    ) -> Unit
 ) {
     Surface(modifier = Modifier.fillMaxSize()) {
         Column {
@@ -68,9 +149,6 @@ fun AddTransactionScreen(
                     .padding(4.dp)
             )
             BlueBackground(Modifier.weight(1f)) {
-                val radioButtonValue = remember {
-                    mutableStateOf("Income")
-                }
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
@@ -80,66 +158,74 @@ fun AddTransactionScreen(
                 ) {
                     Spacer(modifier = Modifier.height(10.dp))
                     HeadingTextBold(
-                        text = "Add Transaction", color = MaterialTheme.colorScheme.onPrimary
+                        text = screenTitle, color = MaterialTheme.colorScheme.onPrimary
                     )
                     SimpleText(
-                        text = "Please provide transaction details",
-                        color = MaterialTheme.colorScheme.onPrimary
+                        text = detailsMessage, color = MaterialTheme.colorScheme.onPrimary
                     )
-
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceEvenly
                     ) {
                         RadioButtonWithText(
-                            isSelected = radioButtonValue.value == "Income",
+                            isSelected = radioButtonValue == "Income",
                             text = "Income",
                             selectedColor = Color.White,
                             unselectedColor = Color.White,
                             textColor = Color.White
                         ) {
-                            TODO("Implement onClick")
+                            toggleRadioButton(radioButtonValue)
                         }
                         RadioButtonWithText(
-                            isSelected = radioButtonValue.value == "Expense",
+                            isSelected = radioButtonValue == "Expense",
                             text = "Expense",
                             selectedColor = Color.White,
                             unselectedColor = Color.White,
                             textColor = Color.White
                         ) {
-                            TODO("Implement onClick")
+                            toggleRadioButton(radioButtonValue)
                         }
                     }
 
-                    TextFieldWithIcon(
+                    TextFieldWithDropDown(
+                        values = accounts,
                         label = "Choose Account",
                         icon = Icons.Filled.AccountBalanceWallet,
                         iconColor = MaterialTheme.colorScheme.onSecondaryContainer,
-                        borderColor = Color.Black
+                        borderColor = Color.Black,
+                        text = accountName
+                    )
+                    TextFieldWithDropDown(
+                        values = categories,
+                        label = "Choose Category",
+                        icon = Icons.Filled.Category,
+                        iconColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                        borderColor = Color.Black,
+                        text = categoryName
                     )
                     TextFieldWithIcon(
-                        label = "Choose Account",
-                        icon = Icons.Filled.AccountBalanceWallet,
+                        label = "Amount",
+                        icon = Icons.Filled.CurrencyRupee,
                         iconColor = MaterialTheme.colorScheme.onSecondaryContainer,
-                        borderColor = Color.Black
+                        borderColor = Color.Black,
+                        keyBoardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+                        text = amount,
+                        isError = isAmountIncorrect
                     )
                     TextFieldWithIcon(
-                        label = "Choose Account",
-                        icon = Icons.Filled.AccountBalanceWallet,
+                        label = "Date",
+                        icon = Icons.Filled.CalendarMonth,
                         iconColor = MaterialTheme.colorScheme.onSecondaryContainer,
-                        borderColor = Color.Black
+                        borderColor = Color.Black,
+                        text = date,
+                        isError = isDateIncorrect
                     )
                     TextFieldWithIcon(
-                        label = "Choose Account",
-                        icon = Icons.Filled.AccountBalanceWallet,
+                        label = "Note",
+                        icon = Icons.AutoMirrored.Filled.Note,
                         iconColor = MaterialTheme.colorScheme.onSecondaryContainer,
-                        borderColor = Color.Black
-                    )
-                    TextFieldWithIcon(
-                        label = "Choose Account",
-                        icon = Icons.Filled.AccountBalanceWallet,
-                        iconColor = MaterialTheme.colorScheme.onSecondaryContainer,
-                        borderColor = Color.Black
+                        borderColor = Color.Black,
+                        text = note
                     )
 
                     Button(modifier = Modifier
@@ -150,7 +236,14 @@ fun AddTransactionScreen(
                             Color.White, Color.Blue, Color.White, Color.White
                         ),
                         onClick = {
-
+                            saveTransaction(
+                                accountName.value.text,
+                                categoryName.value.text,
+                                amount.value.text,
+                                date.value.text,
+                                note.value.text,
+                                radioButtonValue == "Income"
+                            )
                         }) {
                         Text(
                             text = "Save", color = Color.Blue
@@ -163,9 +256,10 @@ fun AddTransactionScreen(
     }
 }
 
-//@Preview(showSystemUi = true, showBackground = true)
 @Composable
-fun BlueBackground(modifier: Modifier, content: @Composable () -> Unit) {
+fun BlueBackground(
+    modifier: Modifier, content: @Composable () -> Unit
+) {
     Box(
         modifier
             .clip(

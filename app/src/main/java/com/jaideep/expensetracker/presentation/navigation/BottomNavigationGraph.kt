@@ -31,7 +31,7 @@ fun BottomNavigationGraph(
             TransactionScreen(navHostControllerRoot)
         }
         composable(MainScreen.CATEGORY) {
-            CategoryScreen(navController)
+            CategoryScreen(navHostControllerRoot)
         }
         composable(MainScreen.SETTINGS) {
             SettingsScreen(navController)

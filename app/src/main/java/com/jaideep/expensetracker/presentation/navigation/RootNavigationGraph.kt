@@ -6,8 +6,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.jaideep.expensetracker.common.DetailScreen
 import com.jaideep.expensetracker.common.Graph
-import com.jaideep.expensetracker.presentation.screens.add.acount.AddAccountScreen
-import com.jaideep.expensetracker.presentation.screens.add.transaction.AddTransactionScreen
+import com.jaideep.expensetracker.presentation.screens.add.AddAccountScreenRoot
+import com.jaideep.expensetracker.presentation.screens.add.AddCategoryScreenRoot
+import com.jaideep.expensetracker.presentation.screens.add.AddTransactionScreenRoot
 import com.jaideep.expensetracker.presentation.screens.bottom.BottomNavigationScreen
 
 @Composable
@@ -23,12 +24,14 @@ fun RootNavigationGraph() {
         composable(route = Graph.MAIN) {
             BottomNavigationScreen(navController)
         }
-        
         composable(DetailScreen.ADD_TRANSACTION) {
-            AddTransactionScreen(navController = navController)
+            AddTransactionScreenRoot(navController)
         }
         composable(DetailScreen.ADD_ACCOUNT) {
-            AddAccountScreen(navController = navController)
+            AddAccountScreenRoot(navController)
+        }
+        composable(DetailScreen.ADD_CATEGORY) {
+            AddCategoryScreenRoot(navController)
         }
     }
 }

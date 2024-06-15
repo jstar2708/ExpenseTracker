@@ -11,7 +11,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Accessible
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Wallet
@@ -48,7 +51,9 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -99,8 +104,7 @@ fun ExpenseTrackerAppBar(
 fun ExpenseTrackerSpinner(
     modifier: Modifier = Modifier,
     values: List<String>,
-    onValueChanged: () -> Unit,
-
+    onValueChanged: () -> Unit
     ) {
     var isExpanded by remember {
         mutableStateOf(false)
@@ -125,7 +129,8 @@ fun ExpenseTrackerSpinner(
                 .padding(8.dp),
             trailingIcon = {
                 Icon(imageVector = Icons.Filled.ArrowDropDown, contentDescription = "Down arrow")
-            })
+            }
+        )
 
         ExposedDropdownMenu(expanded = isExpanded, onDismissRequest = { isExpanded = false }) {
             values.forEach {
@@ -396,8 +401,52 @@ private fun TextFieldWithIconPreview() {
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun TextFieldWithDropDown(
+    modifier: Modifier = Modifier,
+    values: List<String>,
+    label: String,
+    icon: ImageVector,
+    iconColor: Color,
+    borderColor: Color,
+    text: MutableState<TextFieldValue> = remember {
+        mutableStateOf(TextFieldValue(""))
+    }
+    ) {
+    var isExpanded by remember {
+        mutableStateOf(false)
+    }
+
+    ExposedDropdownMenuBox(modifier = modifier,
+        expanded = isExpanded,
+        onExpandedChange = { isExpanded = it }) {
+        TextFieldWithIcon(
+            modifier = Modifier.menuAnchor(),
+            label = label,
+            icon = icon,
+            iconColor = iconColor,
+            borderColor = borderColor,
+            isReadOnly = true,
+            text = text
+        )
+
+        ExposedDropdownMenu(expanded = isExpanded, onDismissRequest = { isExpanded = false }) {
+            values.forEach {
+                DropdownMenuItem(text = {
+                    SimpleText(text = it)
+                }, onClick = {
+                    text.value = TextFieldValue(it)
+                    isExpanded = false
+                })
+            }
+        }
+    }
+}
+
 @Composable
 fun TextFieldWithIcon(
+    modifier: Modifier = Modifier,
     label: String,
     icon: ImageVector,
     iconColor: Color,
@@ -407,7 +456,9 @@ fun TextFieldWithIcon(
     },
     isError: MutableState<Boolean> = remember {
         mutableStateOf(false)
-    }
+    },
+    isReadOnly: Boolean = false,
+    keyBoardOptions: KeyboardOptions = KeyboardOptions()
 ) {
 
     val isFocused = remember {
@@ -415,12 +466,13 @@ fun TextFieldWithIcon(
     }
 
     TextField(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .onFocusChanged {
                 isFocused.value = it.hasFocus
             },
         value = text.value,
+        readOnly = isReadOnly,
         onValueChange = {
             text.value = it
         },
@@ -445,7 +497,8 @@ fun TextFieldWithIcon(
             unfocusedContainerColor = Color.White,
             errorContainerColor = Color.White
         ),
-        isError = isError.value
+        isError = isError.value,
+        keyboardOptions = keyBoardOptions
     )
 }
 
