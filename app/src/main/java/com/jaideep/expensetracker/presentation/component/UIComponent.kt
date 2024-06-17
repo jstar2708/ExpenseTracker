@@ -620,6 +620,89 @@ fun TextFieldWithIcon(
     }
 }
 
+@Composable
+fun TextFieldWithIcon(
+    modifier: Modifier = Modifier,
+    label: String,
+    icon: ImageVector,
+    iconColor: Color,
+    borderColor: Color,
+    text: MutableState<TextFieldValue> = remember {
+        mutableStateOf(TextFieldValue(""))
+    },
+    isError: MutableState<Boolean> = remember {
+        mutableStateOf(false)
+    },
+    isReadOnly: Boolean = false,
+    keyBoardOptions: KeyboardOptions = KeyboardOptions(),
+    errorMessage: String
+) {
+
+    val isFocused = remember {
+        mutableStateOf(false)
+    }
+
+    val showErrorText = remember {
+        mutableStateOf(false)
+    }
+
+    Column(
+        horizontalAlignment = Alignment.End
+    ) {
+        TextField(modifier = modifier
+            .fillMaxWidth()
+            .onFocusChanged {
+                isFocused.value = it.hasFocus
+            }, value = text.value, readOnly = isReadOnly, onValueChange = {
+            text.value = it
+        }, label = {
+            SimpleSmallText(
+                text = label,
+                color = if (isError.value) Color.Red else if (isFocused.value) MaterialTheme.colorScheme.secondary else Color.Gray,
+                modifier = Modifier.background(MaterialTheme.colorScheme.surface)
+            )
+        }, leadingIcon = {
+            Icon(
+                imageVector = icon, contentDescription = "Icon", tint = if (isError.value) Color.Red else iconColor
+            )
+        }, colors = OutlinedTextFieldDefaults.colors(
+            focusedBorderColor = borderColor,
+            unfocusedBorderColor = borderColor,
+            errorBorderColor = Color.Red,
+            focusedContainerColor = Color.White,
+            unfocusedContainerColor = Color.White,
+            errorContainerColor = Color.White
+        ), isError = isError.value, keyboardOptions = keyBoardOptions, trailingIcon = {
+            if (isError.value) {
+                Column {
+                    Icon(imageVector = Icons.Filled.ErrorOutline,
+                        contentDescription = "Error icon",
+                        tint = Color.Red,
+                        modifier = Modifier.clickable {
+                            if (isError.value) {
+                                showErrorText.value = !showErrorText.value
+                            }
+                        })
+                }
+            }
+        })
+        AnimatedVisibility(
+            visible = showErrorText.value,
+            enter = fadeIn(),
+            exit = fadeOut()
+        ) {
+            Column {
+                Spacer(modifier = Modifier.height(8.dp))
+                SimpleSmallText(
+                    Modifier
+                        .background(color = Color.White, RoundedCornerShape(8.dp))
+                        .padding(8.dp), text = errorMessage, color = Color.Red
+                )
+            }
+        }
+    }
+}
+
 @Preview(showSystemUi = true)
 @Composable
 private fun HeadingTextBoldPreview() {

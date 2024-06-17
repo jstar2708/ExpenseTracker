@@ -34,12 +34,20 @@ class AddAccountViewModel @Inject constructor(
         private set
     var isBalanceIncorrect = mutableStateOf(false)
         private set
+    var isAccountNameIncorrect = mutableStateOf(false)
+        private set
+    var exitScreen = mutableStateOf(false)
+        private set
+    var isAccountSaved = mutableStateOf(false)
 
     fun saveAccount(
         accountName: String,
         balance: String
         ) = viewModelScope.launch {
             try {
+                if (accountName.isBlank()) {
+                    isAccountNameIncorrect.value = true
+                }
                 accountRepository.saveAccount(
                     Account(
                         0,
@@ -49,6 +57,8 @@ class AddAccountViewModel @Inject constructor(
                     )
                 )
                 isBalanceIncorrect.value = false
+                isAccountSaved.value = true
+                exitScreen.value = true
             }
             catch (ne : NumberFormatException) {
                 isBalanceIncorrect.value = true

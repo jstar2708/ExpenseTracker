@@ -24,7 +24,6 @@ class AddCategoryViewModel @Inject constructor(
         private set
     var isCategorySaved = mutableStateOf(false)
         private set
-
     var exitScreen = mutableStateOf(false)
         private set
 

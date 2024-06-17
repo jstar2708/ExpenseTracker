@@ -3,6 +3,7 @@ package com.jaideep.expensetracker.presentation.screens.bottom.home
 
 import android.app.Application
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -22,9 +23,14 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -55,11 +61,28 @@ private fun HomeScreenPreview() {
 }
 
 @Composable
-fun HomeScreen(navController: NavController) {
+fun HomeScreen(navControllerRoot: NavController) {
+    val savedStateHandle = navControllerRoot.currentBackStackEntry?.savedStateHandle
+    val resultAccount = savedStateHandle?.get<Boolean>("isAccountSaved")
+    val snackBarHostState = remember {
+        SnackbarHostState()
+    }
     Surface(
         modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background
     ) {
-        Scaffold(modifier = Modifier.fillMaxSize(), topBar = {
+        Scaffold(
+            modifier = Modifier.fillMaxSize(),
+            snackbarHost = {
+                           SnackbarHost(
+                               hostState = snackBarHostState
+                           ) {
+                               Snackbar(
+                                   snackbarData = it,
+                                   containerColor = Color.DarkGray
+                               )
+                           }
+            },
+            topBar = {
             ExpenseTrackerAppBar(title = "Hello Jaideep",
                 navigationIcon = Icons.Outlined.AccountCircle,
                 navigationDescription = "User icon",
@@ -80,12 +103,12 @@ fun HomeScreen(navController: NavController) {
 
                     ExpenseTrackerBlueButton(
                         name = "Add\nAccount",
-                        onClick = { navController.navigate(DetailScreen.ADD_ACCOUNT) },
+                        onClick = { navControllerRoot.navigate(DetailScreen.ADD_ACCOUNT) },
                         modifier = Modifier.weight(1f)
                     )
                     ExpenseTrackerBlueButton(
                         name = "Add\nTransaction",
-                        onClick = { navController.navigate(DetailScreen.ADD_TRANSACTION) },
+                        onClick = { navControllerRoot.navigate(DetailScreen.ADD_TRANSACTION) },
                         modifier = Modifier.weight(1f)
                     )
                 }
@@ -98,6 +121,13 @@ fun HomeScreen(navController: NavController) {
 
                 TransactionSummary()
             }
+        }
+    }
+
+    LaunchedEffect(key1 = resultAccount) {
+        if (resultAccount != null) {
+            if (resultAccount) snackBarHostState.showSnackbar("Account saved successfully")
+                else snackBarHostState.showSnackbar("Error while saving account")
         }
     }
 }

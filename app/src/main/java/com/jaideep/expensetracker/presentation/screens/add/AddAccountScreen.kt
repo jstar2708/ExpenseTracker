@@ -19,6 +19,7 @@ import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -56,6 +57,12 @@ private fun AddAccountScreenPreview() {
             isBalanceIncorrect = remember {
                 mutableStateOf(false)
             },
+            isAccountNameIncorrect = remember {
+                mutableStateOf(false)
+            },
+            exitScreen = remember {
+                mutableStateOf(false)
+            },
             saveAccount = { _, _ ->  }
         ) {
 
@@ -73,8 +80,12 @@ fun AddAccountScreenRoot(navController: NavHostController,
         addAccountViewModel.accountName,
         addAccountViewModel.initialBalance,
         addAccountViewModel.isBalanceIncorrect,
+        addAccountViewModel.isAccountNameIncorrect,
+        addAccountViewModel.exitScreen,
         addAccountViewModel::saveAccount
     ) {
+        val savedStateHandle = navController.previousBackStackEntry?.savedStateHandle
+        savedStateHandle?.set("isAccountSaved", addAccountViewModel.isAccountSaved.value)
         navController.popBackStack()
     }
 }
@@ -86,12 +97,18 @@ fun AddAccountScreen(
     accountName: MutableState<TextFieldValue>,
     initialBalance: MutableState<TextFieldValue>,
     isBalanceIncorrect: MutableState<Boolean>,
+    isAccountNameIncorrect: MutableState<Boolean>,
+    exitScreen: MutableState<Boolean>,
     saveAccount: (accountName: String, balance: String) -> Unit,
     backPress: () -> Unit
 ) {
+    LaunchedEffect(key1 = exitScreen.value) {
+        if (exitScreen.value) {
+            backPress()
+        }
+    }
     Surface {
         Column(
-
             Modifier.fillMaxSize(), verticalArrangement = Arrangement.Bottom
         ) {
             Image(
@@ -131,7 +148,9 @@ fun AddAccountScreen(
                         icon = Icons.Filled.AccountBalanceWallet,
                         iconColor = MaterialTheme.colorScheme.onSecondaryContainer,
                         borderColor = Color.Black,
-                        text = accountName
+                        text = accountName,
+                        isError = isAccountNameIncorrect,
+                        errorMessage = "Name cannot be empty"
                     )
                     Spacer(modifier = Modifier.height(10.dp))
 
@@ -142,7 +161,8 @@ fun AddAccountScreen(
                         borderColor = Color.Black,
                         text = initialBalance,
                         isError = isBalanceIncorrect,
-                        keyBoardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
+                        keyBoardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+                        errorMessage = "Enter a valid amount"
                     )
                     Spacer(modifier = Modifier.height(10.dp))
                     Button(modifier = Modifier

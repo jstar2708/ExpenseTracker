@@ -8,6 +8,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
@@ -38,7 +39,12 @@ fun CategoryScreen(navControllerRoot: NavController) {
         SnackbarHostState()
     }
     Scaffold(modifier = Modifier.fillMaxSize(), snackbarHost = {
-        SnackbarHost(hostState = snackBarHostState)
+        SnackbarHost(hostState = snackBarHostState) {
+            Snackbar(
+                snackbarData = it,
+                containerColor = Color.DarkGray
+            )
+        }
     }, topBar = {
         ExpenseTrackerAppBar(
             title = "Categories",
