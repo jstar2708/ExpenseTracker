@@ -48,6 +48,7 @@ class AddAccountViewModel @Inject constructor(
                         System.currentTimeMillis()
                     )
                 )
+                isBalanceIncorrect.value = false
             }
             catch (ne : NumberFormatException) {
                 isBalanceIncorrect.value = true

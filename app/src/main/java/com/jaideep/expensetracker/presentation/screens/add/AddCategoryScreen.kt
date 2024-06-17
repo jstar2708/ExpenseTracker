@@ -1,6 +1,5 @@
 package com.jaideep.expensetracker.presentation.screens.add
 
-import android.app.Application
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -18,6 +17,7 @@ import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -38,7 +38,6 @@ import com.jaideep.expensetracker.presentation.component.TextFieldWithIcon
 import com.jaideep.expensetracker.presentation.theme.AppTheme
 import com.jaideep.expensetracker.presentation.viewmodel.AddCategoryViewModel
 
-
 @Preview
 @Composable
 private fun AddCategoryScreenPreview() {
@@ -47,7 +46,16 @@ private fun AddCategoryScreenPreview() {
             categoryName = remember {
                 mutableStateOf(TextFieldValue(""))
             },
-            { _ -> },
+            isError = remember {
+                mutableStateOf(false)
+            },
+            errorMessage = remember {
+                mutableStateOf("")
+            },
+            exitScreen = remember {
+                mutableStateOf(false)
+            },
+            saveCategory = { _ -> },
         ){
 
         }
@@ -60,8 +68,13 @@ fun AddCategoryScreenRoot(navControllerRoot: NavHostController) {
     AppTheme {
         AddCategoryScreen(
             categoryName = addCategoryViewModel.categoryName,
-            saveCategory = addCategoryViewModel::saveCategory
+            isError = addCategoryViewModel.isCategoryNameIncorrect,
+            errorMessage = addCategoryViewModel.errorMessage,
+            saveCategory = addCategoryViewModel::saveCategory,
+            exitScreen = addCategoryViewModel.exitScreen,
         ) {
+            val savedStateHandle = navControllerRoot.previousBackStackEntry?.savedStateHandle
+            savedStateHandle?.set("isCategorySaved", addCategoryViewModel.isCategorySaved.value)
             navControllerRoot.popBackStack()
         }
     }
@@ -70,9 +83,19 @@ fun AddCategoryScreenRoot(navControllerRoot: NavHostController) {
 @Composable
 fun AddCategoryScreen(
     categoryName: MutableState<TextFieldValue>,
+    isError: MutableState<Boolean>,
+    errorMessage: MutableState<String>,
     saveCategory: (categoryName: String) -> Unit,
+    exitScreen: MutableState<Boolean>,
     backPress: () -> Unit
 ) {
+
+    LaunchedEffect(key1 = exitScreen.value) {
+        if (exitScreen.value) {
+            backPress()
+        }
+    }
+
     Surface {
         Column(
             Modifier.fillMaxSize(), verticalArrangement = Arrangement.Bottom
@@ -113,7 +136,9 @@ fun AddCategoryScreen(
                         icon = Icons.Filled.AccountBalanceWallet,
                         iconColor = MaterialTheme.colorScheme.onSecondaryContainer,
                         borderColor = Color.Black,
-                        text = categoryName
+                        text = categoryName,
+                        isError = isError,
+                        errorMessage = errorMessage
                     )
 
                     Spacer(modifier = Modifier.height(10.dp))
@@ -124,9 +149,6 @@ fun AddCategoryScreen(
                         colors = ButtonColors(Color.White, Color.Blue, Color.White, Color.White),
                         onClick = {
                             saveCategory(categoryName.value.text)
-                                .apply {
-                                    backPress()
-                                }
                         }) {
                         SimpleTextBold(
                             text = "Save", color = Color.Blue

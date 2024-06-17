@@ -7,9 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.jaideep.expensetracker.data.local.entities.Category
 import com.jaideep.expensetracker.domain.repository.CategoryRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -18,21 +16,40 @@ class AddCategoryViewModel @Inject constructor(
     private val categoryRepository: CategoryRepository
 ): ViewModel() {
 
+    var errorMessage = mutableStateOf("")
+        private set
     var categoryName = mutableStateOf(TextFieldValue(""))
         private set
+    var isCategoryNameIncorrect = mutableStateOf(false)
+        private set
+    var isCategorySaved = mutableStateOf(false)
+        private set
+
+    var exitScreen = mutableStateOf(false)
+        private set
+
 
     fun saveCategory(categoryName: String) = viewModelScope.launch {
         try {
-            categoryRepository.saveCategory(
-                Category(
-                    0,
-                    categoryName,
-                    iconName = "category_icon"
+            if (categoryName.isBlank()) {
+                isCategoryNameIncorrect.value = true
+                errorMessage.value = "Category name cannot be blank"
+            }
+            else {
+                categoryRepository.saveCategory(
+                    Category(
+                        0,
+                        categoryName,
+                        iconName = "category_icon"
+                    )
                 )
-            )
+                isCategoryNameIncorrect.value = false
+                isCategorySaved.value = true
+                exitScreen.value = true
+            }
         }
         catch (ex: Exception) {
-            TODO("Handle errors")
+            isCategorySaved.value = false
         }
     }
 }

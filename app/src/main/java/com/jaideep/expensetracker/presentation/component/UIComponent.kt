@@ -1,12 +1,19 @@
 package com.jaideep.expensetracker.presentation.component
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -17,6 +24,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.ErrorOutline
 import androidx.compose.material.icons.filled.Wallet
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
@@ -34,6 +42,8 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.RadioButtonColors
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
@@ -41,6 +51,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -52,6 +63,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -60,11 +72,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.jaideep.expensetracker.R
+import com.jaideep.expensetracker.common.AppComponents.convertMilliSecondsToDate
 import com.jaideep.expensetracker.presentation.theme.OpenSansFont
 import com.jaideep.expensetracker.presentation.theme.md_theme_light_primary
 import com.jaideep.expensetracker.presentation.theme.md_theme_light_surface
-import com.jaideep.expensetracker.R
-import com.jaideep.expensetracker.common.AppComponents.convertMilliSecondsToDate
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -77,7 +90,7 @@ fun ExpenseTrackerAppBar(
     actionIcon: ImageVector,
     actionDescription: String,
     onActionIconClick: () -> Unit,
-    ) {
+) {
     TopAppBar(title = {
         SimpleTextBold(
             modifier = Modifier.padding(start = 4.dp, end = 4.dp), text = title
@@ -104,10 +117,8 @@ fun ExpenseTrackerAppBar(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ExpenseTrackerSpinner(
-    modifier: Modifier = Modifier,
-    values: List<String>,
-    onValueChanged: () -> Unit
-    ) {
+    modifier: Modifier = Modifier, values: List<String>, onValueChanged: () -> Unit
+) {
     var isExpanded by remember {
         mutableStateOf(false)
     }
@@ -131,8 +142,7 @@ fun ExpenseTrackerSpinner(
                 .padding(8.dp),
             trailingIcon = {
                 Icon(imageVector = Icons.Filled.ArrowDropDown, contentDescription = "Down arrow")
-            }
-        )
+            })
 
         ExposedDropdownMenu(expanded = isExpanded, onDismissRequest = { isExpanded = false }) {
             values.forEach {
@@ -252,6 +262,7 @@ private fun ExpenseTrackerTransactionCardItemPreview() {
         amount = "$49"
     )
 }
+
 @Composable
 fun ExpenseTrackerTransactionCardItem(
     iconId: Int,
@@ -268,8 +279,7 @@ fun ExpenseTrackerTransactionCardItem(
         Row(
             Modifier
                 .fillMaxWidth()
-                .padding(4.dp),
-            verticalAlignment = Alignment.CenterVertically
+                .padding(4.dp), verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
                 painter = painterResource(id = iconId),
@@ -283,15 +293,13 @@ fun ExpenseTrackerTransactionCardItem(
             Column(Modifier.weight(1f)) {
                 SimpleTextBold(
                     text = categoryName,
-                    modifier = Modifier
-                        .padding(4.dp),
+                    modifier = Modifier.padding(4.dp),
                     overflow = TextOverflow.Ellipsis
                 )
 
                 SimpleText(
                     text = transactionDescription,
-                    modifier = Modifier
-                        .padding(4.dp),
+                    modifier = Modifier.padding(4.dp),
                     overflow = TextOverflow.Ellipsis,
                     color = Color.DarkGray
                 )
@@ -299,8 +307,7 @@ fun ExpenseTrackerTransactionCardItem(
 
             SimpleTextBold(
                 text = amount,
-                modifier = Modifier
-                    .padding(4.dp),
+                modifier = Modifier.padding(4.dp),
                 overflow = TextOverflow.Ellipsis,
                 color = Color.Red
             )
@@ -310,9 +317,7 @@ fun ExpenseTrackerTransactionCardItem(
 
 @Composable
 fun ExpenseTrackerTabLayout(
-    modifier: Modifier = Modifier,
-    values: Array<String>,
-    onClick: () -> Unit
+    modifier: Modifier = Modifier, values: Array<String>, onClick: () -> Unit
 ) {
     var selectedTab by remember {
         mutableIntStateOf(0)
@@ -332,7 +337,9 @@ fun ExpenseTrackerTabLayout(
                 modifier = if (index == selectedTab) Modifier
                     .clip(RoundedCornerShape(10.dp))
                     .background(md_theme_light_primary)
-                    .wrapContentWidth() else Modifier.clip(RoundedCornerShape(10.dp)),
+                    .wrapContentWidth() else Modifier.clip(
+                    RoundedCornerShape(10.dp)
+                ),
                 onClick = {
                     selectedTab = index
                     onClick()
@@ -341,9 +348,7 @@ fun ExpenseTrackerTabLayout(
                 unselectedContentColor = Color.Black
             ) {
                 SimpleText(
-                    text = title,
-                    modifier = Modifier.padding(8.dp),
-                    color = Color.Unspecified
+                    text = title, modifier = Modifier.padding(8.dp), color = Color.Unspecified
                 )
             }
         }
@@ -373,20 +378,16 @@ fun RadioButtonWithText(
     textColor: Color,
     onClick: () -> Unit
 ) {
-    Row (
+    Row(
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically,
     ) {
         RadioButton(
-            selected = isSelected,
-            onClick = {
+            selected = isSelected, onClick = {
                 onClick()
-            },
-            colors = RadioButtonColors(
-                selectedColor,
-                unselectedColor,
-                Color.Unspecified,
-                Color.Unspecified)
+            }, colors = RadioButtonColors(
+                selectedColor, unselectedColor, Color.Unspecified, Color.Unspecified
+            )
         )
         SimpleText(text = text, color = textColor)
     }
@@ -415,7 +416,7 @@ fun TextFieldWithDropDown(
     text: MutableState<TextFieldValue> = remember {
         mutableStateOf(TextFieldValue(""))
     }
-    ) {
+) {
     var isExpanded by remember {
         mutableStateOf(false)
     }
@@ -472,28 +473,22 @@ fun TextFieldDatePicker(
     val dateState = rememberDatePickerState()
 
     if (showDatePicker.value) {
-        DatePickerDialog(
-            onDismissRequest = { showDatePicker.value = false },
-            confirmButton = {
-                Button(
-                    onClick = {
-                        text.value = TextFieldValue(dateState.selectedDateMillis?.convertMilliSecondsToDate() ?: "")
-                        showDatePicker.value = false
-                    }
-                ) {
-                    Text(text = "Ok")
-                }
-            },
-            dismissButton = {
-                Button(
-                    onClick = {
-                        showDatePicker.value = false
-                    }
-                ) {
-                    Text(text = "Cancel")
-                }
+        DatePickerDialog(onDismissRequest = { showDatePicker.value = false }, confirmButton = {
+            Button(onClick = {
+                text.value = TextFieldValue(
+                    dateState.selectedDateMillis?.convertMilliSecondsToDate() ?: ""
+                )
+                showDatePicker.value = false
+            }) {
+                Text(text = "Ok")
             }
-        ) {
+        }, dismissButton = {
+            Button(onClick = {
+                showDatePicker.value = false
+            }) {
+                Text(text = "Cancel")
+            }
+        }) {
             DatePicker(state = dateState)
         }
     }
@@ -522,9 +517,7 @@ fun TextFieldDatePicker(
         },
         leadingIcon = {
             Icon(
-                imageVector = icon,
-                contentDescription = "Icon",
-                tint = iconColor
+                imageVector = icon, contentDescription = "Icon", tint = iconColor
             )
         },
         colors = OutlinedTextFieldDefaults.colors(
@@ -556,49 +549,75 @@ fun TextFieldWithIcon(
         mutableStateOf(false)
     },
     isReadOnly: Boolean = false,
-    keyBoardOptions: KeyboardOptions = KeyboardOptions()
+    keyBoardOptions: KeyboardOptions = KeyboardOptions(),
+    errorMessage: MutableState<String> = remember {
+        mutableStateOf("Error!")
+    }
 ) {
 
     val isFocused = remember {
         mutableStateOf(false)
     }
 
-    TextField(
-        modifier = modifier
+    val showErrorText = remember {
+        mutableStateOf(false)
+    }
+
+    Column(
+        horizontalAlignment = Alignment.End
+    ) {
+        TextField(modifier = modifier
             .fillMaxWidth()
             .onFocusChanged {
                 isFocused.value = it.hasFocus
-            },
-        value = text.value,
-        readOnly = isReadOnly,
-        onValueChange = {
+            }, value = text.value, readOnly = isReadOnly, onValueChange = {
             text.value = it
-        },
-        label = {
+        }, label = {
             SimpleSmallText(
                 text = label,
                 color = if (isError.value) Color.Red else if (isFocused.value) MaterialTheme.colorScheme.secondary else Color.Gray,
                 modifier = Modifier.background(MaterialTheme.colorScheme.surface)
             )
-        },
-        leadingIcon = {
+        }, leadingIcon = {
             Icon(
-                imageVector = icon,
-                contentDescription = "Icon",
-                tint = iconColor
+                imageVector = icon, contentDescription = "Icon", tint = if (isError.value) Color.Red else iconColor
             )
-        },
-        colors = OutlinedTextFieldDefaults.colors(
+        }, colors = OutlinedTextFieldDefaults.colors(
             focusedBorderColor = borderColor,
             unfocusedBorderColor = borderColor,
             errorBorderColor = Color.Red,
             focusedContainerColor = Color.White,
             unfocusedContainerColor = Color.White,
             errorContainerColor = Color.White
-        ),
-        isError = isError.value,
-        keyboardOptions = keyBoardOptions
-    )
+        ), isError = isError.value, keyboardOptions = keyBoardOptions, trailingIcon = {
+            if (isError.value) {
+                Column {
+                    Icon(imageVector = Icons.Filled.ErrorOutline,
+                        contentDescription = "Error icon",
+                        tint = Color.Red,
+                        modifier = Modifier.clickable {
+                            if (isError.value) {
+                                showErrorText.value = !showErrorText.value
+                            }
+                        })
+                }
+            }
+        })
+        AnimatedVisibility(
+            visible = showErrorText.value,
+            enter = fadeIn(),
+            exit = fadeOut()
+        ) {
+            Column {
+                Spacer(modifier = Modifier.height(8.dp))
+                SimpleSmallText(
+                    Modifier
+                        .background(color = Color.White, RoundedCornerShape(8.dp))
+                        .padding(8.dp), text = errorMessage.value, color = Color.Red
+                )
+            }
+        }
+    }
 }
 
 @Preview(showSystemUi = true)
@@ -606,6 +625,7 @@ fun TextFieldWithIcon(
 private fun HeadingTextBoldPreview() {
     HeadingTextBold(text = "Add Account")
 }
+
 @Composable
 fun HeadingTextBold(
     modifier: Modifier = Modifier,
@@ -629,6 +649,7 @@ fun HeadingTextBold(
 private fun HeadingTextPreview() {
     HeadingText(text = "Cash Account")
 }
+
 @Composable
 fun HeadingText(text: String, color: Color = Color.Black) {
     Text(
@@ -644,6 +665,7 @@ fun HeadingText(text: String, color: Color = Color.Black) {
 private fun SimpleTextBoldPreview() {
     SimpleTextBold(text = "This is a line.")
 }
+
 @Composable
 fun SimpleTextBold(
     modifier: Modifier = Modifier,
@@ -657,7 +679,8 @@ fun SimpleTextBold(
         style = MaterialTheme.typography.bodyLarge,
         fontWeight = FontWeight.Bold,
         fontFamily = OpenSansFont.openSans,
-        color = color
+        color = color,
+        overflow = overflow
     )
 }
 
@@ -666,6 +689,7 @@ fun SimpleTextBold(
 private fun SimpleTextPreview() {
     SimpleText(text = "This is a line.", modifier = Modifier.padding(0.dp))
 }
+
 @Composable
 fun SimpleText(
     modifier: Modifier = Modifier,

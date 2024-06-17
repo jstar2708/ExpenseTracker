@@ -16,10 +16,10 @@ import com.jaideep.expensetracker.presentation.screens.bottom.transaction.Transa
 
 @Composable
 fun BottomNavigationGraph(
-    navController: NavHostController, navHostControllerRoot: NavHostController, value: PaddingValues
+    bottomNavController: NavHostController, navHostControllerRoot: NavHostController, value: PaddingValues
 ) {
     NavHost(
-        navController = navController,
+        navController = bottomNavController,
         startDestination = MainScreen.HOME,
         modifier = Modifier.padding(value),
         route = Graph.MAIN
@@ -34,7 +34,7 @@ fun BottomNavigationGraph(
             CategoryScreen(navHostControllerRoot)
         }
         composable(MainScreen.SETTINGS) {
-            SettingsScreen(navController)
+            SettingsScreen(bottomNavController)
         }
     }
 }

@@ -23,19 +23,19 @@ import com.jaideep.expensetracker.presentation.navigation.BottomNavigationGraph
 
 @Composable
 fun BottomNavigationScreen(navHostControllerRoot: NavHostController) {
-    val navController: NavHostController = rememberNavController()
+    val bottomNavController: NavHostController = rememberNavController()
     Scaffold(modifier = Modifier.fillMaxWidth(), bottomBar = {
-        BottomNavigation(navController)
+        BottomNavigation(bottomNavController)
     }) {
-        BottomNavigationGraph(navController, navHostControllerRoot, it)
+        BottomNavigationGraph(bottomNavController, navHostControllerRoot, it)
     }
 }
 
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
-fun BottomNavigation(navController: NavHostController) {
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
+fun BottomNavigation(bottomNavController: NavHostController) {
+    val navBackStackEntry by bottomNavController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
     val bottomBarDestination = AppComponents.list.any { it.route == currentDestination?.route }
     if (bottomBarDestination) {
@@ -50,8 +50,8 @@ fun BottomNavigation(navController: NavHostController) {
                 NavigationBarItem(selected = currentDestination?.hierarchy?.any { it.route == bottomNavigationItem.route } == true,
 
                     onClick = {
-                        navController.navigate(bottomNavigationItem.route) {
-                            popUpTo(navController.graph.startDestinationId)
+                        bottomNavController.navigate(bottomNavigationItem.route) {
+                            popUpTo(bottomNavController.graph.startDestinationId)
                             launchSingleTop = true
                         }
                     },

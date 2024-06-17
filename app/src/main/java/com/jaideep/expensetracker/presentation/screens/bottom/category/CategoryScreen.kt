@@ -8,7 +8,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
@@ -23,21 +27,28 @@ import com.jaideep.expensetracker.presentation.component.ExpenseTrackerSpinner
 @Preview
 @Composable
 private fun CategoryScreenPreview() {
-    CategoryScreen(navController = rememberNavController())
+    CategoryScreen(navControllerRoot = rememberNavController())
 }
 
 @Composable
-fun CategoryScreen(navController: NavController) {
-    Scaffold(modifier = Modifier.fillMaxSize(), topBar = {
+fun CategoryScreen(navControllerRoot: NavController) {
+    val savedStateHandle = navControllerRoot.currentBackStackEntry?.savedStateHandle
+    val result = savedStateHandle?.get<Boolean>("isCategorySaved")
+    val snackBarHostState = remember {
+        SnackbarHostState()
+    }
+    Scaffold(modifier = Modifier.fillMaxSize(), snackbarHost = {
+        SnackbarHost(hostState = snackBarHostState)
+    }, topBar = {
         ExpenseTrackerAppBar(
             title = "Categories",
             navigationIcon = Icons.AutoMirrored.Filled.ArrowBack,
             navigationDescription = "Back button",
-            onNavigationIconClick = { navController.popBackStack() },
+            onNavigationIconClick = { navControllerRoot.popBackStack() },
             actionIcon = Icons.Filled.Add,
             actionDescription = "Add Category icon"
         ) {
-            navController.navigate(DetailScreen.ADD_CATEGORY)
+            navControllerRoot.navigate(DetailScreen.ADD_CATEGORY)
         }
     }) {
         Column(Modifier.padding(it)) {
@@ -59,6 +70,13 @@ fun CategoryScreen(navController: NavController) {
                     trackColor = Color.Yellow
                 )
             }
+        }
+    }
+
+    LaunchedEffect(key1 = result) {
+        if (result != null) {
+            if (result) snackBarHostState.showSnackbar("Category saved successfully")
+            else snackBarHostState.showSnackbar("Error while saving category")
         }
     }
 }

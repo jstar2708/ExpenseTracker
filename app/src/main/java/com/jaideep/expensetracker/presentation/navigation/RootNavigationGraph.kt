@@ -13,25 +13,25 @@ import com.jaideep.expensetracker.presentation.screens.bottom.BottomNavigationSc
 
 @Composable
 fun RootNavigationGraph() {
-    val navController = rememberNavController()
+    val navHostControllerRoot = rememberNavController()
     NavHost(
-        navController = navController,
+        navController = navHostControllerRoot,
         startDestination = Graph.MAIN,
         route = Graph.ROOT
     ) {
-        authNavGraph(navController = navController)
+        authNavGraph(navController = navHostControllerRoot)
         
         composable(route = Graph.MAIN) {
-            BottomNavigationScreen(navController)
+            BottomNavigationScreen(navHostControllerRoot)
         }
         composable(DetailScreen.ADD_TRANSACTION) {
-            AddTransactionScreenRoot(navController)
+            AddTransactionScreenRoot(navHostControllerRoot)
         }
         composable(DetailScreen.ADD_ACCOUNT) {
-            AddAccountScreenRoot(navController)
+            AddAccountScreenRoot(navHostControllerRoot)
         }
         composable(DetailScreen.ADD_CATEGORY) {
-            AddCategoryScreenRoot(navController)
+            AddCategoryScreenRoot(navHostControllerRoot)
         }
     }
 }
