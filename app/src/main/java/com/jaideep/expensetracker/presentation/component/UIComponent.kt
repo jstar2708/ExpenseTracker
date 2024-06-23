@@ -415,15 +415,24 @@ fun TextFieldWithDropDown(
     borderColor: Color,
     text: MutableState<TextFieldValue> = remember {
         mutableStateOf(TextFieldValue(""))
-    }
+    },
+    isError: MutableState<Boolean> = remember {
+        mutableStateOf(false)
+    },
+    errorMessage: String
 ) {
     var isExpanded by remember {
         mutableStateOf(false)
     }
 
+    val showErrorText = remember {
+        mutableStateOf(false)
+    }
+
     ExposedDropdownMenuBox(modifier = modifier,
-        expanded = isExpanded,
-        onExpandedChange = { isExpanded = it }) {
+        expanded = isExpanded && !showErrorText.value,
+        onExpandedChange = { if (!showErrorText.value) isExpanded = it}) {
+
         TextFieldWithIcon(
             modifier = Modifier.menuAnchor(),
             label = label,
@@ -431,10 +440,13 @@ fun TextFieldWithDropDown(
             iconColor = iconColor,
             borderColor = borderColor,
             isReadOnly = true,
-            text = text
+            text = text,
+            isError = isError,
+            errorMessage = errorMessage,
+            showErrorText = showErrorText
         )
 
-        ExposedDropdownMenu(expanded = isExpanded, onDismissRequest = { isExpanded = false }) {
+        ExposedDropdownMenu(expanded = isExpanded && !showErrorText.value, onDismissRequest = { isExpanded = false }) {
             values.forEach {
                 DropdownMenuItem(text = {
                     SimpleText(text = it)
@@ -460,13 +472,17 @@ fun TextFieldDatePicker(
     },
     isError: MutableState<Boolean> = remember {
         mutableStateOf(false)
-    }
+    },
+    errorMessage: String
 ) {
 
     val isFocused = remember {
         mutableStateOf(false)
     }
     val showDatePicker = remember {
+        mutableStateOf(false)
+    }
+    val showErrorText = remember {
         mutableStateOf(false)
     }
 
@@ -494,45 +510,80 @@ fun TextFieldDatePicker(
     }
 
 
-    TextField(
-        modifier = modifier
-            .focusable()
-            .fillMaxWidth()
-            .onFocusChanged {
-                isFocused.value = it.hasFocus
-            }
-            .clickable {
-                showDatePicker.value = true
+    Column(
+        horizontalAlignment = Alignment.End
+    ) {
+        TextField(
+            modifier = modifier
+                .focusable()
+                .fillMaxWidth()
+                .onFocusChanged {
+                    isFocused.value = it.hasFocus
+                }
+                .clickable {
+                    showDatePicker.value = true
+                },
+            value = text.value,
+            onValueChange = { text.value = it },
+            readOnly = true,
+            enabled = false,
+            label = {
+                SimpleSmallText(
+                    text = label,
+                    color = if (isError.value) Color.Red else if (isFocused.value) MaterialTheme.colorScheme.secondary else Color.Gray,
+                    modifier = Modifier.background(MaterialTheme.colorScheme.surface)
+                )
             },
-        value = text.value,
-        onValueChange = { text.value = it },
-        readOnly = true,
-        enabled = false,
-        label = {
-            SimpleSmallText(
-                text = label,
-                color = if (isError.value) Color.Red else if (isFocused.value) MaterialTheme.colorScheme.secondary else Color.Gray,
-                modifier = Modifier.background(MaterialTheme.colorScheme.surface)
-            )
-        },
-        leadingIcon = {
-            Icon(
-                imageVector = icon, contentDescription = "Icon", tint = iconColor
-            )
-        },
-        colors = OutlinedTextFieldDefaults.colors(
-            focusedBorderColor = borderColor,
-            unfocusedBorderColor = borderColor,
-            disabledBorderColor = borderColor,
-            errorBorderColor = Color.Red,
-            focusedContainerColor = Color.White,
-            unfocusedContainerColor = Color.White,
-            errorContainerColor = Color.White,
-            disabledContainerColor = Color.White,
-            disabledTextColor = Color.Black
-        ),
-        isError = isError.value,
-    )
+            leadingIcon = {
+                Icon(
+                    imageVector = icon, contentDescription = "Icon", tint = if (isError.value) Color.Red else iconColor
+                )
+            },
+            trailingIcon = {
+                if (isError.value) {
+                    Column {
+                        Icon(imageVector = Icons.Filled.ErrorOutline,
+                            contentDescription = "Error icon",
+                            tint = Color.Red,
+                            modifier = Modifier.clickable {
+                                if (isError.value) {
+                                    showErrorText.value = !showErrorText.value
+                                }
+                            })
+                    }
+                }
+            }
+            ,
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = borderColor,
+                unfocusedBorderColor = borderColor,
+                disabledBorderColor = borderColor,
+                errorBorderColor = Color.Red,
+                focusedContainerColor = Color.White,
+                unfocusedContainerColor = Color.White,
+                errorContainerColor = Color.White,
+                disabledContainerColor = Color.White,
+                disabledTextColor = Color.Black
+            ),
+            isError = isError.value,
+        )
+
+        AnimatedVisibility(
+            visible = showErrorText.value,
+            enter = fadeIn(),
+            exit = fadeOut()
+        ) {
+            Column(
+            ) {
+                Spacer(modifier = Modifier.height(8.dp))
+                SimpleSmallText(
+                    Modifier
+                        .background(color = Color.White, RoundedCornerShape(8.dp))
+                        .padding(8.dp), text = errorMessage, color = Color.Red
+                )
+            }
+        }
+    }
 }
 
 @Composable
@@ -643,6 +694,86 @@ fun TextFieldWithIcon(
     }
 
     val showErrorText = remember {
+        mutableStateOf(false)
+    }
+
+    Column(
+        horizontalAlignment = Alignment.End
+    ) {
+        TextField(modifier = modifier
+            .fillMaxWidth()
+            .onFocusChanged {
+                isFocused.value = it.hasFocus
+            }, value = text.value, readOnly = isReadOnly, onValueChange = {
+            text.value = it
+        }, label = {
+            SimpleSmallText(
+                text = label,
+                color = if (isError.value) Color.Red else if (isFocused.value) MaterialTheme.colorScheme.secondary else Color.Gray,
+                modifier = Modifier.background(MaterialTheme.colorScheme.surface)
+            )
+        }, leadingIcon = {
+            Icon(
+                imageVector = icon, contentDescription = "Icon", tint = if (isError.value) Color.Red else iconColor
+            )
+        }, colors = OutlinedTextFieldDefaults.colors(
+            focusedBorderColor = borderColor,
+            unfocusedBorderColor = borderColor,
+            errorBorderColor = Color.Red,
+            focusedContainerColor = Color.White,
+            unfocusedContainerColor = Color.White,
+            errorContainerColor = Color.White
+        ), isError = isError.value, keyboardOptions = keyBoardOptions, trailingIcon = {
+            if (isError.value) {
+                Column {
+                    Icon(imageVector = Icons.Filled.ErrorOutline,
+                        contentDescription = "Error icon",
+                        tint = Color.Red,
+                        modifier = Modifier.clickable {
+                            if (isError.value) {
+                                showErrorText.value = !showErrorText.value
+                            }
+                        })
+                }
+            }
+        })
+        AnimatedVisibility(
+            visible = showErrorText.value,
+            enter = fadeIn(),
+            exit = fadeOut()
+        ) {
+            Column {
+                Spacer(modifier = Modifier.height(8.dp))
+                SimpleSmallText(
+                    Modifier
+                        .background(color = Color.White, RoundedCornerShape(8.dp))
+                        .padding(8.dp), text = errorMessage, color = Color.Red
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun TextFieldWithIcon(
+    modifier: Modifier = Modifier,
+    label: String,
+    icon: ImageVector,
+    iconColor: Color,
+    borderColor: Color,
+    text: MutableState<TextFieldValue> = remember {
+        mutableStateOf(TextFieldValue(""))
+    },
+    isError: MutableState<Boolean> = remember {
+        mutableStateOf(false)
+    },
+    isReadOnly: Boolean = false,
+    keyBoardOptions: KeyboardOptions = KeyboardOptions(),
+    errorMessage: String,
+    showErrorText: MutableState<Boolean>
+) {
+
+    val isFocused = remember {
         mutableStateOf(false)
     }
 

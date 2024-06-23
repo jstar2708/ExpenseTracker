@@ -27,14 +27,15 @@ class AddCategoryViewModel @Inject constructor(
     var exitScreen = mutableStateOf(false)
         private set
 
-
     fun saveCategory(categoryName: String) = viewModelScope.launch {
         try {
             if (categoryName.isBlank()) {
                 isCategoryNameIncorrect.value = true
                 errorMessage.value = "Category name cannot be blank"
+                isCategorySaved.value = false
             }
             else {
+                isCategoryNameIncorrect.value = false
                 categoryRepository.saveCategory(
                     Category(
                         0,
@@ -42,7 +43,6 @@ class AddCategoryViewModel @Inject constructor(
                         iconName = "category_icon"
                     )
                 )
-                isCategoryNameIncorrect.value = false
                 isCategorySaved.value = true
                 exitScreen.value = true
             }

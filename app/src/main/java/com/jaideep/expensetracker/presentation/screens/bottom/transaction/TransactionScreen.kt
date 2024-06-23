@@ -18,7 +18,12 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -47,7 +52,21 @@ fun TransactionScreenPreview() {
 //@Preview(showSystemUi = true, showBackground = true)
 @Composable
 fun TransactionScreen(navController: NavController, viewModel: TransactionViewModel = hiltViewModel()) {
+    val savedStateHandle = navController.currentBackStackEntry?.savedStateHandle
+    val resultTransaction = savedStateHandle?.get<Boolean>("isTransactionSaved")
+
+    val snackBarHostState = remember {
+        SnackbarHostState()
+    }
     Scaffold(
+        snackbarHost = {
+                       SnackbarHost(hostState = snackBarHostState) {
+                           Snackbar(
+                               snackbarData = it,
+                               containerColor = Color.DarkGray
+                           )
+                       }
+        },
         topBar = {
             ExpenseTrackerAppBar(
                 title = "Transactions",
@@ -105,6 +124,13 @@ fun TransactionScreen(navController: NavController, viewModel: TransactionViewMo
                         amount = lazyTransactionItems[it]?.amount.toString()
                     )
                 }
+            }
+        }
+        LaunchedEffect(key1 = resultTransaction) {
+            if (resultTransaction != null) {
+                if (resultTransaction) snackBarHostState.showSnackbar("Transaction saved successfully")
+                else snackBarHostState.showSnackbar("Error while saving transaction")
+                savedStateHandle["isSavedTransaction"] = null
             }
         }
     }

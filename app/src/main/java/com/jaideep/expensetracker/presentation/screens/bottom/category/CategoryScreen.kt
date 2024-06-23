@@ -34,7 +34,9 @@ private fun CategoryScreenPreview() {
 @Composable
 fun CategoryScreen(navControllerRoot: NavController) {
     val savedStateHandle = navControllerRoot.currentBackStackEntry?.savedStateHandle
-    val result = savedStateHandle?.get<Boolean>("isCategorySaved")
+    val result =
+        savedStateHandle?.get<Boolean>("isCategorySaved")
+
     val snackBarHostState = remember {
         SnackbarHostState()
     }
@@ -81,8 +83,9 @@ fun CategoryScreen(navControllerRoot: NavController) {
 
     LaunchedEffect(key1 = result) {
         if (result != null) {
-            if (result) snackBarHostState.showSnackbar("Category saved successfully")
+            if (result == true) snackBarHostState.showSnackbar("Category saved successfully")
             else snackBarHostState.showSnackbar("Error while saving category")
+            savedStateHandle["isCategorySaved"] = null
         }
     }
 }

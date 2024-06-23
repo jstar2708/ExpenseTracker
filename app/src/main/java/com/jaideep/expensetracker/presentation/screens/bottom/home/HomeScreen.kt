@@ -63,7 +63,12 @@ private fun HomeScreenPreview() {
 @Composable
 fun HomeScreen(navControllerRoot: NavController) {
     val savedStateHandle = navControllerRoot.currentBackStackEntry?.savedStateHandle
-    val resultAccount = savedStateHandle?.get<Boolean>("isAccountSaved")
+    val resultAccount =
+        savedStateHandle?.get<Boolean>("isAccountSaved")
+
+    val resultTransaction =
+        savedStateHandle?.get<Boolean>("isTransactionSaved")
+
     val snackBarHostState = remember {
         SnackbarHostState()
     }
@@ -128,6 +133,15 @@ fun HomeScreen(navControllerRoot: NavController) {
         if (resultAccount != null) {
             if (resultAccount) snackBarHostState.showSnackbar("Account saved successfully")
                 else snackBarHostState.showSnackbar("Error while saving account")
+            savedStateHandle["isAccountSaved"] = null
+        }
+    }
+
+    LaunchedEffect(key1 = resultTransaction) {
+        if (resultTransaction != null) {
+            if (resultTransaction) snackBarHostState.showSnackbar("Transaction saved successfully")
+            else snackBarHostState.showSnackbar("Error while saving transaction")
+            savedStateHandle["isTransactionSaved"] = null
         }
     }
 }

@@ -45,7 +45,11 @@ class AddTransactionViewModel @Inject constructor(
         private set
     var accountName = mutableStateOf(TextFieldValue(""))
         private set
+    var isAccountNameIncorrect = mutableStateOf(false)
+        private set
     var categoryName = mutableStateOf(TextFieldValue(""))
+        private set
+    var isCategoryNameIncorrect = mutableStateOf(false)
         private set
     var amount = mutableStateOf(TextFieldValue(""))
         private set
@@ -62,6 +66,10 @@ class AddTransactionViewModel @Inject constructor(
     var isLoading = mutableStateOf(true)
         private set
     var errorMessage = mutableStateOf("")
+        private set
+    var exitScreen = mutableStateOf(false)
+        private set
+    var isTransactionSaved = mutableStateOf(false)
         private set
 
     init {
@@ -137,17 +145,21 @@ class AddTransactionViewModel @Inject constructor(
         note: String,
         isCredit: Boolean
     ) {
-        try {
-            val account = accounts.value.stream().filter {
-                    it.accountName == accountName
-                }.findAny()
-            val category = categories.value.stream().filter {
-                    it.categoryName == categoryName
-                }.findAny()
+        isAccountNameIncorrect.value = accountName.isBlank()
+        isCategoryNameIncorrect.value = categoryName.isBlank()
+        isDateIncorrect.value = date.isBlank()
+        isAmountIncorrect.value = amount.isBlank()
+        val account = accounts.value.stream().filter {
+            it.accountName == accountName
+        }.findAny()
+        val category = categories.value.stream().filter {
+            it.categoryName == categoryName
+        }.findAny()
 
-            account.ifPresent {
-                category.ifPresent {
-                    viewModelScope.launch {
+        account.ifPresent {
+            category.ifPresent {
+                viewModelScope.launch {
+                    try {
                         transactionRepository.saveTransaction(
                             Transaction(
                                 0,
@@ -155,17 +167,22 @@ class AddTransactionViewModel @Inject constructor(
                                 account.get().id,
                                 category.get().id,
                                 note,
-                                LocalDateTime.parse(date).toEpochSecond(ZoneOffset.UTC),
+                                LocalDateTime.parse(date.replace('.', '-') + "T00:00:00").toEpochSecond(ZoneOffset.UTC),
                                 if (isCredit) 1 else 0
                             )
                         )
+
+                        isTransactionSaved.value = true
+                        exitScreen.value = true
+                    } catch (ne: NumberFormatException) {
+                        isAmountIncorrect.value = true
+                        isTransactionSaved.value = false
+                    } catch (de: DateTimeParseException) {
+                        isDateIncorrect.value = true
+                        isTransactionSaved.value = false
                     }
                 }
             }
-        } catch (ne: NumberFormatException) {
-            isAmountIncorrect.value = true
-        } catch (de: DateTimeParseException) {
-            isDateIncorrect.value = true
         }
     }
 }
