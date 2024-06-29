@@ -9,14 +9,18 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.jaideep.expensetracker.common.Graph
 import com.jaideep.expensetracker.common.MainScreen
-import com.jaideep.expensetracker.presentation.screens.bottom.category.CategoryScreen
+import com.jaideep.expensetracker.presentation.screens.bottom.category.CategoryScreenRoot
 import com.jaideep.expensetracker.presentation.screens.bottom.home.HomeScreen
 import com.jaideep.expensetracker.presentation.screens.bottom.settings.SettingsScreen
 import com.jaideep.expensetracker.presentation.screens.bottom.transaction.TransactionScreen
+import com.jaideep.expensetracker.presentation.viewmodel.MainViewModel
 
 @Composable
 fun BottomNavigationGraph(
-    bottomNavController: NavHostController, navHostControllerRoot: NavHostController, value: PaddingValues
+    bottomNavController: NavHostController,
+    navHostControllerRoot: NavHostController,
+    value: PaddingValues,
+    mainViewModel: MainViewModel
 ) {
     NavHost(
         navController = bottomNavController,
@@ -28,10 +32,10 @@ fun BottomNavigationGraph(
             HomeScreen(navHostControllerRoot)
         }
         composable(MainScreen.TRANSACTIONS) {
-            TransactionScreen(navHostControllerRoot)
+            TransactionScreen(navHostControllerRoot, mainViewModel)
         }
         composable(MainScreen.CATEGORY) {
-            CategoryScreen(navHostControllerRoot)
+            CategoryScreenRoot(navHostControllerRoot, mainViewModel)
         }
         composable(MainScreen.SETTINGS) {
             SettingsScreen(bottomNavController)

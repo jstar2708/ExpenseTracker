@@ -18,21 +18,35 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.jaideep.expensetracker.R
 import com.jaideep.expensetracker.common.DetailScreen
 import com.jaideep.expensetracker.presentation.component.ExpenseTrackerAppBar
 import com.jaideep.expensetracker.presentation.component.ExpenseTrackerCategoryCard
 import com.jaideep.expensetracker.presentation.component.ExpenseTrackerSpinner
+import com.jaideep.expensetracker.presentation.viewmodel.MainViewModel
 
 @Preview
 @Composable
 private fun CategoryScreenPreview() {
-    CategoryScreen(navControllerRoot = rememberNavController())
+
 }
 
 @Composable
-fun CategoryScreen(navControllerRoot: NavController) {
+fun CategoryScreenRoot(
+    navHostControllerRoot: NavHostController,
+    mainViewModel: MainViewModel
+) {
+    CategoryScreen(
+        navControllerRoot = navHostControllerRoot
+    )
+}
+
+@Composable
+fun CategoryScreen(
+    navControllerRoot: NavController
+) {
     val savedStateHandle = navControllerRoot.currentBackStackEntry?.savedStateHandle
     val result =
         savedStateHandle?.get<Boolean>("isCategorySaved")
@@ -48,7 +62,7 @@ fun CategoryScreen(navControllerRoot: NavController) {
             )
         }
     }, topBar = {
-        ExpenseTrackerAppBar(
+        ExpenseTrackerAppBar (
             title = "Categories",
             navigationIcon = Icons.AutoMirrored.Filled.ArrowBack,
             navigationDescription = "Back button",
@@ -66,7 +80,7 @@ fun CategoryScreen(navControllerRoot: NavController) {
                     onValueChanged = { })
                 ExpenseTrackerSpinner(modifier = Modifier.weight(1f),
                     values = listOf("This Month", "This Year"),
-                    onValueChanged = { })
+                    onValueChanged = {  })
             }
             for (i in 0..2) {
                 ExpenseTrackerCategoryCard(

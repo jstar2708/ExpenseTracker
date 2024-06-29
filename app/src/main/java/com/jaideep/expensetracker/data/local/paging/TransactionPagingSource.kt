@@ -21,11 +21,11 @@ class TransactionPagingSource @Inject constructor(
         // Start paging with the first page if `params.key` is null
         val start = params.key ?: 0
         // Load the data from the database
-//        val data = dao.getAllTransactions(params.loadSize, start)
-        val data = mutableListOf<Transaction>()
-        for (i in start..start + params.loadSize) {
-            data.add(Transaction(i, i.toDouble()*10, 5, i, "Hello", i.toLong()*20, 0))
-        }
+        val data = dao.getAllTransactions(params.loadSize, start)
+//        val data = mutableListOf<Transaction>()
+//        for (i in start..start + params.loadSize) {
+//            data.add(Transaction(i, i.toDouble()*10, 5, i, "Hello", i.toLong()*20, 0))
+//        }
         // Return the data and the next key
         return LoadResult.Page(
             data = data,

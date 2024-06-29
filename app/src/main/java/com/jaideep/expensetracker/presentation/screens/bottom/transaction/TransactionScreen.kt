@@ -40,6 +40,7 @@ import com.jaideep.expensetracker.presentation.component.ExpenseTrackerTransacti
 import com.jaideep.expensetracker.presentation.theme.AppTheme
 import com.jaideep.expensetracker.R
 import com.jaideep.expensetracker.common.DetailScreen
+import com.jaideep.expensetracker.presentation.viewmodel.MainViewModel
 import com.jaideep.expensetracker.presentation.viewmodel.TransactionViewModel
 
 @Preview(showSystemUi = true, showBackground = true)
@@ -51,7 +52,7 @@ fun TransactionScreenPreview() {
 }
 //@Preview(showSystemUi = true, showBackground = true)
 @Composable
-fun TransactionScreen(navController: NavController, viewModel: TransactionViewModel = hiltViewModel()) {
+fun TransactionScreen(navController: NavController, viewModel: MainViewModel = hiltViewModel()) {
     val savedStateHandle = navController.currentBackStackEntry?.savedStateHandle
     val resultTransaction = savedStateHandle?.get<Boolean>("isTransactionSaved")
 
@@ -130,7 +131,7 @@ fun TransactionScreen(navController: NavController, viewModel: TransactionViewMo
             if (resultTransaction != null) {
                 if (resultTransaction) snackBarHostState.showSnackbar("Transaction saved successfully")
                 else snackBarHostState.showSnackbar("Error while saving transaction")
-                savedStateHandle["isSavedTransaction"] = null
+                savedStateHandle["isTransactionSaved"] = null
             }
         }
     }

@@ -15,10 +15,5 @@ import javax.inject.Inject
 class TransactionViewModel @Inject constructor(
     private val repository: TransactionRepository
 ): ViewModel() {
-    val transactionItems: Flow<PagingData<Transaction>> = Pager(
-        config = PagingConfig(pageSize = 50),
-        pagingSourceFactory = { repository.getTransactionPagingSource() }
-    )
-        .flow
-        .cachedIn(viewModelScope)
+
 }
