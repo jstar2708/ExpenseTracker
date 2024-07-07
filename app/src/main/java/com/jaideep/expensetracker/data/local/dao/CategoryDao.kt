@@ -4,7 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.jaideep.expensetracker.common.CategorySql.GET_CATEGORY_BY_ID
+import com.jaideep.expensetracker.common.constant.sql.CategorySql.GET_CATEGORY_BY_ID
 import com.jaideep.expensetracker.data.local.entities.Category
 
 @Dao

@@ -90,5 +90,6 @@ dependencies {
     implementation(Dependencies.icons)
     implementation(Dependencies.paging)
     implementation(Dependencies.pagingCompose)
+    implementation(Dependencies.pagingWithRoom)
 
 }

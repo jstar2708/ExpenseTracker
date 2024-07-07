@@ -30,6 +30,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -39,6 +40,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.jaideep.expensetracker.common.DetailScreen
 import com.jaideep.expensetracker.presentation.component.ExpenseTrackerAppBar
@@ -51,19 +53,42 @@ import com.jaideep.expensetracker.presentation.component.SimpleText
 import com.jaideep.expensetracker.presentation.component.SimpleTextBold
 import com.jaideep.expensetracker.presentation.theme.AppTheme
 import com.jaideep.expensetracker.R
+import com.jaideep.expensetracker.model.TransactionDto
+import com.jaideep.expensetracker.presentation.viewmodel.MainViewModel
+import java.util.stream.Collectors
 
 @Preview
 @Composable
 private fun HomeScreenPreview() {
     AppTheme {
-        HomeScreen(NavController(Application()))
+        HomeScreen(
+            navControllerRoot = NavController(Application()),
+            accounts = listOf("All accounts, Cash"),
+            transactions = listOf()
+        )
     }
 }
 
-
+@Composable
+fun HomeScreenRoot(
+    navControllerRoot: NavController
+) {
+    val mainViewModel: MainViewModel = hiltViewModel()
+    HomeScreen(
+        navControllerRoot = navControllerRoot,
+        accounts = mainViewModel.accounts.collectAsState().value.stream().map { it.accountName }.collect(Collectors.toList()).apply {
+                                                                                                                                    this.add(0, "All Accounts")
+        },
+        transactions = emptyList(),
+    )
+}
 
 @Composable
-fun HomeScreen(navControllerRoot: NavController) {
+fun HomeScreen(
+    navControllerRoot: NavController,
+    accounts: List<String>,
+    transactions: List<TransactionDto>,
+) {
     val savedStateHandle = navControllerRoot.currentBackStackEntry?.savedStateHandle
     val resultAccount =
         savedStateHandle?.get<Boolean>("isAccountSaved")
@@ -120,8 +145,10 @@ fun HomeScreen(navControllerRoot: NavController) {
                     )
                 }
                 ExpenseTrackerSpinner(
-                    values = listOf("All Account", "Cash"),
-                    onValueChanged = { }
+                    values = accounts,
+                    onValueChanged = {
+
+                    }
                 )
 
                 SummaryCard()

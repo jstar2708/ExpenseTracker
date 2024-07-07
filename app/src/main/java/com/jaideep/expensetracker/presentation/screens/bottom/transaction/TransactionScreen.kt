@@ -33,6 +33,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.jaideep.expensetracker.presentation.component.ExpenseTrackerAppBar
 import com.jaideep.expensetracker.presentation.component.ExpenseTrackerTabLayout
@@ -40,8 +41,11 @@ import com.jaideep.expensetracker.presentation.component.ExpenseTrackerTransacti
 import com.jaideep.expensetracker.presentation.theme.AppTheme
 import com.jaideep.expensetracker.R
 import com.jaideep.expensetracker.common.DetailScreen
+import com.jaideep.expensetracker.common.constant.TransactionMethod
+import com.jaideep.expensetracker.data.local.entities.Transaction
 import com.jaideep.expensetracker.presentation.viewmodel.MainViewModel
 import com.jaideep.expensetracker.presentation.viewmodel.TransactionViewModel
+import kotlinx.coroutines.flow.Flow
 
 @Preview(showSystemUi = true, showBackground = true)
 @Composable
@@ -52,7 +56,8 @@ fun TransactionScreenPreview() {
 }
 //@Preview(showSystemUi = true, showBackground = true)
 @Composable
-fun TransactionScreen(navController: NavController, viewModel: MainViewModel = hiltViewModel()) {
+
+fun TransactionScreen(navController: NavController, viewModel: MainViewModel = hiltViewModel(), transactions: Flow<PagingData<Transaction>> = viewModel.transactionItems.value, updateTransactionMethod: (transactionMethod: TransactionMethod) -> Unit = viewModel::updateTransactionMethod) {
     val savedStateHandle = navController.currentBackStackEntry?.savedStateHandle
     val resultTransaction = savedStateHandle?.get<Boolean>("isTransactionSaved")
 
@@ -110,7 +115,7 @@ fun TransactionScreen(navController: NavController, viewModel: MainViewModel = h
 
             }
 
-            val lazyTransactionItems = viewModel.transactionItems.collectAsLazyPagingItems()
+            val lazyTransactionItems = transactions.collectAsLazyPagingItems()
             LazyColumn(
                 modifier = Modifier
                     .fillMaxWidth()

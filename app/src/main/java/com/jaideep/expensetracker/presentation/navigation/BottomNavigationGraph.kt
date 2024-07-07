@@ -11,6 +11,7 @@ import com.jaideep.expensetracker.common.Graph
 import com.jaideep.expensetracker.common.MainScreen
 import com.jaideep.expensetracker.presentation.screens.bottom.category.CategoryScreenRoot
 import com.jaideep.expensetracker.presentation.screens.bottom.home.HomeScreen
+import com.jaideep.expensetracker.presentation.screens.bottom.home.HomeScreenRoot
 import com.jaideep.expensetracker.presentation.screens.bottom.settings.SettingsScreen
 import com.jaideep.expensetracker.presentation.screens.bottom.transaction.TransactionScreen
 import com.jaideep.expensetracker.presentation.viewmodel.MainViewModel
@@ -29,7 +30,7 @@ fun BottomNavigationGraph(
         route = Graph.MAIN
     ) {
         composable(MainScreen.HOME) {
-            HomeScreen(navHostControllerRoot)
+            HomeScreenRoot(navHostControllerRoot)
         }
         composable(MainScreen.TRANSACTIONS) {
             TransactionScreen(navHostControllerRoot, mainViewModel)

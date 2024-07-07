@@ -1,4 +1,4 @@
-package com.jaideep.expensetracker.common
+package com.jaideep.expensetracker.common.constant.sql
 
 object AccountSql {
     const val GET_ALL_ACCOUNTS: String = "Select * from Account"
