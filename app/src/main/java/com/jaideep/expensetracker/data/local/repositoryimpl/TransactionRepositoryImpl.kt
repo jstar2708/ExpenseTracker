@@ -1,6 +1,5 @@
 package com.jaideep.expensetracker.data.local.repositoryimpl
 
-import androidx.paging.PagingSource
 import com.jaideep.expensetracker.data.local.dao.TransactionDao
 import com.jaideep.expensetracker.data.local.entities.Transaction
 import com.jaideep.expensetracker.domain.repository.TransactionRepository
@@ -9,71 +8,66 @@ import javax.inject.Inject
 class TransactionRepositoryImpl @Inject constructor(
     private val dao: TransactionDao
 ) : TransactionRepository {
-
     override fun getTransactionsForAccount(
-        accountId: Int
-    ): PagingSource<Int, Transaction> {
-        return dao.getTransactionsForAccount(accountId)
+        accountId: Int, limit: Int
+    ): List<Transaction> {
+        return dao.getTransactionsForAccount(accountId, limit)
     }
 
-    override fun getDebitTransactionsForAccount(
-        accountId: Int
-    ): PagingSource<Int, Transaction> {
-        return dao.getDebitTransactionsForAccount(accountId)
+    override fun getDebitTransactionsForAccount(accountId: Int, limit: Int): List<Transaction> {
+        return dao.getDebitTransactionsForAccount(accountId, limit)
     }
 
-    override fun getCreditTransactionsForAccount(
-        accountId: Int
-    ): PagingSource<Int, Transaction> {
-        return dao.getCreditTransactionsForAccount(accountId)
+    override fun getCreditTransactionsForAccount(accountId: Int, limit: Int): List<Transaction> {
+        return dao.getCreditTransactionsForAccount(accountId, limit)
     }
 
     override fun getCreditTransactionBetweenDatesForAccount(
-        accountId: Int, startDate: Long, endDate: Long,
-    ): PagingSource<Int, Transaction> {
-        return dao.getCreditTransactionBetweenDatesForAccount(accountId, startDate, endDate)
+        accountId: Int, startDate: Long, endDate: Long, limit: Int
+    ): List<Transaction> {
+        return dao.getCreditTransactionBetweenDatesForAccount(accountId, startDate, endDate, limit)
     }
 
     override fun getDebitTransactionBetweenDatesForAccount(
-        accountId: Int, startDate: Long, endDate: Long,
-    ): PagingSource<Int, Transaction> {
-        return dao.getDebitTransactionBetweenDatesForAccount(accountId, startDate, endDate)
+        accountId: Int, startDate: Long, endDate: Long, limit: Int
+    ): List<Transaction> {
+        return dao.getDebitTransactionBetweenDatesForAccount(accountId, startDate, endDate, limit)
     }
 
     override fun getTransactionBetweenDatesForAccount(
-        accountId: Int, startDate: Long, endDate: Long,
-    ): PagingSource<Int, Transaction> {
-        return dao.getTransactionBetweenDatesForAccount(accountId, startDate, endDate)
+        accountId: Int, startDate: Long, endDate: Long, limit: Int
+    ): List<Transaction> {
+        return dao.getTransactionBetweenDatesForAccount(accountId, startDate, endDate, limit)
     }
 
-    override fun getAllTransactions(): PagingSource<Int, Transaction> {
-        return dao.getAllTransactions()
+    override fun getAllTransactions(limit: Int): List<Transaction> {
+        return dao.getAllTransactions(limit)
     }
 
-    override fun getDebitTransactions(): PagingSource<Int, Transaction> {
-        return dao.getDebitTransactions()
+    override fun getDebitTransactions(limit: Int): List<Transaction> {
+        return dao.getDebitTransactions(limit)
     }
 
-    override fun getCreditTransactions(): PagingSource<Int, Transaction> {
-        return dao.getCreditTransactions()
+    override fun getCreditTransactions(limit: Int): List<Transaction> {
+        return dao.getCreditTransactions(limit)
     }
 
     override fun getCreditTransactionBetweenDates(
-        startDate: Long, endDate: Long,
-    ): PagingSource<Int, Transaction> {
-        return dao.getCreditTransactionBetweenDates(startDate, endDate)
+        startDate: Long, endDate: Long, limit: Int
+    ): List<Transaction> {
+        return dao.getCreditTransactionBetweenDates(startDate, endDate, limit)
     }
 
     override fun getDebitTransactionBetweenDates(
-        startDate: Long, endDate: Long,
-    ): PagingSource<Int, Transaction> {
-        return dao.getDebitTransactionBetweenDates(startDate, endDate)
+        startDate: Long, endDate: Long, limit: Int
+    ): List<Transaction> {
+        return dao.getDebitTransactionBetweenDates(startDate, endDate, limit)
     }
 
     override fun getTransactionBetweenDates(
-        startDate: Long, endDate: Long,
-    ): PagingSource<Int, Transaction> {
-        return dao.getTransactionBetweenDates(startDate, endDate)
+        startDate: Long, endDate: Long, limit: Int
+    ): List<Transaction> {
+        return dao.getTransactionBetweenDates(startDate, endDate, limit)
     }
 
     override suspend fun saveTransaction(transaction: Transaction) {

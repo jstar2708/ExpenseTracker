@@ -1,9 +1,8 @@
 package com.jaideep.expensetracker.data.local.paging
 
-import androidx.compose.runtime.collectAsState
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.jaideep.expensetracker.data.local.dao.TransactionDao
+import com.jaideep.expensetracker.data.local.dao.TransactionPagingDao
 import com.jaideep.expensetracker.data.local.entities.Transaction
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -11,7 +10,7 @@ import javax.inject.Inject
 import kotlin.math.max
 
 class TransactionPagingSource @Inject constructor(
-    private val dao: TransactionDao,
+    private val dao: TransactionPagingDao,
     private val dataRetrieve: suspend (loadSize: Int, start: Int) -> Flow<List<Transaction>>
 ) : PagingSource<Int, Transaction>() {
     override fun getRefreshKey(state: PagingState<Int, Transaction>): Int? {

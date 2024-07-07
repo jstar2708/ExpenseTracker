@@ -51,7 +51,6 @@ import com.jaideep.expensetracker.presentation.component.TextFieldWithDropDown
 import com.jaideep.expensetracker.presentation.component.TextFieldWithIcon
 import com.jaideep.expensetracker.presentation.theme.AppTheme
 import com.jaideep.expensetracker.presentation.viewmodel.AddTransactionViewModel
-import java.util.stream.Collectors
 
 @Preview(showSystemUi = true, showBackground = true)
 @Composable
@@ -122,10 +121,8 @@ fun AddTransactionScreenRoot(
         isAccountIncorrect = viewModel.isAccountNameIncorrect,
         isCategoryIncorrect = viewModel.isCategoryNameIncorrect,
         exitScreen = viewModel.exitScreen,
-        accounts = viewModel.accounts.collectAsState().value.stream().map { it.accountName }
-            .collect(Collectors.toList()),
-        categories = viewModel.categories.collectAsState().value.stream().map { it.categoryName }
-            .collect(Collectors.toList()),
+        accounts = viewModel.accounts.collectAsState().value,
+        categories = viewModel.categories.collectAsState().value,
         saveTransaction = viewModel::saveTransaction,
         backPress = {
             val savedStateHandle = navControllerRoot.previousBackStackEntry?.savedStateHandle

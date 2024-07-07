@@ -10,6 +10,7 @@ import androidx.compose.material.icons.outlined.CurrencyRupee
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.ui.graphics.vector.ImageVector
+import com.jaideep.expensetracker.R
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -47,6 +48,17 @@ object AppComponents {
         val date = Date(this)
         val format = SimpleDateFormat("yyyy.MM.dd", Locale.ENGLISH)
         return format.format(date)
+    }
+
+    fun getCategoryIconId(iconName: String): Int {
+        return when (iconName) {
+            "Food" -> R.drawable.food
+            "Fuel" -> R.drawable.fuel
+            "Entertainment" -> R.drawable.entertainment
+            "Shopping" -> R.drawable.shopping
+            "Travel" -> R.drawable.travel
+            else -> R.drawable.category
+        }
     }
 
     fun Long.convertMilliSecondsToDateTime() : String {

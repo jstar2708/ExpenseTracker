@@ -11,12 +11,17 @@ import com.jaideep.expensetracker.common.Resource
 import com.jaideep.expensetracker.data.local.entities.Account
 import com.jaideep.expensetracker.data.local.entities.Category
 import com.jaideep.expensetracker.data.local.entities.Transaction
-import com.jaideep.expensetracker.domain.repository.TransactionRepository
+import com.jaideep.expensetracker.domain.repository.TransactionPagingRepository
 import com.jaideep.expensetracker.domain.usecase.GetAllAccountsUseCase
 import com.jaideep.expensetracker.domain.usecase.GetAllCategoriesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.time.LocalDateTime
@@ -26,16 +31,25 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AddTransactionViewModel @Inject constructor(
-    private val transactionRepository: TransactionRepository,
+    private val transactionPagingRepository: TransactionPagingRepository,
     private val getAllAccountsUseCase: GetAllAccountsUseCase,
     private val getAllCategoriesUseCase: GetAllCategoriesUseCase
 ) : ViewModel() {
 
     private val _accounts: MutableStateFlow<List<Account>> = MutableStateFlow(ArrayList())
-    var accounts: StateFlow<List<Account>> = _accounts
+    var accounts: StateFlow<List<String>> = _accounts.map { it ->
+        it.asFlow().map { account ->
+            account.accountName
+        }.toList()
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
+
 
     private val _categories: MutableStateFlow<List<Category>> = MutableStateFlow(ArrayList())
-    var categories: StateFlow<List<Category>> = _categories
+    var categories: StateFlow<List<String>> = _categories.map { it ->
+        it.asFlow().map { category ->
+            category.categoryName
+        }.toList()
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
     var screenTitle by mutableStateOf("Add Transaction")
         private set
@@ -149,10 +163,10 @@ class AddTransactionViewModel @Inject constructor(
         isCategoryNameIncorrect.value = categoryName.isBlank()
         isDateIncorrect.value = date.isBlank()
         isAmountIncorrect.value = amount.isBlank()
-        val account = accounts.value.stream().filter {
+        val account = _accounts.value.stream().filter {
             it.accountName == accountName
         }.findAny()
-        val category = categories.value.stream().filter {
+        val category = _categories.value.stream().filter {
             it.categoryName == categoryName
         }.findAny()
 
@@ -160,14 +174,15 @@ class AddTransactionViewModel @Inject constructor(
             category.ifPresent {
                 viewModelScope.launch {
                     try {
-                        transactionRepository.saveTransaction(
+                        transactionPagingRepository.saveTransaction(
                             Transaction(
                                 0,
                                 amount.toDouble(),
                                 account.get().id,
                                 category.get().id,
                                 note,
-                                LocalDateTime.parse(date.replace('.', '-') + "T00:00:00").toEpochSecond(ZoneOffset.UTC),
+                                LocalDateTime.parse(date.replace('.', '-') + "T00:00:00")
+                                    .toEpochSecond(ZoneOffset.UTC),
                                 if (isCredit) 1 else 0
                             )
                         )

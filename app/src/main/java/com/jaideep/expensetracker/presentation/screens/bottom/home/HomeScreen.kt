@@ -3,7 +3,6 @@ package com.jaideep.expensetracker.presentation.screens.bottom.home
 
 import android.app.Application
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -42,7 +41,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.jaideep.expensetracker.R
 import com.jaideep.expensetracker.common.DetailScreen
+import com.jaideep.expensetracker.model.TransactionDto
 import com.jaideep.expensetracker.presentation.component.ExpenseTrackerAppBar
 import com.jaideep.expensetracker.presentation.component.ExpenseTrackerBlueButton
 import com.jaideep.expensetracker.presentation.component.ExpenseTrackerCategoryCard
@@ -52,10 +53,7 @@ import com.jaideep.expensetracker.presentation.component.HeadingTextBold
 import com.jaideep.expensetracker.presentation.component.SimpleText
 import com.jaideep.expensetracker.presentation.component.SimpleTextBold
 import com.jaideep.expensetracker.presentation.theme.AppTheme
-import com.jaideep.expensetracker.R
-import com.jaideep.expensetracker.model.TransactionDto
 import com.jaideep.expensetracker.presentation.viewmodel.MainViewModel
-import java.util.stream.Collectors
 
 @Preview
 @Composable
@@ -76,9 +74,7 @@ fun HomeScreenRoot(
     val mainViewModel: MainViewModel = hiltViewModel()
     HomeScreen(
         navControllerRoot = navControllerRoot,
-        accounts = mainViewModel.accounts.collectAsState().value.stream().map { it.accountName }.collect(Collectors.toList()).apply {
-                                                                                                                                    this.add(0, "All Accounts")
-        },
+        accounts = mainViewModel.accounts.collectAsState().value,
         transactions = emptyList(),
     )
 }
@@ -90,11 +86,9 @@ fun HomeScreen(
     transactions: List<TransactionDto>,
 ) {
     val savedStateHandle = navControllerRoot.currentBackStackEntry?.savedStateHandle
-    val resultAccount =
-        savedStateHandle?.get<Boolean>("isAccountSaved")
+    val resultAccount = savedStateHandle?.get<Boolean>("isAccountSaved")
 
-    val resultTransaction =
-        savedStateHandle?.get<Boolean>("isTransactionSaved")
+    val resultTransaction = savedStateHandle?.get<Boolean>("isTransactionSaved")
 
     val snackBarHostState = remember {
         SnackbarHostState()
@@ -102,19 +96,15 @@ fun HomeScreen(
     Surface(
         modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background
     ) {
-        Scaffold(
-            modifier = Modifier.fillMaxSize(),
-            snackbarHost = {
-                           SnackbarHost(
-                               hostState = snackBarHostState
-                           ) {
-                               Snackbar(
-                                   snackbarData = it,
-                                   containerColor = Color.DarkGray
-                               )
-                           }
-            },
-            topBar = {
+        Scaffold(modifier = Modifier.fillMaxSize(), snackbarHost = {
+            SnackbarHost(
+                hostState = snackBarHostState
+            ) {
+                Snackbar(
+                    snackbarData = it, containerColor = Color.DarkGray
+                )
+            }
+        }, topBar = {
             ExpenseTrackerAppBar(title = "Hello Jaideep",
                 navigationIcon = Icons.Outlined.AccountCircle,
                 navigationDescription = "User icon",
@@ -144,12 +134,9 @@ fun HomeScreen(
                         modifier = Modifier.weight(1f)
                     )
                 }
-                ExpenseTrackerSpinner(
-                    values = accounts,
-                    onValueChanged = {
+                ExpenseTrackerSpinner(values = accounts, onValueChanged = {
 
-                    }
-                )
+                })
 
                 SummaryCard()
 
@@ -161,7 +148,7 @@ fun HomeScreen(
     LaunchedEffect(key1 = resultAccount) {
         if (resultAccount != null) {
             if (resultAccount) snackBarHostState.showSnackbar("Account saved successfully")
-                else snackBarHostState.showSnackbar("Error while saving account")
+            else snackBarHostState.showSnackbar("Error while saving account")
             savedStateHandle["isAccountSaved"] = null
         }
     }
@@ -213,8 +200,7 @@ fun TransactionSummary() {
             .wrapContentHeight()
     ) {
 
-        for (i in 0 until 5)
-            ExpenseTrackerTransactionCardItem(
+        for (i in 0 until 5) ExpenseTrackerTransactionCardItem(
             iconId = R.drawable.fuel,
             iconDescription = "Fuel icon",
             categoryName = "Fuel",

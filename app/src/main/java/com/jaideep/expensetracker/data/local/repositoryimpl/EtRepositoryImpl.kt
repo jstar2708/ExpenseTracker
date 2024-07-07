@@ -3,7 +3,7 @@ package com.jaideep.expensetracker.data.local.repositoryimpl
 import com.jaideep.expensetracker.data.local.dao.AccountDao
 import com.jaideep.expensetracker.data.local.dao.CategoryDao
 import com.jaideep.expensetracker.data.local.dao.EtDao
-import com.jaideep.expensetracker.data.local.dao.TransactionDao
+import com.jaideep.expensetracker.data.local.dao.TransactionPagingDao
 import com.jaideep.expensetracker.data.local.entities.Account
 import com.jaideep.expensetracker.data.local.entities.Category
 import com.jaideep.expensetracker.data.local.entities.Transaction
@@ -12,7 +12,7 @@ import javax.inject.Inject
 
 class EtRepositoryImpl @Inject constructor(
     private val dao: EtDao,
-    private val transactionDao: TransactionDao,
+    private val transactionPagingDao: TransactionPagingDao,
     private val accountDao: AccountDao,
     private val categoryDao: CategoryDao
 ) : EtRepository {
@@ -34,7 +34,7 @@ class EtRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getTransaction(transactionId: Int): Transaction {
-        return transactionDao.getTransactionById(transactionId)
+        return transactionPagingDao.getTransactionById(transactionId)
     }
 
     override suspend fun getCategory(categoryId: Int): Category {

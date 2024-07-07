@@ -4,16 +4,16 @@ import android.app.Application
 import com.jaideep.expensetracker.data.local.dao.AccountDao
 import com.jaideep.expensetracker.data.local.dao.CategoryDao
 import com.jaideep.expensetracker.data.local.dao.EtDao
-import com.jaideep.expensetracker.data.local.dao.TransactionDao
+import com.jaideep.expensetracker.data.local.dao.TransactionPagingDao
 import com.jaideep.expensetracker.data.local.database.EtDatabase
 import com.jaideep.expensetracker.data.local.repositoryimpl.AccountRepositoryImpl
 import com.jaideep.expensetracker.data.local.repositoryimpl.CategoryRepositoryImpl
 import com.jaideep.expensetracker.data.local.repositoryimpl.EtRepositoryImpl
-import com.jaideep.expensetracker.data.local.repositoryimpl.TransactionRepositoryImpl
+import com.jaideep.expensetracker.data.local.repositoryimpl.TransactionPagingRepositoryImpl
 import com.jaideep.expensetracker.domain.repository.AccountRepository
 import com.jaideep.expensetracker.domain.repository.CategoryRepository
 import com.jaideep.expensetracker.domain.repository.EtRepository
-import com.jaideep.expensetracker.domain.repository.TransactionRepository
+import com.jaideep.expensetracker.domain.repository.TransactionPagingRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -43,7 +43,7 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun providesTransactionDao(etDatabase: EtDatabase): TransactionDao {
+    fun providesTransactionDao(etDatabase: EtDatabase): TransactionPagingDao {
         return etDatabase.getTransactionDao();
     }
     @Provides
@@ -60,15 +60,15 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun providesEtRepository(etDao: EtDao, accountDao: AccountDao, transactionDao: TransactionDao, categoryDao: CategoryDao) : EtRepository {
-        return EtRepositoryImpl(etDao, transactionDao, accountDao, categoryDao)
+    fun providesEtRepository(etDao: EtDao, accountDao: AccountDao, transactionPagingDao: TransactionPagingDao, categoryDao: CategoryDao) : EtRepository {
+        return EtRepositoryImpl(etDao, transactionPagingDao, accountDao, categoryDao)
     }@Provides
     @Singleton
     fun providesCategoryRepository(categoryDao: CategoryDao) : CategoryRepository {
         return CategoryRepositoryImpl(categoryDao)
     }@Provides
     @Singleton
-    fun providesTransactionRepository(transactionDao: TransactionDao) : TransactionRepository {
-        return TransactionRepositoryImpl(transactionDao)
+    fun providesTransactionRepository(transactionPagingDao: TransactionPagingDao) : TransactionPagingRepository {
+        return TransactionPagingRepositoryImpl(transactionPagingDao)
     }
 }
