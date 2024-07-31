@@ -6,6 +6,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.jaideep.expensetracker.common.constant.sql.CategorySql.GET_CATEGORY_BY_ID
 import com.jaideep.expensetracker.data.local.entities.Category
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface CategoryDao {
@@ -14,5 +15,5 @@ interface CategoryDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun saveCategory(category: Category)
     @Query("Select * from Category")
-    suspend fun getAllCategories() : List<Category>
+    suspend fun getAllCategories() : Flow<List<Category>>
 }

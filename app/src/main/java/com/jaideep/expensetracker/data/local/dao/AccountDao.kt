@@ -8,11 +8,12 @@ import androidx.room.Update
 import com.jaideep.expensetracker.data.local.entities.Account
 import com.jaideep.expensetracker.common.constant.sql.AccountSql.GET_ALL_ACCOUNTS;
 import com.jaideep.expensetracker.common.constant.sql.AccountSql.GET_ACCOUNT_BY_ID;
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface AccountDao {
     @Query(GET_ALL_ACCOUNTS)
-    suspend fun getAccounts() : List<Account>
+    suspend fun getAccounts() : Flow<List<Account>>
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun saveAccount(account: Account)
     @Query(GET_ACCOUNT_BY_ID)

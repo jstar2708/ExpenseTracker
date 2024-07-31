@@ -74,16 +74,16 @@ fun HomeScreenRoot(
     val mainViewModel: MainViewModel = hiltViewModel()
     HomeScreen(
         navControllerRoot = navControllerRoot,
-        accounts = mainViewModel.accounts.collectAsState().value,
-        transactions = emptyList(),
+        accounts = mainViewModel.accounts.collectAsState().value.toMutableList().apply {
+            this.add(0, "All Accounts")
+        },
+        transactions = mainViewModel.transactions.collectAsState().value,
     )
 }
 
 @Composable
 fun HomeScreen(
-    navControllerRoot: NavController,
-    accounts: List<String>,
-    transactions: List<TransactionDto>,
+    navControllerRoot: NavController, accounts: List<String>, transactions: List<TransactionDto>
 ) {
     val savedStateHandle = navControllerRoot.currentBackStackEntry?.savedStateHandle
     val resultAccount = savedStateHandle?.get<Boolean>("isAccountSaved")

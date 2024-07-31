@@ -3,12 +3,13 @@ package com.jaideep.expensetracker.domain.repository
 import com.jaideep.expensetracker.data.local.entities.Account
 import com.jaideep.expensetracker.data.local.entities.Category
 import com.jaideep.expensetracker.data.local.entities.Transaction
+import kotlinx.coroutines.flow.Flow
 
 interface EtRepository {
 
-    suspend fun getAllAccounts() : List<Account>
+    suspend fun getAllAccounts() : Flow<List<Account>>
 
-    suspend fun getAllCategories() : List<Category>
+    suspend fun getAllCategories() : Flow<List<Category>>
 
     suspend fun getAccount(accountId: Int) : Account
 

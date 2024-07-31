@@ -145,13 +145,15 @@ fun ExpenseTrackerSpinner(
             })
 
         ExposedDropdownMenu(expanded = isExpanded, onDismissRequest = { isExpanded = false }) {
-            values.forEach {
-                DropdownMenuItem(text = {
-                    SimpleText(text = it)
-                }, onClick = {
-                    selectedAccount = it
-                    isExpanded = false
-                })
+            if (values.isNotEmpty()) {
+                values.forEach {
+                    DropdownMenuItem(text = {
+                        SimpleText(text = it)
+                    }, onClick = {
+                        selectedAccount = it
+                        isExpanded = false
+                    })
+                }
             }
         }
     }
