@@ -8,6 +8,7 @@ import com.jaideep.expensetracker.data.local.entities.Account
 import com.jaideep.expensetracker.data.local.entities.Category
 import com.jaideep.expensetracker.data.local.entities.Transaction
 import com.jaideep.expensetracker.domain.repository.EtRepository
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class EtRepositoryImpl @Inject constructor(
@@ -21,11 +22,11 @@ class EtRepositoryImpl @Inject constructor(
     private lateinit var accountList: List<Account>
     private lateinit var categoryList: List<Category>
 
-    override suspend fun getAllAccounts(): List<Account> {
+    override fun getAllAccounts(): Flow<List<Account>> {
         return accountDao.getAccounts()
     }
 
-    override suspend fun getAllCategories(): List<Category> {
+    override fun getAllCategories(): Flow<List<Category>> {
         return categoryDao.getAllCategories()
     }
 

@@ -9,9 +9,9 @@ object MainScreen {
 
 object DetailScreen {
     const val ADD_SCREEN = "add_screen"
-    const val ADD_TRANSACTION="ADD_TRANSACTIONS"
-    const val ADD_ACCOUNT="ADD_ACCOUNT"
-    const val ADD_CATEGORY="ADD_CATEGORY"
+    const val ADD_TRANSACTION = "ADD_TRANSACTIONS"
+    const val ADD_ACCOUNT = "ADD_ACCOUNT"
+    const val ADD_CATEGORY = "ADD_CATEGORY"
 }
 
 object Graph {

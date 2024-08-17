@@ -1,6 +1,5 @@
 package com.jaideep.expensetracker.presentation.screens.add
 
-import android.app.Application
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -45,8 +44,7 @@ import com.jaideep.expensetracker.presentation.viewmodel.AddAccountViewModel
 @Composable
 private fun AddAccountScreenPreview() {
     AppTheme {
-        AddAccountScreen(
-            screenTitle = "Add Account",
+        AddAccountScreen(screenTitle = "Add Account",
             screenDetail = "Please provide account details",
             accountName = remember {
                 mutableStateOf(TextFieldValue(""))
@@ -63,16 +61,15 @@ private fun AddAccountScreenPreview() {
             exitScreen = remember {
                 mutableStateOf(false)
             },
-            saveAccount = { _, _ ->  }
-        ) {
+            saveAccount = { _, _ -> }) {
 
         }
     }
 }
 
 @Composable
-fun AddAccountScreenRoot(navController: NavHostController,
-                         addAccountViewModel: AddAccountViewModel = hiltViewModel()
+fun AddAccountScreenRoot(
+    navController: NavHostController, addAccountViewModel: AddAccountViewModel = hiltViewModel()
 ) {
     AddAccountScreen(
         addAccountViewModel.screenTitle,
@@ -138,8 +135,7 @@ fun AddAccountScreen(
                     )
                     Spacer(modifier = Modifier.height(20.dp))
                     SimpleText(
-                        text = screenDetail,
-                        color = MaterialTheme.colorScheme.onPrimary
+                        text = screenDetail, color = MaterialTheme.colorScheme.onPrimary
                     )
                     Spacer(modifier = Modifier.height(20.dp))
 
@@ -172,8 +168,7 @@ fun AddAccountScreen(
                         colors = ButtonColors(Color.White, Color.Blue, Color.White, Color.White),
                         onClick = {
                             saveAccount(
-                                accountName.value.text,
-                                initialBalance.value.text
+                                accountName.value.text, initialBalance.value.text
                             )
                         }) {
                         SimpleTextBold(

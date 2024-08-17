@@ -5,23 +5,21 @@ import androidx.room.ForeignKey
 import androidx.room.ForeignKey.Companion.CASCADE
 import androidx.room.PrimaryKey
 
-@Entity(foreignKeys = [
-    ForeignKey(
+@Entity(
+    foreignKeys = [ForeignKey(
         entity = Account::class,
-        parentColumns = ["id", ],
+        parentColumns = ["id"],
         childColumns = ["accountId"],
         onDelete = CASCADE,
         onUpdate = CASCADE
-    ),
-    ForeignKey(
+    ), ForeignKey(
         entity = Category::class,
-        parentColumns = ["id", ],
+        parentColumns = ["id"],
         childColumns = ["categoryId"],
         onDelete = CASCADE,
         onUpdate = CASCADE
-    )
-]
-    )
+    )]
+)
 data class Transaction(
     @PrimaryKey(autoGenerate = true) val id: Int,
     val amount: Double,

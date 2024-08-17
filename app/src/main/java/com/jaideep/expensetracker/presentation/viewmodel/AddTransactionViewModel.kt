@@ -24,8 +24,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.time.LocalDateTime
-import java.time.ZoneOffset
+import java.time.LocalDate
 import java.time.format.DateTimeParseException
 import javax.inject.Inject
 
@@ -181,8 +180,7 @@ class AddTransactionViewModel @Inject constructor(
                                 account.get().id,
                                 category.get().id,
                                 note,
-                                LocalDateTime.parse(date.replace('.', '-') + "T00:00:00")
-                                    .toEpochSecond(ZoneOffset.UTC),
+                                LocalDate.parse(date).toEpochDay() * 86_400_000L,
                                 if (isCredit) 1 else 0
                             )
                         )

@@ -6,7 +6,6 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import com.jaideep.expensetracker.common.AppComponents.convertMilliSecondsToDateTime
 import com.jaideep.expensetracker.common.AppComponents.getCategoryIconId
 import com.jaideep.expensetracker.common.Resource
 import com.jaideep.expensetracker.common.constant.TransactionMethod
@@ -30,7 +29,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
-import java.time.LocalDateTime
+import java.time.LocalDate
 import javax.inject.Inject
 
 @HiltViewModel
@@ -61,7 +60,7 @@ class MainViewModel @Inject constructor(
                 transaction.amount,
                 getCategoryDto(transaction.categoryId),
                 transaction.message,
-                LocalDateTime.parse(transaction.createdTime.convertMilliSecondsToDateTime()),
+                LocalDate.ofEpochDay(transaction.createdTime / 86_400_000L),
                 transaction.isCredit == 1
             )
         }.toList()
@@ -203,11 +202,11 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    private fun getCategoryDto(categoryId: Int): CategoryDto {
+    fun getCategoryDto(categoryId: Int): CategoryDto {
         val category: Category? = _categories.value.find {
             categoryId == it.id
         }
-        var categoryDto = CategoryDto("DEAFULT_CATEGORY", 0)
+        var categoryDto = CategoryDto("DEFAULT_CATEGORY", 0)
         category?.let {
             categoryDto = CategoryDto(it.categoryName, getCategoryIconId(it.iconName))
         }

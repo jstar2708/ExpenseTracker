@@ -56,7 +56,7 @@ private fun AddCategoryScreenPreview() {
                 mutableStateOf(false)
             },
             saveCategory = { _ -> },
-        ){
+        ) {
 
         }
     }

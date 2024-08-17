@@ -57,8 +57,7 @@ interface TransactionPagingDao {
 
     @Query(GET_CREDIT_TRANSACTIONS_BETWEEN_DATES)
     fun getCreditTransactionBetweenDates(
-        startDate: Long,
-        endDate: Long
+        startDate: Long, endDate: Long
     ): PagingSource<Int, Transaction>
 
     @Query(GET_DEBIT_TRANSACTIONS_BETWEEN_DATES)

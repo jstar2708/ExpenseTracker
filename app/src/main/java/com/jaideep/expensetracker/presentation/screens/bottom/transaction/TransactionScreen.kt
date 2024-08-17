@@ -10,9 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
@@ -23,6 +21,7 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -31,75 +30,177 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import androidx.paging.PagingData
+import androidx.navigation.NavHostController
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.jaideep.expensetracker.R
+import com.jaideep.expensetracker.common.DetailScreen
+import com.jaideep.expensetracker.model.CategoryDto
+import com.jaideep.expensetracker.model.TransactionDto
 import com.jaideep.expensetracker.presentation.component.ExpenseTrackerAppBar
+import com.jaideep.expensetracker.presentation.component.ExpenseTrackerSpinner
 import com.jaideep.expensetracker.presentation.component.ExpenseTrackerTabLayout
 import com.jaideep.expensetracker.presentation.component.ExpenseTrackerTransactionCardItem
 import com.jaideep.expensetracker.presentation.theme.AppTheme
-import com.jaideep.expensetracker.R
-import com.jaideep.expensetracker.common.DetailScreen
-import com.jaideep.expensetracker.common.constant.TransactionMethod
-import com.jaideep.expensetracker.data.local.entities.Transaction
 import com.jaideep.expensetracker.presentation.viewmodel.MainViewModel
-import com.jaideep.expensetracker.presentation.viewmodel.TransactionViewModel
-import kotlinx.coroutines.flow.Flow
+import java.time.LocalDate
 
 @Preview(showSystemUi = true, showBackground = true)
 @Composable
 fun TransactionScreenPreview() {
     AppTheme {
-        TransactionScreen(NavController(Application()))
+        TransactionScreen(
+            navControllerRoot = NavController(Application()),
+            backPress = {},
+            accounts = listOf("All accounts", "Cash"),
+            transactions = listOf(
+                TransactionDto(
+                    200.0,
+                    CategoryDto("Food", R.drawable.food),
+                    "No Message",
+                    LocalDate.now(),
+                    true
+                ),
+                TransactionDto(
+                    200.0,
+                    CategoryDto("Food", R.drawable.food),
+                    "No Message",
+                    LocalDate.now(),
+                    true
+                ),
+                TransactionDto(
+                    200.0,
+                    CategoryDto("Food", R.drawable.food),
+                    "No Message",
+                    LocalDate.now(),
+                    true
+                ),
+                TransactionDto(
+                    200.0,
+                    CategoryDto("Food", R.drawable.food),
+                    "No Message",
+                    LocalDate.now(),
+                    true
+                ),
+                TransactionDto(
+                    200.0,
+                    CategoryDto("Food", R.drawable.food),
+                    "No Message",
+                    LocalDate.now(),
+                    true
+                ),
+                TransactionDto(
+                    200.0,
+                    CategoryDto("Food", R.drawable.food),
+                    "No Message",
+                    LocalDate.now(),
+                    true
+                ),
+                TransactionDto(
+                    200.0,
+                    CategoryDto("Food", R.drawable.food),
+                    "No Message",
+                    LocalDate.now(),
+                    true
+                ),
+                TransactionDto(
+                    200.0,
+                    CategoryDto("Food", R.drawable.food),
+                    "No Message",
+                    LocalDate.now(),
+                    true
+                ),
+                TransactionDto(
+                    200.0,
+                    CategoryDto("Food", R.drawable.food),
+                    "No Message",
+                    LocalDate.now(),
+                    true
+                ),
+                TransactionDto(
+                    200.0,
+                    CategoryDto("Food", R.drawable.food),
+                    "No Message",
+                    LocalDate.now(),
+                    true
+                ),
+                TransactionDto(
+                    200.0,
+                    CategoryDto("Food", R.drawable.food),
+                    "No Message",
+                    LocalDate.now(),
+                    true
+                ),
+            )
+        )
     }
 }
+
+@Composable
+fun TransactionScreenRoot(
+    navHostControllerRoot: NavHostController, mainViewModel: MainViewModel, backPress: () -> Unit
+) {
+    TransactionScreen(navControllerRoot = navHostControllerRoot,
+        backPress = backPress,
+        accounts = mainViewModel.accounts.collectAsState().value.toMutableList().apply {
+            this.add(0, "All Accounts")
+        },
+        transactions = mainViewModel.transactionItems.collectAsState().value.collectAsLazyPagingItems().itemSnapshotList.items.map { transaction ->
+            TransactionDto(
+                transaction.amount,
+                mainViewModel.getCategoryDto(transaction.categoryId),
+                transaction.message,
+                LocalDate.ofEpochDay(transaction.createdTime / 86_400_000L),
+                transaction.isCredit == 1
+            )
+        })
+}
+
 //@Preview(showSystemUi = true, showBackground = true)
 @Composable
 
-fun TransactionScreen(navController: NavController, viewModel: MainViewModel = hiltViewModel(), transactions: Flow<PagingData<Transaction>> = viewModel.transactionItems.value, updateTransactionMethod: (transactionMethod: TransactionMethod) -> Unit = viewModel::updateTransactionMethod) {
-    val savedStateHandle = navController.currentBackStackEntry?.savedStateHandle
+fun TransactionScreen(
+    navControllerRoot: NavController,
+    backPress: () -> Unit,
+    accounts: List<String>,
+    transactions: List<TransactionDto>
+) {
+    val savedStateHandle = navControllerRoot.currentBackStackEntry?.savedStateHandle
     val resultTransaction = savedStateHandle?.get<Boolean>("isTransactionSaved")
 
     val snackBarHostState = remember {
         SnackbarHostState()
     }
-    Scaffold(
-        snackbarHost = {
-                       SnackbarHost(hostState = snackBarHostState) {
-                           Snackbar(
-                               snackbarData = it,
-                               containerColor = Color.DarkGray
-                           )
-                       }
-        },
-        topBar = {
-            ExpenseTrackerAppBar(
-                title = "Transactions",
-                navigationIcon = Icons.AutoMirrored.Filled.ArrowBack,
-                navigationDescription = "Back button",
-                onNavigationIconClick = { navController.popBackStack() },
-                actionIcon = Icons.Filled.Add,
-                actionDescription = "Add transaction icon"
-            ) {
-                navController.navigate(DetailScreen.ADD_TRANSACTION)
-            }
+    Scaffold(snackbarHost = {
+        SnackbarHost(hostState = snackBarHostState) {
+            Snackbar(
+                snackbarData = it, containerColor = Color.DarkGray
+            )
         }
-    ) { it ->
+    }, topBar = {
+        ExpenseTrackerAppBar(
+            title = "Transactions",
+            navigationIcon = Icons.AutoMirrored.Filled.ArrowBack,
+            navigationDescription = "Back button",
+            onNavigationIconClick = { backPress() },
+            actionIcon = Icons.Filled.Add,
+            actionDescription = "Add transaction icon"
+        ) {
+            navControllerRoot.navigate(DetailScreen.ADD_TRANSACTION)
+        }
+    }) { it ->
         Column(
             Modifier
                 .padding(it)
                 .fillMaxSize()
         ) {
-//            AccountSelectionSpinner()
+            ExpenseTrackerSpinner(values = accounts, onValueChanged = {
+
+            })
             Row(
-                Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
+                Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically
             ) {
-                ExpenseTrackerTabLayout(
-                    values = arrayOf("All", "Income", "Expense"),
-                    onClick = {}
-                )
+                ExpenseTrackerTabLayout(values = arrayOf("All", "Income", "Expense"), onClick = {})
                 Icon(
                     painter = painterResource(id = R.drawable.filter),
                     contentDescription = "Filter",
@@ -115,19 +216,18 @@ fun TransactionScreen(navController: NavController, viewModel: MainViewModel = h
 
             }
 
-            val lazyTransactionItems = transactions.collectAsLazyPagingItems()
             LazyColumn(
                 modifier = Modifier
                     .fillMaxWidth()
                     .wrapContentHeight()
             ) {
-                items(lazyTransactionItems.itemCount) {
+                items(transactions.size) {
                     ExpenseTrackerTransactionCardItem(
-                        iconId = R.drawable.fuel,
-                        iconDescription = "Fuel icon",
-                        categoryName = lazyTransactionItems[it]?.categoryId.toString(),
-                        transactionDescription = lazyTransactionItems[it]?.message.toString(),
-                        amount = lazyTransactionItems[it]?.amount.toString()
+                        iconId = transactions[it].categoryDto.iconId,
+                        iconDescription = "Category icon",
+                        categoryName = transactions[it].categoryDto.name,
+                        transactionDescription = transactions[it].message,
+                        amount = transactions[it].amount.toString()
                     )
                 }
             }

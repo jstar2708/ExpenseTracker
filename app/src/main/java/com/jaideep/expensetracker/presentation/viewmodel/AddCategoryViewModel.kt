@@ -7,14 +7,13 @@ import androidx.lifecycle.viewModelScope
 import com.jaideep.expensetracker.data.local.entities.Category
 import com.jaideep.expensetracker.domain.repository.CategoryRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class AddCategoryViewModel @Inject constructor(
     private val categoryRepository: CategoryRepository
-): ViewModel() {
+) : ViewModel() {
 
     var errorMessage = mutableStateOf("")
         private set
@@ -33,21 +32,17 @@ class AddCategoryViewModel @Inject constructor(
                 isCategoryNameIncorrect.value = true
                 errorMessage.value = "Category name cannot be blank"
                 isCategorySaved.value = false
-            }
-            else {
+            } else {
                 isCategoryNameIncorrect.value = false
                 categoryRepository.saveCategory(
                     Category(
-                        0,
-                        categoryName,
-                        iconName = "category_icon"
+                        0, categoryName, iconName = "category_icon"
                     )
                 )
                 isCategorySaved.value = true
                 exitScreen.value = true
             }
-        }
-        catch (ex: Exception) {
+        } catch (ex: Exception) {
             isCategorySaved.value = false
         }
     }

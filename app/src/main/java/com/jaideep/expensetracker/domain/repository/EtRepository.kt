@@ -7,15 +7,15 @@ import kotlinx.coroutines.flow.Flow
 
 interface EtRepository {
 
-    suspend fun getAllAccounts() : Flow<List<Account>>
+    fun getAllAccounts(): Flow<List<Account>>
 
-    suspend fun getAllCategories() : Flow<List<Category>>
+    fun getAllCategories(): Flow<List<Category>>
 
-    suspend fun getAccount(accountId: Int) : Account
+    suspend fun getAccount(accountId: Int): Account
 
-    suspend fun getTransaction(transactionId: Int) : Transaction
+    suspend fun getTransaction(transactionId: Int): Transaction
 
-    suspend fun getCategory(categoryId: Int) : Category
+    suspend fun getCategory(categoryId: Int): Category
     suspend fun saveAccount(account: Account)
     suspend fun saveCategory(category: Category)
     suspend fun saveTransaction(transaction: Transaction)

@@ -1,19 +1,15 @@
 package com.jaideep.expensetracker.presentation.component
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.FastOutSlowInEasing
-import androidx.compose.animation.core.spring
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -42,8 +38,6 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.RadioButtonColors
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
@@ -51,7 +45,6 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -63,7 +56,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -72,12 +64,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.jaideep.expensetracker.R
-import com.jaideep.expensetracker.common.AppComponents.convertMilliSecondsToDate
 import com.jaideep.expensetracker.presentation.theme.OpenSansFont
 import com.jaideep.expensetracker.presentation.theme.md_theme_light_primary
 import com.jaideep.expensetracker.presentation.theme.md_theme_light_surface
+import java.time.LocalDate
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -433,7 +424,7 @@ fun TextFieldWithDropDown(
 
     ExposedDropdownMenuBox(modifier = modifier,
         expanded = isExpanded && !showErrorText.value,
-        onExpandedChange = { if (!showErrorText.value) isExpanded = it}) {
+        onExpandedChange = { if (!showErrorText.value) isExpanded = it }) {
 
         TextFieldWithIcon(
             modifier = Modifier.menuAnchor(),
@@ -448,7 +439,8 @@ fun TextFieldWithDropDown(
             showErrorText = showErrorText
         )
 
-        ExposedDropdownMenu(expanded = isExpanded && !showErrorText.value, onDismissRequest = { isExpanded = false }) {
+        ExposedDropdownMenu(expanded = isExpanded && !showErrorText.value,
+            onDismissRequest = { isExpanded = false }) {
             values.forEach {
                 DropdownMenuItem(text = {
                     SimpleText(text = it)
@@ -493,9 +485,11 @@ fun TextFieldDatePicker(
     if (showDatePicker.value) {
         DatePickerDialog(onDismissRequest = { showDatePicker.value = false }, confirmButton = {
             Button(onClick = {
-                text.value = TextFieldValue(
-                    dateState.selectedDateMillis?.convertMilliSecondsToDate() ?: ""
-                )
+                dateState.selectedDateMillis?.let { date ->
+                    text.value = TextFieldValue(
+                        LocalDate.ofEpochDay(date / 86_400_000L).toString()
+                    )
+                }
                 showDatePicker.value = false
             }) {
                 Text(text = "Ok")
@@ -538,7 +532,9 @@ fun TextFieldDatePicker(
             },
             leadingIcon = {
                 Icon(
-                    imageVector = icon, contentDescription = "Icon", tint = if (isError.value) Color.Red else iconColor
+                    imageVector = icon,
+                    contentDescription = "Icon",
+                    tint = if (isError.value) Color.Red else iconColor
                 )
             },
             trailingIcon = {
@@ -554,8 +550,7 @@ fun TextFieldDatePicker(
                             })
                     }
                 }
-            }
-            ,
+            },
             colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = borderColor,
                 unfocusedBorderColor = borderColor,
@@ -571,12 +566,9 @@ fun TextFieldDatePicker(
         )
 
         AnimatedVisibility(
-            visible = showErrorText.value,
-            enter = fadeIn(),
-            exit = fadeOut()
+            visible = showErrorText.value, enter = fadeIn(), exit = fadeOut()
         ) {
-            Column(
-            ) {
+            Column {
                 Spacer(modifier = Modifier.height(8.dp))
                 SimpleSmallText(
                     Modifier
@@ -633,7 +625,9 @@ fun TextFieldWithIcon(
             )
         }, leadingIcon = {
             Icon(
-                imageVector = icon, contentDescription = "Icon", tint = if (isError.value) Color.Red else iconColor
+                imageVector = icon,
+                contentDescription = "Icon",
+                tint = if (isError.value) Color.Red else iconColor
             )
         }, colors = OutlinedTextFieldDefaults.colors(
             focusedBorderColor = borderColor,
@@ -657,9 +651,7 @@ fun TextFieldWithIcon(
             }
         })
         AnimatedVisibility(
-            visible = showErrorText.value,
-            enter = fadeIn(),
-            exit = fadeOut()
+            visible = showErrorText.value, enter = fadeIn(), exit = fadeOut()
         ) {
             Column {
                 Spacer(modifier = Modifier.height(8.dp))
@@ -716,7 +708,9 @@ fun TextFieldWithIcon(
             )
         }, leadingIcon = {
             Icon(
-                imageVector = icon, contentDescription = "Icon", tint = if (isError.value) Color.Red else iconColor
+                imageVector = icon,
+                contentDescription = "Icon",
+                tint = if (isError.value) Color.Red else iconColor
             )
         }, colors = OutlinedTextFieldDefaults.colors(
             focusedBorderColor = borderColor,
@@ -740,9 +734,7 @@ fun TextFieldWithIcon(
             }
         })
         AnimatedVisibility(
-            visible = showErrorText.value,
-            enter = fadeIn(),
-            exit = fadeOut()
+            visible = showErrorText.value, enter = fadeIn(), exit = fadeOut()
         ) {
             Column {
                 Spacer(modifier = Modifier.height(8.dp))
@@ -796,7 +788,9 @@ fun TextFieldWithIcon(
             )
         }, leadingIcon = {
             Icon(
-                imageVector = icon, contentDescription = "Icon", tint = if (isError.value) Color.Red else iconColor
+                imageVector = icon,
+                contentDescription = "Icon",
+                tint = if (isError.value) Color.Red else iconColor
             )
         }, colors = OutlinedTextFieldDefaults.colors(
             focusedBorderColor = borderColor,
@@ -820,9 +814,7 @@ fun TextFieldWithIcon(
             }
         })
         AnimatedVisibility(
-            visible = showErrorText.value,
-            enter = fadeIn(),
-            exit = fadeOut()
+            visible = showErrorText.value, enter = fadeIn(), exit = fadeOut()
         ) {
             Column {
                 Spacer(modifier = Modifier.height(8.dp))

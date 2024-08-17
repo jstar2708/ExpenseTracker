@@ -68,7 +68,11 @@ interface TransactionDao {
     ): Flow<List<Transaction>>
 
     @Query(GET_TRANSACTIONS_BETWEEN_DATES)
-    fun getTransactionBetweenDates(startDate: Long, endDate: Long, limit: Int): Flow<List<Transaction>>
+    fun getTransactionBetweenDates(
+        startDate: Long,
+        endDate: Long,
+        limit: Int
+    ): Flow<List<Transaction>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun saveTransaction(transaction: Transaction)

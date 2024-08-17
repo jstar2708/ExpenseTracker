@@ -14,7 +14,7 @@ import com.jaideep.expensetracker.data.local.entities.Category
 import com.jaideep.expensetracker.data.local.entities.Transaction
 
 @Database(entities = [Account::class, Transaction::class, Category::class], version = 1)
-abstract class EtDatabase : RoomDatabase(){
+abstract class EtDatabase : RoomDatabase() {
 
     abstract fun getEtDao(): EtDao
     abstract fun getCategoryDao(): CategoryDao
@@ -27,12 +27,10 @@ abstract class EtDatabase : RoomDatabase(){
         private var INSTANCE: EtDatabase? = null
 
         fun getDatabase(context: Context): EtDatabase {
-            return INSTANCE ?: synchronized(this){
+            return INSTANCE ?: synchronized(this) {
                 //condition to check if a local database is present or not
-                val instance =  Room.databaseBuilder(
-                    context.applicationContext,
-                    EtDatabase::class.java,
-                    "my_database"
+                val instance = Room.databaseBuilder(
+                    context.applicationContext, EtDatabase::class.java, "my_database"
                 ).build()
 
                 INSTANCE = instance

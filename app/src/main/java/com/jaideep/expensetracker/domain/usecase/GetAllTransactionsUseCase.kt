@@ -11,8 +11,6 @@ class GetAllTransactionsUseCase @Inject constructor(
 ) {
     suspend operator fun invoke(loadSize: Int, start: Int) = flow<Resource<List<Transaction>>> {
         emit(Resource.Loading())
-//        try {
-//            val transactions = transactionRepository.getAllTransactions()
-//        }
+
     }
 }

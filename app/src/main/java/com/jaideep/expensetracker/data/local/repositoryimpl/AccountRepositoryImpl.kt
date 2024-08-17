@@ -3,12 +3,13 @@ package com.jaideep.expensetracker.data.local.repositoryimpl
 import com.jaideep.expensetracker.data.local.dao.AccountDao
 import com.jaideep.expensetracker.data.local.entities.Account
 import com.jaideep.expensetracker.domain.repository.AccountRepository
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class AccountRepositoryImpl @Inject constructor(
     private val accountDao: AccountDao
 ) : AccountRepository {
-    override suspend fun getAccounts(): List<Account> {
+    override fun getAccounts(): Flow<List<Account>> {
         return accountDao.getAccounts()
     }
 
