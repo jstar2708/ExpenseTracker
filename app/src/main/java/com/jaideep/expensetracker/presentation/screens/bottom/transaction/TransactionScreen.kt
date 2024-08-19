@@ -2,8 +2,10 @@ package com.jaideep.expensetracker.presentation.screens.bottom.transaction
 
 import android.app.Application
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -19,6 +21,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -28,6 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -41,6 +45,7 @@ import com.jaideep.expensetracker.presentation.component.ExpenseTrackerAppBar
 import com.jaideep.expensetracker.presentation.component.ExpenseTrackerSpinner
 import com.jaideep.expensetracker.presentation.component.ExpenseTrackerTabLayout
 import com.jaideep.expensetracker.presentation.component.ExpenseTrackerTransactionCardItem
+import com.jaideep.expensetracker.presentation.component.SimpleText
 import com.jaideep.expensetracker.presentation.theme.AppTheme
 import com.jaideep.expensetracker.presentation.viewmodel.MainViewModel
 import java.time.LocalDate
@@ -215,18 +220,34 @@ fun TransactionScreen(
                 )
             }
 
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight()
-            ) {
-                items(transactions.size) {
-                    ExpenseTrackerTransactionCardItem(
-                        iconId = transactions[it].categoryDto.iconId,
-                        iconDescription = "Category icon",
-                        categoryName = transactions[it].categoryDto.name,
-                        transactionDescription = transactions[it].message,
-                        amount = transactions[it].amount.toString()
+            if (transactions.isNotEmpty()) {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentHeight()
+                ) {
+                    items(transactions.size) {
+                        ExpenseTrackerTransactionCardItem(
+                            iconId = transactions[it].categoryDto.iconId,
+                            iconDescription = "Category icon",
+                            categoryName = transactions[it].categoryDto.name,
+                            transactionDescription = transactions[it].message,
+                            amount = transactions[it].amount.toString()
+                        )
+                    }
+                }
+            }
+            else {
+                Row (
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxHeight()
+                ) {
+                    SimpleText(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        text = "No transactions done",
+                        textAlignment = TextAlign.Center,
+                        color = Color.Gray
                     )
                 }
             }
