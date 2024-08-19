@@ -108,20 +108,21 @@ fun ExpenseTrackerAppBar(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ExpenseTrackerSpinner(
-    modifier: Modifier = Modifier, values: List<String>, onValueChanged: (value: String) -> Unit
+    modifier: Modifier = Modifier,
+    selectedAccount: MutableState<String> = remember {
+        mutableStateOf("")
+    },
+    values: List<String>,
+    onValueChanged: (value: String) -> Unit
 ) {
     var isExpanded by remember {
         mutableStateOf(false)
     }
 
-    var selectedAccount by remember {
-        mutableStateOf(values[0])
-    }
-
     ExposedDropdownMenuBox(modifier = modifier,
         expanded = isExpanded,
         onExpandedChange = { isExpanded = it }) {
-        OutlinedTextField(value = selectedAccount,
+        OutlinedTextField(value = selectedAccount.value,
             onValueChange = {
                             },
             readOnly = true,
@@ -142,7 +143,7 @@ fun ExpenseTrackerSpinner(
                     DropdownMenuItem(text = {
                         SimpleText(text = it)
                     }, onClick = {
-                        selectedAccount = it
+                        selectedAccount.value = it
                         onValueChanged(it)
                         isExpanded = false
                     })

@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -14,8 +15,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.outlined.AccountCircle
@@ -33,6 +32,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableDoubleStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -68,7 +68,8 @@ private fun HomeScreenPreview() {
             transactions = listOf(),
             onAccountSpinnerValueChanged = {},
             accountBalance = remember { mutableDoubleStateOf(0.0) },
-            spentToday = remember { mutableDoubleStateOf(0.0) })
+            spentToday = remember { mutableDoubleStateOf(0.0) },
+            selectedAccount = remember { mutableStateOf("All Accounts") })
     }
 }
 
@@ -85,7 +86,8 @@ fun HomeScreenRoot(
         transactions = mainViewModel.transactions.collectAsState().value,
         onAccountSpinnerValueChanged = homeViewModel::updateSelectedAccount,
         accountBalance = homeViewModel.selectedAccountBalance,
-        spentToday = homeViewModel.spentToday
+        spentToday = homeViewModel.spentToday,
+        selectedAccount = homeViewModel.selectedAccount
     )
 }
 
@@ -96,7 +98,8 @@ fun HomeScreen(
     transactions: List<TransactionDto>,
     onAccountSpinnerValueChanged: (value: String) -> Unit,
     accountBalance: MutableState<Double>,
-    spentToday: MutableState<Double>
+    spentToday: MutableState<Double>,
+    selectedAccount: MutableState<String>
 ) {
     val savedStateHandle = navControllerRoot.currentBackStackEntry?.savedStateHandle
     val resultAccount = savedStateHandle?.get<Boolean>("isAccountSaved")
@@ -147,9 +150,11 @@ fun HomeScreen(
                         modifier = Modifier.weight(1f)
                     )
                 }
-                ExpenseTrackerSpinner(values = accounts, onValueChanged = { value ->
-                    onAccountSpinnerValueChanged(value)
-                })
+                ExpenseTrackerSpinner(values = accounts,
+                    selectedAccount = selectedAccount,
+                    onValueChanged = { value ->
+                        onAccountSpinnerValueChanged(value)
+                    })
 
                 SummaryCard(accountBalance, spentToday)
 
@@ -204,21 +209,31 @@ fun TransactionSummary(transactions: List<TransactionDto>) {
         modifier = Modifier.padding(8.dp), text = "Last Transactions"
     )
 
-//    val scrollState = rememberScrollState()
-
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxWidth()
-//            .verticalScroll(scrollState)
-            .wrapContentHeight()
-    ) {
-        items(transactions.size) {
-            ExpenseTrackerTransactionCardItem(
-                iconId = transactions[it].categoryDto.iconId,
-                iconDescription = "Category icon",
-                categoryName = transactions[it].categoryDto.name,
-                transactionDescription = transactions[it].message,
-                amount = transactions[it].amount.toString()
+    if (transactions.isNotEmpty()) {
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight()
+        ) {
+            items(transactions.size) {
+                ExpenseTrackerTransactionCardItem(
+                    iconId = transactions[it].categoryDto.iconId,
+                    iconDescription = "Category icon",
+                    categoryName = transactions[it].categoryDto.name,
+                    transactionDescription = transactions[it].message,
+                    amount = transactions[it].amount.toString()
+                )
+            }
+        }
+    } else {
+        Row(
+            verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxHeight()
+        ) {
+            SimpleText(
+                modifier = Modifier.fillMaxWidth(),
+                text = "No transactions done",
+                textAlignment = TextAlign.Center,
+                color = Color.Gray
             )
         }
     }
