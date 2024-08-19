@@ -1,5 +1,7 @@
 package com.jaideep.expensetracker.presentation.viewmodel
 
+import androidx.compose.runtime.State
+import androidx.compose.runtime.asDoubleState
 import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -20,9 +22,12 @@ class HomeViewModel @Inject constructor(
     private val getAmountSpentTodayForAccountUseCase: GetAmountSpentTodayForAccountUseCase,
     private val getAccountBalanceUseCase: GetAccountBalanceUseCase
 ): ViewModel() {
-    var spentToday = mutableDoubleStateOf(0.0)
-    var selectedAccount = mutableStateOf("All Accounts")
-    var selectedAccountBalance = mutableDoubleStateOf(0.0)
+    private val _spentToday = mutableDoubleStateOf(0.0)
+    val spentToday: State<Double> = _spentToday
+    private val _selectedAccount = mutableStateOf("All Accounts")
+    val selectedAccount: State<String> = _selectedAccount
+    private val _selectedAccountBalance = mutableDoubleStateOf(0.0)
+    val selectedAccountBalance: State<Double> = _selectedAccountBalance
 
     private fun getAccountBalance() = viewModelScope.launch(EtDispatcher.io) {
         getAccountBalanceUseCase(selectedAccount.value).collect {
@@ -31,7 +36,7 @@ class HomeViewModel @Inject constructor(
                 is Resource.Error -> {/*
                  Show error message, implement when you create error state variable */
                 }
-                is Resource.Success -> selectedAccountBalance.doubleValue = it.data
+                is Resource.Success -> _selectedAccountBalance.doubleValue = it.data
             }
         }
     }
@@ -43,13 +48,18 @@ class HomeViewModel @Inject constructor(
                 is Resource.Error -> {/*
                  Show error message, implement when you create error state variable */
                 }
-                is Resource.Success -> spentToday.doubleValue = it.data
+                is Resource.Success -> _spentToday.doubleValue = it.data
             }
         }
     }
 
     fun updateSelectedAccount(updatedValue: String) {
-        selectedAccount.value = updatedValue
+        _selectedAccount.value = updatedValue
+        getAccountBalance()
+        getAmountSpentTodayForSelectedAccount()
+    }
+
+    fun getInitialAccountData() {
         getAccountBalance()
         getAmountSpentTodayForSelectedAccount()
     }

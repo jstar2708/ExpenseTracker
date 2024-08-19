@@ -1,6 +1,10 @@
 package com.jaideep.expensetracker.domain.repository
 
+import kotlinx.coroutines.flow.Flow
+
 interface EtRepository {
-    suspend fun getAmountSpentTodayForAccount(accountName: String): Double
-    suspend fun getAccountBalanceByName(accountName: String): Double
+    fun getAmountSpentTodayForAccount(accountName: String): Flow<Double>
+    fun getAccountBalanceByName(accountName: String): Flow<Double>
+    fun getAmountSpentTodayForAllAccount(): Flow<Double>
+    fun getAccountBalanceForAllAccounts(): Flow<Double>
 }

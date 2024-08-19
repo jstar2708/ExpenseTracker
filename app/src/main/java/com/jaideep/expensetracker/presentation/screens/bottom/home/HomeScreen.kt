@@ -29,7 +29,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -69,7 +69,8 @@ private fun HomeScreenPreview() {
             onAccountSpinnerValueChanged = {},
             accountBalance = remember { mutableDoubleStateOf(0.0) },
             spentToday = remember { mutableDoubleStateOf(0.0) },
-            selectedAccount = remember { mutableStateOf("All Accounts") })
+            selectedAccount = remember { mutableStateOf("All Accounts") },
+            getInitialAccountSpecificData = {})
     }
 }
 
@@ -87,7 +88,8 @@ fun HomeScreenRoot(
         onAccountSpinnerValueChanged = homeViewModel::updateSelectedAccount,
         accountBalance = homeViewModel.selectedAccountBalance,
         spentToday = homeViewModel.spentToday,
-        selectedAccount = homeViewModel.selectedAccount
+        selectedAccount = homeViewModel.selectedAccount,
+        getInitialAccountSpecificData = homeViewModel::getInitialAccountData
     )
 }
 
@@ -97,14 +99,19 @@ fun HomeScreen(
     accounts: List<String>,
     transactions: List<TransactionDto>,
     onAccountSpinnerValueChanged: (value: String) -> Unit,
-    accountBalance: MutableState<Double>,
-    spentToday: MutableState<Double>,
-    selectedAccount: MutableState<String>
+    getInitialAccountSpecificData: () -> Unit,
+    accountBalance: State<Double>,
+    spentToday: State<Double>,
+    selectedAccount: State<String>
 ) {
     val savedStateHandle = navControllerRoot.currentBackStackEntry?.savedStateHandle
     val resultAccount = savedStateHandle?.get<Boolean>("isAccountSaved")
 
     val resultTransaction = savedStateHandle?.get<Boolean>("isTransactionSaved")
+
+    LaunchedEffect(key1 = true) {
+        getInitialAccountSpecificData()
+    }
 
     val snackBarHostState = remember {
         SnackbarHostState()
@@ -151,7 +158,7 @@ fun HomeScreen(
                     )
                 }
                 ExpenseTrackerSpinner(values = accounts,
-                    selectedAccount = selectedAccount,
+                    initialValue = selectedAccount.value,
                     onValueChanged = { value ->
                         onAccountSpinnerValueChanged(value)
                     })
@@ -242,7 +249,7 @@ fun TransactionSummary(transactions: List<TransactionDto>) {
 //@Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun SummaryCard(
-    accountBalance: MutableState<Double>, spentToday: MutableState<Double>
+    accountBalance: State<Double>, spentToday: State<Double>
 ) {
     Card(
         modifier = Modifier
