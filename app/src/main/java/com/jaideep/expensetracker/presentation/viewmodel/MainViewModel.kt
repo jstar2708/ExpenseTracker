@@ -1,5 +1,6 @@
 package com.jaideep.expensetracker.presentation.viewmodel
 
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
@@ -7,11 +8,13 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.jaideep.expensetracker.common.AppComponents.getCategoryIconId
+import com.jaideep.expensetracker.common.EtDispatcher
 import com.jaideep.expensetracker.common.Resource
 import com.jaideep.expensetracker.common.constant.TransactionMethod
 import com.jaideep.expensetracker.data.local.entities.Account
 import com.jaideep.expensetracker.data.local.entities.Category
 import com.jaideep.expensetracker.data.local.entities.Transaction
+import com.jaideep.expensetracker.domain.repository.CategoryRepository
 import com.jaideep.expensetracker.domain.repository.TransactionPagingRepository
 import com.jaideep.expensetracker.domain.usecase.GetAllAccountsUseCase
 import com.jaideep.expensetracker.domain.usecase.GetAllCategoriesUseCase
@@ -37,7 +40,8 @@ class MainViewModel @Inject constructor(
     private val transactionPagingRepository: TransactionPagingRepository,
     private val getAllAccountsUseCase: GetAllAccountsUseCase,
     private val getAllCategoriesUseCase: GetAllCategoriesUseCase,
-    private val getInitialTransactionsUseCase: GetInitialTransactionsUseCase
+    private val getInitialTransactionsUseCase: GetInitialTransactionsUseCase,
+    private val categoryRepository: CategoryRepository
 ) : ViewModel() {
     private val _accounts: MutableStateFlow<List<Account>> = MutableStateFlow(ArrayList())
     var accounts: StateFlow<List<String>> = _accounts.map { list ->
@@ -66,8 +70,6 @@ class MainViewModel @Inject constructor(
         }.toList()
     }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
-    val selectedAccount: MutableStateFlow<String> = MutableStateFlow("All accounts")
-
     private val transactionMethod: MutableStateFlow<TransactionMethod> =
         MutableStateFlow(TransactionMethod.GET_ALL_TRANSACTIONS)
 
@@ -76,11 +78,28 @@ class MainViewModel @Inject constructor(
             transactionPagingRepository.getAllTransactions()
         }).flow.cachedIn(viewModelScope))
 
+    private val _isFirstAppInitialization = MutableLiveData<Boolean>()
+    var isFirstAppInitialization = _isFirstAppInitialization
+
     init {
         getAllAccounts()
         getAllCategories()
         getTransactionPagingSource()
         getInitialTransactions()
+    }
+
+    fun addDefaultCategories() {
+        viewModelScope.launch(EtDispatcher.io) {
+            categoryRepository.saveAllCategories(
+                listOf(
+                    Category(1, "Food", "Food"),
+                    Category(2, "Fuel", "Fuel"),
+                    Category(3, "Entertainment", "Entertainment"),
+                    Category(4, "Shopping", "Shopping"),
+                    Category(5, "Travel", "Travel")
+                )
+            )
+        }
     }
 
     private fun getAllAccounts() = viewModelScope.launch {
@@ -211,5 +230,11 @@ class MainViewModel @Inject constructor(
             categoryDto = CategoryDto(it.categoryName, getCategoryIconId(it.iconName))
         }
         return categoryDto
+    }
+
+    fun checkFirstAppInitialization() {
+        viewModelScope.launch(EtDispatcher.io) {
+            _isFirstAppInitialization.postValue(categoryRepository.getAllCategoriesCount() == 0)
+        }
     }
 }

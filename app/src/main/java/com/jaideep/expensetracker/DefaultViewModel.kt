@@ -30,9 +30,5 @@ class DefaultViewModel @Inject constructor(
         }
     }
 
-    fun checkFirstAppInitialization() {
-        viewModelScope.launch(EtDispatcher.io) {
-            _isFirstAppInitialization.postValue(categoryRepository.getAllCategoriesCount() == 0)
-        }
-    }
+
 }

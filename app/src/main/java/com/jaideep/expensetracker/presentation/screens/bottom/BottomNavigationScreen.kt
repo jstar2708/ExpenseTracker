@@ -24,12 +24,11 @@ import com.jaideep.expensetracker.presentation.navigation.BottomNavigationGraph
 import com.jaideep.expensetracker.presentation.viewmodel.MainViewModel
 
 @Composable
-fun BottomNavigationScreen(navHostControllerRoot: NavHostController) {
+fun BottomNavigationScreen(navHostControllerRoot: NavHostController, mainViewModel: MainViewModel) {
     val bottomNavController: NavHostController = rememberNavController()
     Scaffold(modifier = Modifier.fillMaxWidth(), bottomBar = {
         BottomNavigation(bottomNavController)
     }) {
-        val mainViewModel: MainViewModel = hiltViewModel()
         BottomNavigationGraph(bottomNavController, navHostControllerRoot, it, mainViewModel)
     }
 }

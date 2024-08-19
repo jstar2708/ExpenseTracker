@@ -6,23 +6,23 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import com.jaideep.expensetracker.presentation.navigation.RootNavigationGraph
 import com.jaideep.expensetracker.presentation.theme.AppTheme
+import com.jaideep.expensetracker.presentation.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-    private val defaultViewModel: DefaultViewModel by viewModels()
+    private val mainViewModel: MainViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        defaultViewModel.isFirstAppInitialization.observe(this) { isFirstInitialization ->
+        mainViewModel.isFirstAppInitialization.observe(this) { isFirstInitialization ->
             if (isFirstInitialization) {
-                defaultViewModel.addDefaultCategories()
+                mainViewModel.addDefaultCategories()
             }
         }
-        defaultViewModel.checkFirstAppInitialization()
+        mainViewModel.checkFirstAppInitialization()
         setContent {
             AppTheme {
-                RootNavigationGraph()
-
+                RootNavigationGraph(mainViewModel)
             }
         }
     }

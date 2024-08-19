@@ -37,6 +37,7 @@ import com.jaideep.expensetracker.presentation.component.SimpleTextBold
 import com.jaideep.expensetracker.presentation.component.TextFieldWithIcon
 import com.jaideep.expensetracker.presentation.theme.AppTheme
 import com.jaideep.expensetracker.presentation.viewmodel.AddCategoryViewModel
+import com.jaideep.expensetracker.presentation.viewmodel.MainViewModel
 
 @Preview
 @Composable
@@ -63,7 +64,7 @@ private fun AddCategoryScreenPreview() {
 }
 
 @Composable
-fun AddCategoryScreenRoot(navControllerRoot: NavHostController) {
+fun AddCategoryScreenRoot(navControllerRoot: NavHostController, mainViewModel: MainViewModel) {
     val addCategoryViewModel: AddCategoryViewModel = hiltViewModel()
     AppTheme {
         AddCategoryScreen(

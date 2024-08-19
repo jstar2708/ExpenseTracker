@@ -29,7 +29,7 @@ fun BottomNavigationGraph(
         route = Graph.MAIN
     ) {
         composable(MainScreen.HOME) {
-            HomeScreenRoot(navHostControllerRoot)
+            HomeScreenRoot(navControllerRoot = navHostControllerRoot, mainViewModel = mainViewModel)
         }
         composable(MainScreen.TRANSACTIONS) {
             TransactionScreenRoot(navHostControllerRoot, mainViewModel) {

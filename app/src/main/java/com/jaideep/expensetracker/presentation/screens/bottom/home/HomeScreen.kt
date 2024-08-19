@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -29,7 +30,9 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -53,37 +56,47 @@ import com.jaideep.expensetracker.presentation.component.HeadingTextBold
 import com.jaideep.expensetracker.presentation.component.SimpleText
 import com.jaideep.expensetracker.presentation.component.SimpleTextBold
 import com.jaideep.expensetracker.presentation.theme.AppTheme
+import com.jaideep.expensetracker.presentation.viewmodel.HomeViewModel
 import com.jaideep.expensetracker.presentation.viewmodel.MainViewModel
 
 @Preview
 @Composable
 private fun HomeScreenPreview() {
     AppTheme {
-        HomeScreen(
-            navControllerRoot = NavController(Application()),
-            accounts = listOf("All accounts, Cash"),
-            transactions = listOf()
-        )
+        HomeScreen(navControllerRoot = NavController(Application()),
+            accounts = listOf("All accounts", "Cash"),
+            transactions = listOf(),
+            onAccountSpinnerValueChanged = {},
+            accountBalance = remember { mutableDoubleStateOf(0.0) },
+            spentToday = remember { mutableDoubleStateOf(0.0) })
     }
 }
 
 @Composable
 fun HomeScreenRoot(
-    navControllerRoot: NavController
+    navControllerRoot: NavController, mainViewModel: MainViewModel
 ) {
-    val mainViewModel: MainViewModel = hiltViewModel()
+    val homeViewModel: HomeViewModel = hiltViewModel()
     HomeScreen(
         navControllerRoot = navControllerRoot,
         accounts = mainViewModel.accounts.collectAsState().value.toMutableList().apply {
             this.add(0, "All Accounts")
         },
         transactions = mainViewModel.transactions.collectAsState().value,
+        onAccountSpinnerValueChanged = homeViewModel::updateSelectedAccount,
+        accountBalance = homeViewModel.selectedAccountBalance,
+        spentToday = homeViewModel.spentToday
     )
 }
 
 @Composable
 fun HomeScreen(
-    navControllerRoot: NavController, accounts: List<String>, transactions: List<TransactionDto>
+    navControllerRoot: NavController,
+    accounts: List<String>,
+    transactions: List<TransactionDto>,
+    onAccountSpinnerValueChanged: (value: String) -> Unit,
+    accountBalance: MutableState<Double>,
+    spentToday: MutableState<Double>
 ) {
     val savedStateHandle = navControllerRoot.currentBackStackEntry?.savedStateHandle
     val resultAccount = savedStateHandle?.get<Boolean>("isAccountSaved")
@@ -134,13 +147,13 @@ fun HomeScreen(
                         modifier = Modifier.weight(1f)
                     )
                 }
-                ExpenseTrackerSpinner(values = accounts, onValueChanged = {
-
+                ExpenseTrackerSpinner(values = accounts, onValueChanged = { value ->
+                    onAccountSpinnerValueChanged(value)
                 })
 
-                SummaryCard()
+                SummaryCard(accountBalance, spentToday)
 
-                TransactionSummary()
+                TransactionSummary(transactions)
             }
         }
     }
@@ -185,34 +198,37 @@ fun SpentAccordingToDuration() {
     }
 }
 
-//@Preview(showBackground = true, showSystemUi = true)
 @Composable
-fun TransactionSummary() {
+fun TransactionSummary(transactions: List<TransactionDto>) {
     SimpleTextBold(
         modifier = Modifier.padding(8.dp), text = "Last Transactions"
     )
 
-    val scrollState = rememberScrollState()
-    Column(
+//    val scrollState = rememberScrollState()
+
+    LazyColumn(
         modifier = Modifier
             .fillMaxWidth()
-            .verticalScroll(scrollState)
+//            .verticalScroll(scrollState)
             .wrapContentHeight()
     ) {
-
-        for (i in 0 until 5) ExpenseTrackerTransactionCardItem(
-            iconId = R.drawable.fuel,
-            iconDescription = "Fuel icon",
-            categoryName = "Fuel",
-            transactionDescription = "Petrol in scooter",
-            amount = "$49"
-        )
+        items(transactions.size) {
+            ExpenseTrackerTransactionCardItem(
+                iconId = transactions[it].categoryDto.iconId,
+                iconDescription = "Category icon",
+                categoryName = transactions[it].categoryDto.name,
+                transactionDescription = transactions[it].message,
+                amount = transactions[it].amount.toString()
+            )
+        }
     }
 }
 
 //@Preview(showBackground = true, showSystemUi = true)
 @Composable
-fun SummaryCard() {
+fun SummaryCard(
+    accountBalance: MutableState<Double>, spentToday: MutableState<Double>
+) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -236,12 +252,14 @@ fun SummaryCard() {
                             .padding(8.dp)
                     )
                     SimpleText(
-                        text = "Monthly Limit \$6000",
+                        text = "Spent Today \$${spentToday.value}",
                         modifier = Modifier.padding(start = 8.dp, end = 8.dp, bottom = 8.dp)
                     )
                 }
                 HeadingTextBold(
-                    text = "$4500", modifier = Modifier.weight(1f), textAlignment = TextAlign.Center
+                    text = "$${accountBalance.value}",
+                    modifier = Modifier.weight(1f),
+                    textAlignment = TextAlign.Center
                 )
             }
             ExpenseTrackerCategoryCard(

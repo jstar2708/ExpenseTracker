@@ -13,4 +13,10 @@ object Utility {
             else -> ""
         }
     }
+
+    fun getCurrentDateInMillis(): Long {
+        var time = System.currentTimeMillis()
+        time -= time % 86_400_000L
+        return time
+    }
 }

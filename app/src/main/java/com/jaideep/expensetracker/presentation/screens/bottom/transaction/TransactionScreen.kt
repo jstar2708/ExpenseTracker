@@ -213,7 +213,6 @@ fun TransactionScreen(
                         },
                     tint = Color.Unspecified
                 )
-
             }
 
             LazyColumn(

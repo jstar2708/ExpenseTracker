@@ -71,13 +71,8 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun providesEtRepository(
-        etDao: EtDao,
-        accountDao: AccountDao,
-        transactionPagingDao: TransactionPagingDao,
-        categoryDao: CategoryDao
-    ): EtRepository {
-        return EtRepositoryImpl(etDao, transactionPagingDao, accountDao, categoryDao)
+    fun providesEtRepository(etDao: EtDao): EtRepository {
+        return EtRepositoryImpl(etDao)
     }
 
     @Provides

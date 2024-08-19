@@ -39,6 +39,7 @@ import com.jaideep.expensetracker.presentation.component.SimpleTextBold
 import com.jaideep.expensetracker.presentation.component.TextFieldWithIcon
 import com.jaideep.expensetracker.presentation.theme.AppTheme
 import com.jaideep.expensetracker.presentation.viewmodel.AddAccountViewModel
+import com.jaideep.expensetracker.presentation.viewmodel.MainViewModel
 
 @Preview
 @Composable
@@ -69,7 +70,7 @@ private fun AddAccountScreenPreview() {
 
 @Composable
 fun AddAccountScreenRoot(
-    navController: NavHostController, addAccountViewModel: AddAccountViewModel = hiltViewModel()
+    navController: NavHostController, mainViewModel: MainViewModel, addAccountViewModel: AddAccountViewModel = hiltViewModel()
 ) {
     AddAccountScreen(
         addAccountViewModel.screenTitle,

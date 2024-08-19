@@ -51,6 +51,7 @@ import com.jaideep.expensetracker.presentation.component.TextFieldWithDropDown
 import com.jaideep.expensetracker.presentation.component.TextFieldWithIcon
 import com.jaideep.expensetracker.presentation.theme.AppTheme
 import com.jaideep.expensetracker.presentation.viewmodel.AddTransactionViewModel
+import com.jaideep.expensetracker.presentation.viewmodel.MainViewModel
 
 @Preview(showSystemUi = true, showBackground = true)
 @Composable
@@ -105,7 +106,7 @@ fun AddTransactionPreview() {
 
 @Composable
 fun AddTransactionScreenRoot(
-    navControllerRoot: NavHostController, viewModel: AddTransactionViewModel = hiltViewModel()
+    navControllerRoot: NavHostController, mainViewModel: MainViewModel,  viewModel: AddTransactionViewModel = hiltViewModel()
 ) {
     AddTransactionScreen(radioButtonValue = viewModel.radioButtonValue,
         detailsMessage = viewModel.screenDetail,
