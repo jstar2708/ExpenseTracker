@@ -44,9 +44,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.jaideep.expensetracker.R
 import com.jaideep.expensetracker.common.DetailScreen
-import com.jaideep.expensetracker.model.TransactionDto
+import com.jaideep.expensetracker.model.CategoryCardData
+import com.jaideep.expensetracker.model.dto.TransactionDto
 import com.jaideep.expensetracker.presentation.component.ExpenseTrackerAppBar
 import com.jaideep.expensetracker.presentation.component.ExpenseTrackerBlueButton
 import com.jaideep.expensetracker.presentation.component.ExpenseTrackerCategoryCard
@@ -56,6 +56,7 @@ import com.jaideep.expensetracker.presentation.component.HeadingTextBold
 import com.jaideep.expensetracker.presentation.component.SimpleText
 import com.jaideep.expensetracker.presentation.component.SimpleTextBold
 import com.jaideep.expensetracker.presentation.theme.AppTheme
+import com.jaideep.expensetracker.presentation.utility.Utility
 import com.jaideep.expensetracker.presentation.viewmodel.HomeViewModel
 import com.jaideep.expensetracker.presentation.viewmodel.MainViewModel
 
@@ -70,7 +71,13 @@ private fun HomeScreenPreview() {
             accountBalance = remember { mutableDoubleStateOf(0.0) },
             spentToday = remember { mutableDoubleStateOf(0.0) },
             selectedAccount = remember { mutableStateOf("All Accounts") },
-            getInitialAccountSpecificData = {})
+            getInitialAccountSpecificData = {},
+            categoryCardData = remember {
+                mutableStateOf(CategoryCardData())
+            },
+            amountSpentThisMonthFromAcc = remember {
+                mutableDoubleStateOf(0.0)
+            })
     }
 }
 
@@ -89,7 +96,9 @@ fun HomeScreenRoot(
         accountBalance = homeViewModel.selectedAccountBalance,
         spentToday = homeViewModel.spentToday,
         selectedAccount = homeViewModel.selectedAccount,
-        getInitialAccountSpecificData = homeViewModel::getInitialAccountData
+        getInitialAccountSpecificData = homeViewModel::getInitialAccountData,
+        categoryCardData = homeViewModel.getMaxSpentCategoryData,
+        amountSpentThisMonthFromAcc = homeViewModel.amountSpentThisMonthFromAcc
     )
 }
 
@@ -102,7 +111,9 @@ fun HomeScreen(
     getInitialAccountSpecificData: () -> Unit,
     accountBalance: State<Double>,
     spentToday: State<Double>,
-    selectedAccount: State<String>
+    selectedAccount: State<String>,
+    categoryCardData: State<CategoryCardData>,
+    amountSpentThisMonthFromAcc: State<Double>
 ) {
     val savedStateHandle = navControllerRoot.currentBackStackEntry?.savedStateHandle
     val resultAccount = savedStateHandle?.get<Boolean>("isAccountSaved")
@@ -115,6 +126,7 @@ fun HomeScreen(
 
     val snackBarHostState = remember {
         SnackbarHostState()
+
     }
     Surface(
         modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background
@@ -163,7 +175,12 @@ fun HomeScreen(
                         onAccountSpinnerValueChanged(value)
                     })
 
-                SummaryCard(accountBalance, spentToday)
+                SummaryCard(
+                    accountBalance,
+                    spentToday,
+                    categoryCardData,
+                    amountSpentThisMonthFromAcc
+                )
 
                 TransactionSummary(transactions)
             }
@@ -249,7 +266,10 @@ fun TransactionSummary(transactions: List<TransactionDto>) {
 //@Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun SummaryCard(
-    accountBalance: State<Double>, spentToday: State<Double>
+    accountBalance: State<Double>,
+    spentToday: State<Double>,
+    categoryCardData: State<CategoryCardData>,
+    amountSpentThisMonthFromAcc: State<Double>
 ) {
     Card(
         modifier = Modifier
@@ -285,11 +305,11 @@ fun SummaryCard(
                 )
             }
             ExpenseTrackerCategoryCard(
-                iconId = R.drawable.food,
-                iconDescription = "Food icon",
-                categoryName = "Food",
-                spendValue = "$0 / $1000",
-                progressValue = 0.8f,
+                iconId = Utility.getCategoryIconId(categoryCardData.value.iconName),
+                iconDescription = "${categoryCardData.value.categoryName} icon",
+                categoryName = categoryCardData.value.categoryName,
+                spendValue = "${categoryCardData.value.amountSpent} / ${amountSpentThisMonthFromAcc.value}",
+                progressValue = (categoryCardData.value.amountSpent / amountSpentThisMonthFromAcc.value).toFloat(),
                 trackColor = Color.Yellow
             )
             Spacer(modifier = Modifier.height(20.dp))

@@ -1,4 +1,4 @@
-package com.jaideep.expensetracker.model
+package com.jaideep.expensetracker.model.dto
 
 import java.time.LocalDate
 

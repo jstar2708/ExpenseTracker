@@ -180,7 +180,7 @@ class AddTransactionViewModel @Inject constructor(
                                 account.get().id,
                                 category.get().id,
                                 note,
-                                LocalDate.parse(date).toEpochDay() * 86_400_000L,
+                                (LocalDate.parse(date).toEpochDay() - 1) * 86_400_000L,
                                 if (isCredit) 1 else 0
                             )
                         )

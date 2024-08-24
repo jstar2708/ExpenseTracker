@@ -2,7 +2,6 @@ package com.jaideep.expensetracker.presentation.screens.bottom.transaction
 
 import android.app.Application
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -21,7 +20,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -39,8 +37,8 @@ import androidx.navigation.NavHostController
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.jaideep.expensetracker.R
 import com.jaideep.expensetracker.common.DetailScreen
-import com.jaideep.expensetracker.model.CategoryDto
-import com.jaideep.expensetracker.model.TransactionDto
+import com.jaideep.expensetracker.model.dto.CategoryDto
+import com.jaideep.expensetracker.model.dto.TransactionDto
 import com.jaideep.expensetracker.presentation.component.ExpenseTrackerAppBar
 import com.jaideep.expensetracker.presentation.component.ExpenseTrackerSpinner
 import com.jaideep.expensetracker.presentation.component.ExpenseTrackerTabLayout

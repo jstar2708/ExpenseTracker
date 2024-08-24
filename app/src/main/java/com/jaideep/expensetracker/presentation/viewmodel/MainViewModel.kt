@@ -7,6 +7,7 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import com.jaideep.expensetracker.R
 import com.jaideep.expensetracker.common.AppComponents.getCategoryIconId
 import com.jaideep.expensetracker.common.EtDispatcher
 import com.jaideep.expensetracker.common.Resource
@@ -19,8 +20,8 @@ import com.jaideep.expensetracker.domain.repository.TransactionPagingRepository
 import com.jaideep.expensetracker.domain.usecase.GetAllAccountsUseCase
 import com.jaideep.expensetracker.domain.usecase.GetAllCategoriesUseCase
 import com.jaideep.expensetracker.domain.usecase.GetInitialTransactionsUseCase
-import com.jaideep.expensetracker.model.CategoryDto
-import com.jaideep.expensetracker.model.TransactionDto
+import com.jaideep.expensetracker.model.dto.CategoryDto
+import com.jaideep.expensetracker.model.dto.TransactionDto
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -225,7 +226,7 @@ class MainViewModel @Inject constructor(
         val category: Category? = _categories.value.find {
             categoryId == it.id
         }
-        var categoryDto = CategoryDto("DEFAULT_CATEGORY", 0)
+        var categoryDto = CategoryDto("Other", R.drawable.category)
         category?.let {
             categoryDto = CategoryDto(it.categoryName, getCategoryIconId(it.iconName))
         }

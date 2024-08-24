@@ -4,20 +4,32 @@ import androidx.room.Dao
 import androidx.room.Query
 import com.jaideep.expensetracker.common.constant.sql.EtSql.GET_ACCOUNT_BALANCE_BY_NAME
 import com.jaideep.expensetracker.common.constant.sql.EtSql.GET_ACCOUNT_BALANCE_FOR_ALL_ACCOUNTS
-import com.jaideep.expensetracker.common.constant.sql.EtSql.GET_AMOUNT_SPENT_FROM_ACCOUNT
-import com.jaideep.expensetracker.common.constant.sql.EtSql.GET_AMOUNT_SPENT_FROM_ALL_ACCOUNT
+import com.jaideep.expensetracker.common.constant.sql.EtSql.GET_AMOUNT_SPENT_FROM_ACCOUNT_THIS_MONTH
+import com.jaideep.expensetracker.common.constant.sql.EtSql.GET_AMOUNT_SPENT_FROM_ACCOUNT_TODAY
+import com.jaideep.expensetracker.common.constant.sql.EtSql.GET_AMOUNT_SPENT_FROM_ALL_ACCOUNTS_THIS_MONTH
+import com.jaideep.expensetracker.common.constant.sql.EtSql.GET_AMOUNT_SPENT_FROM_ALL_ACCOUNT_TODAY
+import com.jaideep.expensetracker.common.constant.sql.EtSql.GET_CATEGORY_ON_WHICH_MAX_AMOUNT_SPENT_FROM_ACCOUNT_THIS_MONTH
+import com.jaideep.expensetracker.common.constant.sql.EtSql.GET_CATEGORY_ON_WHICH_MAX_AMOUNT_SPENT_FROM_ALL_ACCOUNTS_THIS_MONTH
+import com.jaideep.expensetracker.model.CategoryCardData
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface EtDao {
 
-    @Query(GET_AMOUNT_SPENT_FROM_ACCOUNT)
+    @Query(GET_AMOUNT_SPENT_FROM_ACCOUNT_TODAY)
     fun getAmountSpentFromAccountToday(date: Long, accountName: String): Flow<Double>
-
     @Query(GET_ACCOUNT_BALANCE_BY_NAME)
     fun getAccountBalanceByName(accountName: String): Flow<Double>
-    @Query(GET_AMOUNT_SPENT_FROM_ALL_ACCOUNT)
+    @Query(GET_AMOUNT_SPENT_FROM_ALL_ACCOUNT_TODAY)
     fun getAmountSpentFromAllAccountsToday(date: Long): Flow<Double>
     @Query(GET_ACCOUNT_BALANCE_FOR_ALL_ACCOUNTS)
     fun getAccountBalanceForAllAccounts(): Flow<Double>
+    @Query(GET_CATEGORY_ON_WHICH_MAX_AMOUNT_SPENT_FROM_ACCOUNT_THIS_MONTH)
+    fun getCategoryOnWhichMaximumAmountSpentFromAccountThisMonth(accountName: String, date: Long): Flow<CategoryCardData>
+    @Query(GET_AMOUNT_SPENT_FROM_ACCOUNT_THIS_MONTH)
+    fun getTotalAmountSpentFromAccountThisMonth(accountName: String, date: Long) : Flow<Double>
+    @Query(GET_CATEGORY_ON_WHICH_MAX_AMOUNT_SPENT_FROM_ALL_ACCOUNTS_THIS_MONTH)
+    fun getCategoryOnWhichMaximumAmountSpentFromAllAccountsThisMonth(date: Long): Flow<CategoryCardData>
+    @Query(GET_AMOUNT_SPENT_FROM_ALL_ACCOUNTS_THIS_MONTH)
+    fun getTotalAmountSpentFromAllAccountsThisMonth(date: Long): Flow<Double>
 }
