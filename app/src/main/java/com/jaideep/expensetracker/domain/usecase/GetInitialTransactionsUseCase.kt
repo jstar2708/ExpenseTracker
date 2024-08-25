@@ -12,10 +12,10 @@ class GetInitialTransactionsUseCase @Inject constructor(
 ) {
     private val TRANSACTION_COUNT = 5
     suspend operator fun invoke(
-        accountId: Int?, startDate: Long?, endDate: Long?, transactionMethod: TransactionMethod
+        accountName: String?, startDate: Long?, endDate: Long?, transactionMethod: TransactionMethod
     ) = flow {
         emit(Resource.Loading())
-        val account = accountId ?: 0
+        val account = accountName ?: ""
         val sDate = startDate ?: 0
         val eDate = endDate ?: 0
         val transactions = when (transactionMethod) {
@@ -66,7 +66,6 @@ class GetInitialTransactionsUseCase @Inject constructor(
             TransactionMethod.GET_TRANSACTIONS_BETWEEN_DATES -> transactionRepository.getTransactionBetweenDates(
                 sDate, eDate, TRANSACTION_COUNT
             )
-
         }
         transactions.collect {
             emit(Resource.Success(it))

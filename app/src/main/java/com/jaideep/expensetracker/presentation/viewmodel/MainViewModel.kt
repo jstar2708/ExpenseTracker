@@ -20,6 +20,7 @@ import com.jaideep.expensetracker.domain.repository.TransactionPagingRepository
 import com.jaideep.expensetracker.domain.usecase.GetAllAccountsUseCase
 import com.jaideep.expensetracker.domain.usecase.GetAllCategoriesUseCase
 import com.jaideep.expensetracker.domain.usecase.GetInitialTransactionsUseCase
+import com.jaideep.expensetracker.model.RunJobForData
 import com.jaideep.expensetracker.model.dto.CategoryDto
 import com.jaideep.expensetracker.model.dto.TransactionDto
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -32,6 +33,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import javax.inject.Inject
@@ -74,7 +76,7 @@ class MainViewModel @Inject constructor(
     private val transactionMethod: MutableStateFlow<TransactionMethod> =
         MutableStateFlow(TransactionMethod.GET_ALL_TRANSACTIONS)
 
-    val transactionItems: MutableStateFlow<Flow<PagingData<Transaction>>> =
+    val pagedTransactionItems: MutableStateFlow<Flow<PagingData<Transaction>>> =
         MutableStateFlow(Pager(config = PagingConfig(pageSize = 50), pagingSourceFactory = {
             transactionPagingRepository.getAllTransactions()
         }).flow.cachedIn(viewModelScope))
@@ -82,11 +84,15 @@ class MainViewModel @Inject constructor(
     private val _isFirstAppInitialization = MutableLiveData<Boolean>()
     var isFirstAppInitialization = _isFirstAppInitialization
 
+    private var runJobForData: MutableStateFlow<RunJobForData<String>> = MutableStateFlow(
+        RunJobForData()
+    )
+
     init {
         getAllAccounts()
         getAllCategories()
         getTransactionPagingSource()
-        getInitialTransactions()
+        getInitialTransactions(TransactionMethod.GET_ALL_TRANSACTIONS)
     }
 
     fun addDefaultCategories() {
@@ -139,26 +145,26 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    private fun getInitialTransactions() = viewModelScope.launch {
-        getInitialTransactionsUseCase(
-            null, null, null, TransactionMethod.GET_ALL_TRANSACTIONS
-        ).collect {
-            when (it) {
-                is Resource.Loading -> {
+    private fun getInitialTransactions(transactionMethod: TransactionMethod) =
+        viewModelScope.launch(EtDispatcher.io) {
+            if (this.isActive) {
+                getInitialTransactionsUseCase(
+                    runJobForData.value.data, null, null, transactionMethod
+                ).collectLatest {
+                    when (it) {
+                        is Resource.Loading -> {
 
-                }
+                        }
+                        is Resource.Success -> {
+                            _transactions.value = it.data
+                        }
+                        is Resource.Error -> {
 
-                is Resource.Success -> {
-                    _transactions.value = it.data
-                }
-
-                is Resource.Error -> {
-
+                        }
+                    }
                 }
             }
-
         }
-    }
 
     fun updateTransactionMethod(transactionMethod: TransactionMethod) {
         this.transactionMethod.value = transactionMethod
@@ -166,7 +172,7 @@ class MainViewModel @Inject constructor(
 
     private fun getTransactionPagingSource() = viewModelScope.launch {
         transactionMethod.collectLatest {
-            transactionItems.value =
+            pagedTransactionItems.value =
                 Pager(config = PagingConfig(pageSize = 50), pagingSourceFactory = {
                     when (it) {
                         TransactionMethod.GET_DEBIT_TRANSACTIONS -> transactionPagingRepository.getDebitTransactions()
@@ -179,7 +185,7 @@ class MainViewModel @Inject constructor(
                         )
 
                         TransactionMethod.GET_CREDIT_TRANSACTIONS_FOR_ACCOUNT -> transactionPagingRepository.getCreditTransactionsForAccount(
-                            1,
+                            1
                         )
 
                         TransactionMethod.GET_CREDIT_TRANSACTIONS_BETWEEN_DATES_FOR_ACCOUNT -> transactionPagingRepository.getCreditTransactionBetweenDatesForAccount(
@@ -215,7 +221,6 @@ class MainViewModel @Inject constructor(
                             1,
                             1,
                         )
-
                     }
                 }).flow.cachedIn(viewModelScope)
 
@@ -237,5 +242,16 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch(EtDispatcher.io) {
             _isFirstAppInitialization.postValue(categoryRepository.getAllCategoriesCount() == 0)
         }
+    }
+
+    fun updateInitialTransaction(accountName: String) {
+        if (runJobForData.value.data == accountName) {
+            return
+        }
+        runJobForData.value.job?.cancel()
+        runJobForData.value = RunJobForData(
+            if (accountName == "All Accounts") getInitialTransactions(TransactionMethod.GET_ALL_TRANSACTIONS)
+            else getInitialTransactions(TransactionMethod.GET_TRANSACTIONS_FOR_ACCOUNT), accountName
+        )
     }
 }

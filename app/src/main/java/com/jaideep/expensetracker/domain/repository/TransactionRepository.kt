@@ -4,19 +4,19 @@ import com.jaideep.expensetracker.data.local.entities.Transaction
 import kotlinx.coroutines.flow.Flow
 
 interface TransactionRepository {
-    fun getTransactionsForAccount(accountId: Int, limit: Int): Flow<List<Transaction>>
-    fun getDebitTransactionsForAccount(accountId: Int, limit: Int): Flow<List<Transaction>>
-    fun getCreditTransactionsForAccount(accountId: Int, limit: Int): Flow<List<Transaction>>
+    fun getTransactionsForAccount(accountName: String, limit: Int): Flow<List<Transaction>>
+    fun getDebitTransactionsForAccount(accountName: String, limit: Int): Flow<List<Transaction>>
+    fun getCreditTransactionsForAccount(accountName: String, limit: Int): Flow<List<Transaction>>
     fun getCreditTransactionBetweenDatesForAccount(
-        accountId: Int, startDate: Long, endDate: Long, limit: Int
+        accountName: String, startDate: Long, endDate: Long, limit: Int
     ): Flow<List<Transaction>>
 
     fun getDebitTransactionBetweenDatesForAccount(
-        accountId: Int, startDate: Long, endDate: Long, limit: Int
+        accountName: String, startDate: Long, endDate: Long, limit: Int
     ): Flow<List<Transaction>>
 
     fun getTransactionBetweenDatesForAccount(
-        accountId: Int, startDate: Long, endDate: Long, limit: Int
+        accountName: String, startDate: Long, endDate: Long, limit: Int
     ): Flow<List<Transaction>>
 
     fun getAllTransactions(limit: Int): Flow<List<Transaction>>

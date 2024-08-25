@@ -148,7 +148,7 @@ fun TransactionScreenRoot(
         accounts = mainViewModel.accounts.collectAsState().value.toMutableList().apply {
             this.add(0, "All Accounts")
         },
-        transactions = mainViewModel.transactionItems.collectAsState().value.collectAsLazyPagingItems().itemSnapshotList.items.map { transaction ->
+        transactions = mainViewModel.pagedTransactionItems.collectAsState().value.collectAsLazyPagingItems().itemSnapshotList.items.map { transaction ->
             TransactionDto(
                 transaction.amount,
                 mainViewModel.getCategoryDto(transaction.categoryId),

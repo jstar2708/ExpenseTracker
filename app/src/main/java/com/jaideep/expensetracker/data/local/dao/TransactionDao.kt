@@ -23,27 +23,27 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface TransactionDao {
     @Query(GET_ACCOUNT_TRANSACTIONS)
-    fun getTransactionsForAccount(accountId: Int, limit: Int): Flow<List<Transaction>>
+    fun getTransactionsForAccount(accountName: String, limit: Int): Flow<List<Transaction>>
 
     @Query(GET_ACCOUNT_DEBIT_TRANSACTIONS)
-    fun getDebitTransactionsForAccount(accountId: Int, limit: Int): Flow<List<Transaction>>
+    fun getDebitTransactionsForAccount(accountName: String, limit: Int): Flow<List<Transaction>>
 
     @Query(GET_ACCOUNT_CREDIT_TRANSACTIONS)
-    fun getCreditTransactionsForAccount(accountId: Int, limit: Int): Flow<List<Transaction>>
+    fun getCreditTransactionsForAccount(accountName: String, limit: Int): Flow<List<Transaction>>
 
     @Query(GET_ACCOUNT_CREDIT_TRANSACTIONS_BETWEEN_DATES)
     fun getCreditTransactionBetweenDatesForAccount(
-        accountId: Int, startDate: Long, endDate: Long, limit: Int
+        accountName: String, startDate: Long, endDate: Long, limit: Int
     ): Flow<List<Transaction>>
 
     @Query(GET_ACCOUNT_DEBIT_TRANSACTIONS_BETWEEN_DATES)
     fun getDebitTransactionBetweenDatesForAccount(
-        accountId: Int, startDate: Long, endDate: Long, limit: Int
+        accountName: String, startDate: Long, endDate: Long, limit: Int
     ): Flow<List<Transaction>>
 
     @Query(GET_ACCOUNT_TRANSACTIONS_BETWEEN_DATES)
     fun getTransactionBetweenDatesForAccount(
-        accountId: Int, startDate: Long, endDate: Long, limit: Int
+        accountName: String, startDate: Long, endDate: Long, limit: Int
     ): Flow<List<Transaction>>
 
     @Query(GET_ALL_TRANSACTIONS)

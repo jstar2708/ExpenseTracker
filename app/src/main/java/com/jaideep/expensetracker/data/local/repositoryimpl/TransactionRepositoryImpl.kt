@@ -10,41 +10,41 @@ class TransactionRepositoryImpl @Inject constructor(
     private val dao: TransactionDao
 ) : TransactionRepository {
     override fun getTransactionsForAccount(
-        accountId: Int, limit: Int
+        accountName: String, limit: Int
     ): Flow<List<Transaction>> {
-        return dao.getTransactionsForAccount(accountId, limit)
+        return dao.getTransactionsForAccount(accountName, limit)
     }
 
     override fun getDebitTransactionsForAccount(
-        accountId: Int,
+        accountName: String,
         limit: Int
     ): Flow<List<Transaction>> {
-        return dao.getDebitTransactionsForAccount(accountId, limit)
+        return dao.getDebitTransactionsForAccount(accountName, limit)
     }
 
     override fun getCreditTransactionsForAccount(
-        accountId: Int,
+        accountName: String,
         limit: Int
     ): Flow<List<Transaction>> {
-        return dao.getCreditTransactionsForAccount(accountId, limit)
+        return dao.getCreditTransactionsForAccount(accountName, limit)
     }
 
     override fun getCreditTransactionBetweenDatesForAccount(
-        accountId: Int, startDate: Long, endDate: Long, limit: Int
+        accountName: String, startDate: Long, endDate: Long, limit: Int
     ): Flow<List<Transaction>> {
-        return dao.getCreditTransactionBetweenDatesForAccount(accountId, startDate, endDate, limit)
+        return dao.getCreditTransactionBetweenDatesForAccount(accountName, startDate, endDate, limit)
     }
 
     override fun getDebitTransactionBetweenDatesForAccount(
-        accountId: Int, startDate: Long, endDate: Long, limit: Int
+        accountName: String, startDate: Long, endDate: Long, limit: Int
     ): Flow<List<Transaction>> {
-        return dao.getDebitTransactionBetweenDatesForAccount(accountId, startDate, endDate, limit)
+        return dao.getDebitTransactionBetweenDatesForAccount(accountName, startDate, endDate, limit)
     }
 
     override fun getTransactionBetweenDatesForAccount(
-        accountId: Int, startDate: Long, endDate: Long, limit: Int
+        accountName: String, startDate: Long, endDate: Long, limit: Int
     ): Flow<List<Transaction>> {
-        return dao.getTransactionBetweenDatesForAccount(accountId, startDate, endDate, limit)
+        return dao.getTransactionBetweenDatesForAccount(accountName, startDate, endDate, limit)
     }
 
     override fun getAllTransactions(limit: Int): Flow<List<Transaction>> {

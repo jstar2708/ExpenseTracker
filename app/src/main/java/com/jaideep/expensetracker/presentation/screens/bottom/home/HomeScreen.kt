@@ -92,7 +92,10 @@ fun HomeScreenRoot(
             this.add(0, "All Accounts")
         },
         transactions = mainViewModel.transactions.collectAsState().value,
-        onAccountSpinnerValueChanged = homeViewModel::updateSelectedAccount,
+        onAccountSpinnerValueChanged = {
+            homeViewModel.updateSelectedAccount(it)
+            mainViewModel.updateInitialTransaction(it)
+        },
         accountBalance = homeViewModel.selectedAccountBalance,
         spentToday = homeViewModel.spentToday,
         selectedAccount = homeViewModel.selectedAccount,
@@ -176,10 +179,7 @@ fun HomeScreen(
                     })
 
                 SummaryCard(
-                    accountBalance,
-                    spentToday,
-                    categoryCardData,
-                    amountSpentThisMonthFromAcc
+                    accountBalance, spentToday, categoryCardData, amountSpentThisMonthFromAcc
                 )
 
                 TransactionSummary(transactions)
