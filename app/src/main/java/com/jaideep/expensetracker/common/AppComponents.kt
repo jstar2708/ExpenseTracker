@@ -14,7 +14,7 @@ import com.jaideep.expensetracker.R
 
 object AppComponents {
 
-    val list = listOf<BottomNavigationItem>(
+    val list = listOf(
         BottomNavigationItem(
             "Home", Icons.Filled.Home, Icons.Outlined.Home, MainScreen.HOME
         ), BottomNavigationItem(

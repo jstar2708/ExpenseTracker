@@ -121,12 +121,12 @@ fun ExpenseTrackerSpinner(
         mutableStateOf(initialValue)
     }
 
-    ExposedDropdownMenuBox(modifier = modifier,
+    ExposedDropdownMenuBox(
+        modifier = modifier,
         expanded = isExpanded,
         onExpandedChange = { isExpanded = it }) {
         OutlinedTextField(value = selectedAccount,
-            onValueChange = {
-                            },
+            onValueChange = {},
             readOnly = true,
             colors = ExposedDropdownMenuDefaults.textFieldColors(
                 focusedContainerColor = md_theme_light_surface,
@@ -444,7 +444,8 @@ fun TextFieldWithDropDown(
             showErrorText = showErrorText
         )
 
-        ExposedDropdownMenu(expanded = isExpanded && !showErrorText.value,
+        ExposedDropdownMenu(
+            expanded = isExpanded && !showErrorText.value,
             onDismissRequest = { isExpanded = false }) {
             values.forEach {
                 DropdownMenuItem(text = {

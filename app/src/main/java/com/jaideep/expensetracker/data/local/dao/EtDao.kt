@@ -18,18 +18,28 @@ interface EtDao {
 
     @Query(GET_AMOUNT_SPENT_FROM_ACCOUNT_TODAY)
     fun getAmountSpentFromAccountToday(date: Long, accountName: String): Flow<Double>
+
     @Query(GET_ACCOUNT_BALANCE_BY_NAME)
     fun getAccountBalanceByName(accountName: String): Flow<Double>
+
     @Query(GET_AMOUNT_SPENT_FROM_ALL_ACCOUNT_TODAY)
     fun getAmountSpentFromAllAccountsToday(date: Long): Flow<Double>
+
     @Query(GET_ACCOUNT_BALANCE_FOR_ALL_ACCOUNTS)
     fun getAccountBalanceForAllAccounts(): Flow<Double>
+
     @Query(GET_CATEGORY_ON_WHICH_MAX_AMOUNT_SPENT_FROM_ACCOUNT_THIS_MONTH)
-    fun getCategoryOnWhichMaximumAmountSpentFromAccountThisMonth(accountName: String, date: Long): Flow<CategoryCardData>
+    fun getCategoryOnWhichMaximumAmountSpentFromAccountThisMonth(
+        accountName: String,
+        date: Long
+    ): Flow<CategoryCardData>
+
     @Query(GET_AMOUNT_SPENT_FROM_ACCOUNT_THIS_MONTH)
-    fun getTotalAmountSpentFromAccountThisMonth(accountName: String, date: Long) : Flow<Double>
+    fun getTotalAmountSpentFromAccountThisMonth(accountName: String, date: Long): Flow<Double>
+
     @Query(GET_CATEGORY_ON_WHICH_MAX_AMOUNT_SPENT_FROM_ALL_ACCOUNTS_THIS_MONTH)
     fun getCategoryOnWhichMaximumAmountSpentFromAllAccountsThisMonth(date: Long): Flow<CategoryCardData>
+
     @Query(GET_AMOUNT_SPENT_FROM_ALL_ACCOUNTS_THIS_MONTH)
     fun getTotalAmountSpentFromAllAccountsThisMonth(date: Long): Flow<Double>
 }

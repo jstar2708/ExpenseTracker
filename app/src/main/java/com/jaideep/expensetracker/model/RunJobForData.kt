@@ -6,9 +6,8 @@ class RunJobForData<T> {
     var job: Job? = null
     var data: T? = null
 
-    constructor() {
+    constructor()
 
-    }
     constructor(job: Job, data: T) {
         this.job = job
         this.data = data

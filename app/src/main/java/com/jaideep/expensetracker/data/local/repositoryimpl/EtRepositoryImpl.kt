@@ -3,7 +3,6 @@ package com.jaideep.expensetracker.data.local.repositoryimpl
 import com.jaideep.expensetracker.data.local.dao.EtDao
 import com.jaideep.expensetracker.domain.repository.EtRepository
 import com.jaideep.expensetracker.model.CategoryCardData
-import com.jaideep.expensetracker.presentation.utility.Utility
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
@@ -27,15 +26,13 @@ class EtRepositoryImpl @Inject constructor(
     }
 
     override fun getCategoryOnWhichMaximumAmountSpentFromAccountThisMonth(
-        accountName: String,
-        date: Long
+        accountName: String, date: Long
     ): Flow<CategoryCardData> {
         return etDao.getCategoryOnWhichMaximumAmountSpentFromAccountThisMonth(accountName, date)
     }
 
     override fun getTotalAmountSpentFromAccountThisMonth(
-        accountName: String,
-        date: Long
+        accountName: String, date: Long
     ): Flow<Double> {
         return etDao.getTotalAmountSpentFromAccountThisMonth(accountName, date)
     }

@@ -9,8 +9,7 @@ interface EtRepository {
     fun getAmountSpentTodayForAllAccount(date: Long): Flow<Double>
     fun getAccountBalanceForAllAccounts(): Flow<Double>
     fun getCategoryOnWhichMaximumAmountSpentFromAccountThisMonth(
-        accountName: String,
-        date: Long
+        accountName: String, date: Long
     ): Flow<CategoryCardData>
 
     fun getTotalAmountSpentFromAccountThisMonth(accountName: String, date: Long): Flow<Double>

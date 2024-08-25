@@ -58,81 +58,37 @@ fun TransactionScreenPreview() {
             accounts = listOf("All accounts", "Cash"),
             transactions = listOf(
                 TransactionDto(
-                    200.0,
-                    CategoryDto("Food", R.drawable.food),
-                    "No Message",
-                    LocalDate.now(),
-                    true
+                    200.0, CategoryDto("Food", R.drawable.food), "No Message", LocalDate.now(), true
                 ),
                 TransactionDto(
-                    200.0,
-                    CategoryDto("Food", R.drawable.food),
-                    "No Message",
-                    LocalDate.now(),
-                    true
+                    200.0, CategoryDto("Food", R.drawable.food), "No Message", LocalDate.now(), true
                 ),
                 TransactionDto(
-                    200.0,
-                    CategoryDto("Food", R.drawable.food),
-                    "No Message",
-                    LocalDate.now(),
-                    true
+                    200.0, CategoryDto("Food", R.drawable.food), "No Message", LocalDate.now(), true
                 ),
                 TransactionDto(
-                    200.0,
-                    CategoryDto("Food", R.drawable.food),
-                    "No Message",
-                    LocalDate.now(),
-                    true
+                    200.0, CategoryDto("Food", R.drawable.food), "No Message", LocalDate.now(), true
                 ),
                 TransactionDto(
-                    200.0,
-                    CategoryDto("Food", R.drawable.food),
-                    "No Message",
-                    LocalDate.now(),
-                    true
+                    200.0, CategoryDto("Food", R.drawable.food), "No Message", LocalDate.now(), true
                 ),
                 TransactionDto(
-                    200.0,
-                    CategoryDto("Food", R.drawable.food),
-                    "No Message",
-                    LocalDate.now(),
-                    true
+                    200.0, CategoryDto("Food", R.drawable.food), "No Message", LocalDate.now(), true
                 ),
                 TransactionDto(
-                    200.0,
-                    CategoryDto("Food", R.drawable.food),
-                    "No Message",
-                    LocalDate.now(),
-                    true
+                    200.0, CategoryDto("Food", R.drawable.food), "No Message", LocalDate.now(), true
                 ),
                 TransactionDto(
-                    200.0,
-                    CategoryDto("Food", R.drawable.food),
-                    "No Message",
-                    LocalDate.now(),
-                    true
+                    200.0, CategoryDto("Food", R.drawable.food), "No Message", LocalDate.now(), true
                 ),
                 TransactionDto(
-                    200.0,
-                    CategoryDto("Food", R.drawable.food),
-                    "No Message",
-                    LocalDate.now(),
-                    true
+                    200.0, CategoryDto("Food", R.drawable.food), "No Message", LocalDate.now(), true
                 ),
                 TransactionDto(
-                    200.0,
-                    CategoryDto("Food", R.drawable.food),
-                    "No Message",
-                    LocalDate.now(),
-                    true
+                    200.0, CategoryDto("Food", R.drawable.food), "No Message", LocalDate.now(), true
                 ),
                 TransactionDto(
-                    200.0,
-                    CategoryDto("Food", R.drawable.food),
-                    "No Message",
-                    LocalDate.now(),
-                    true
+                    200.0, CategoryDto("Food", R.drawable.food), "No Message", LocalDate.now(), true
                 ),
             )
         )
@@ -234,15 +190,13 @@ fun TransactionScreen(
                         )
                     }
                 }
-            }
-            else {
-                Row (
+            } else {
+                Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.fillMaxHeight()
                 ) {
                     SimpleText(
-                        modifier = Modifier
-                            .fillMaxWidth(),
+                        modifier = Modifier.fillMaxWidth(),
                         text = "No transactions done",
                         textAlignment = TextAlign.Center,
                         color = Color.Gray

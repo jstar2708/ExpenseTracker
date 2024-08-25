@@ -13,15 +13,16 @@ class GetAmountSpentFromAccountThisMonth @Inject constructor(
     suspend operator fun invoke(accountName: String) = flow {
         emit(Resource.Loading())
         val startOfMonth = Utility.getStartDateOfMonthInMillis()
-        val result = if (accountName == "All Accounts")
-            etRepository.getAmountSpentFromAllAccountThisMonth(startOfMonth)
-        else
-            etRepository.getTotalAmountSpentFromAccountThisMonth(
+        val result =
+            if (accountName == "All Accounts") etRepository.getAmountSpentFromAllAccountThisMonth(
+                startOfMonth
+            )
+            else etRepository.getTotalAmountSpentFromAccountThisMonth(
                 accountName, Utility.getStartDateOfMonthInMillis()
             )
 
         result.collect {
-                emit(Resource.Success(it))
+            emit(Resource.Success(it))
         }
     }.catch {
         emit(Resource.Error("Error while getting amount spent from account this month, ${it.message}"))

@@ -106,7 +106,9 @@ fun AddTransactionPreview() {
 
 @Composable
 fun AddTransactionScreenRoot(
-    navControllerRoot: NavHostController, mainViewModel: MainViewModel,  viewModel: AddTransactionViewModel = hiltViewModel()
+    navControllerRoot: NavHostController,
+    mainViewModel: MainViewModel,
+    viewModel: AddTransactionViewModel = hiltViewModel()
 ) {
     AddTransactionScreen(radioButtonValue = viewModel.radioButtonValue,
         detailsMessage = viewModel.screenDetail,

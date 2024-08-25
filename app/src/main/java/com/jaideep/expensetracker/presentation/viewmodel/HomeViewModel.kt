@@ -43,8 +43,7 @@ class HomeViewModel @Inject constructor(
         getAccountBalanceUseCase(selectedAccount.value).collect {
             when (it) {
                 is Resource.Loading -> {}
-                is Resource.Error -> {
-                    /*
+                is Resource.Error -> {/*
                  Show error message, implement when you create error state variable
                  */
                 }

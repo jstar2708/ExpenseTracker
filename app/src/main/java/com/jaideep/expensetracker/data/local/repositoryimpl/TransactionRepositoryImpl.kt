@@ -16,15 +16,13 @@ class TransactionRepositoryImpl @Inject constructor(
     }
 
     override fun getDebitTransactionsForAccount(
-        accountName: String,
-        limit: Int
+        accountName: String, limit: Int
     ): Flow<List<Transaction>> {
         return dao.getDebitTransactionsForAccount(accountName, limit)
     }
 
     override fun getCreditTransactionsForAccount(
-        accountName: String,
-        limit: Int
+        accountName: String, limit: Int
     ): Flow<List<Transaction>> {
         return dao.getCreditTransactionsForAccount(accountName, limit)
     }
@@ -32,7 +30,12 @@ class TransactionRepositoryImpl @Inject constructor(
     override fun getCreditTransactionBetweenDatesForAccount(
         accountName: String, startDate: Long, endDate: Long, limit: Int
     ): Flow<List<Transaction>> {
-        return dao.getCreditTransactionBetweenDatesForAccount(accountName, startDate, endDate, limit)
+        return dao.getCreditTransactionBetweenDatesForAccount(
+            accountName,
+            startDate,
+            endDate,
+            limit
+        )
     }
 
     override fun getDebitTransactionBetweenDatesForAccount(

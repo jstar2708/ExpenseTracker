@@ -70,7 +70,9 @@ private fun AddAccountScreenPreview() {
 
 @Composable
 fun AddAccountScreenRoot(
-    navController: NavHostController, mainViewModel: MainViewModel, addAccountViewModel: AddAccountViewModel = hiltViewModel()
+    navController: NavHostController,
+    mainViewModel: MainViewModel,
+    addAccountViewModel: AddAccountViewModel = hiltViewModel()
 ) {
     AddAccountScreen(
         addAccountViewModel.screenTitle,

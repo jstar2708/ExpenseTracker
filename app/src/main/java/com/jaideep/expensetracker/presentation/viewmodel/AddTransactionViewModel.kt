@@ -26,7 +26,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.time.LocalDate
 import java.time.ZoneId
-import java.time.ZonedDateTime
 import java.time.format.DateTimeParseException
 import javax.inject.Inject
 
@@ -182,7 +181,8 @@ class AddTransactionViewModel @Inject constructor(
                                 account.get().id,
                                 category.get().id,
                                 note,
-                                (LocalDate.parse(date).atStartOfDay(ZoneId.of("Asia/Kolkata")).toEpochSecond() * 1000),
+                                (LocalDate.parse(date).atStartOfDay(ZoneId.of("Asia/Kolkata"))
+                                    .toEpochSecond() * 1000),
                                 if (isCredit) 1 else 0
                             )
                         )

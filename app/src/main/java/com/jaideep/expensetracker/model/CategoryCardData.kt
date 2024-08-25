@@ -5,7 +5,7 @@ class CategoryCardData {
     var iconName: String = ""
     var amountSpent: Double = 0.0
 
-    constructor() {}
+    constructor()
     constructor(categoryName: String, iconName: String, amountSpent: Double) {
         this.categoryName = categoryName
         this.iconName = iconName

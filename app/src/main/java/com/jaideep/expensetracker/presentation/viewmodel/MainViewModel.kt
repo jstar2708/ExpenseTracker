@@ -24,14 +24,12 @@ import com.jaideep.expensetracker.model.RunJobForData
 import com.jaideep.expensetracker.model.dto.CategoryDto
 import com.jaideep.expensetracker.model.dto.TransactionDto
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.toList
@@ -140,7 +138,7 @@ class MainViewModel @Inject constructor(
                     _categories.value = it.data
                     _hasCategoriesLoaded.value = true
                     _hasCategoriesLoaded.collectLatest { hasCategoriesLoaded ->
-                    if (hasCategoriesLoaded && _transactions.value.isEmpty()) {
+                        if (hasCategoriesLoaded && _transactions.value.isEmpty()) {
                             getTransactionPagingSource()
                             getInitialTransactions(TransactionMethod.GET_ALL_TRANSACTIONS)
                         }
@@ -164,9 +162,11 @@ class MainViewModel @Inject constructor(
                         is Resource.Loading -> {
 
                         }
+
                         is Resource.Success -> {
                             _transactions.value = it.data
                         }
+
                         is Resource.Error -> {
 
                         }
