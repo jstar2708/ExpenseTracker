@@ -10,16 +10,16 @@ import javax.inject.Inject
 class EtRepositoryImpl @Inject constructor(
     private val etDao: EtDao
 ) : EtRepository {
-    override fun getAmountSpentTodayForAccount(accountName: String): Flow<Double> {
-        return etDao.getAmountSpentFromAccountToday(Utility.getCurrentDateInMillis(), accountName)
+    override fun getAmountSpentTodayForAccount(accountName: String, date: Long): Flow<Double> {
+        return etDao.getAmountSpentFromAccountToday(date, accountName)
     }
 
     override fun getAccountBalanceByName(accountName: String): Flow<Double> {
         return etDao.getAccountBalanceByName(accountName)
     }
 
-    override fun getAmountSpentTodayForAllAccount(): Flow<Double> {
-        return etDao.getAmountSpentFromAllAccountsToday(Utility.getCurrentDateInMillis())
+    override fun getAmountSpentTodayForAllAccount(date: Long): Flow<Double> {
+        return etDao.getAmountSpentFromAllAccountsToday(date)
     }
 
     override fun getAccountBalanceForAllAccounts(): Flow<Double> {

@@ -4,9 +4,9 @@ import com.jaideep.expensetracker.model.CategoryCardData
 import kotlinx.coroutines.flow.Flow
 
 interface EtRepository {
-    fun getAmountSpentTodayForAccount(accountName: String): Flow<Double>
+    fun getAmountSpentTodayForAccount(accountName: String, date: Long): Flow<Double>
     fun getAccountBalanceByName(accountName: String): Flow<Double>
-    fun getAmountSpentTodayForAllAccount(): Flow<Double>
+    fun getAmountSpentTodayForAllAccount(date: Long): Flow<Double>
     fun getAccountBalanceForAllAccounts(): Flow<Double>
     fun getCategoryOnWhichMaximumAmountSpentFromAccountThisMonth(
         accountName: String,

@@ -2,6 +2,7 @@ package com.jaideep.expensetracker.presentation.utility
 
 import com.jaideep.expensetracker.R
 import java.time.LocalDate
+import java.time.ZoneId
 
 object Utility {
     fun getCategoryName(categoryId: Int): String {
@@ -27,9 +28,7 @@ object Utility {
     }
 
     fun getCurrentDateInMillis(): Long {
-        var time = System.currentTimeMillis()
-        time -= time % 86_400_000L
-        return time
+        return LocalDate.now().atStartOfDay(ZoneId.of("Asia/Kolkata")).toEpochSecond() * 1000
     }
 
     fun getStartDateOfMonthInMillis(): Long {

@@ -12,7 +12,9 @@ import com.jaideep.expensetracker.domain.usecase.calculation.GetAmountSpentFromA
 import com.jaideep.expensetracker.domain.usecase.calculation.GetAmountSpentTodayForAccountUseCase
 import com.jaideep.expensetracker.domain.usecase.calculation.GetCategoryAmountForWhichMaxAmountWasSpentFromAccountUseCase
 import com.jaideep.expensetracker.model.CategoryCardData
+import com.jaideep.expensetracker.model.RunJobForData
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -33,13 +35,18 @@ class HomeViewModel @Inject constructor(
     val amountSpentThisMonthFromAcc: State<Double> = _amountSpentThisMonthFromAcc
     private val _getMaxSpentCategoryData = mutableStateOf(CategoryCardData())
     val getMaxSpentCategoryData: State<CategoryCardData> = _getMaxSpentCategoryData
+    private var runJobForData: MutableStateFlow<RunJobForData<String>> = MutableStateFlow(
+        RunJobForData()
+    )
 
     private fun getAccountBalance() = viewModelScope.launch(EtDispatcher.io) {
         getAccountBalanceUseCase(selectedAccount.value).collect {
             when (it) {
                 is Resource.Loading -> {}
-                is Resource.Error -> {/*
-                 Show error message, implement when you create error state variable */
+                is Resource.Error -> {
+                    /*
+                 Show error message, implement when you create error state variable
+                 */
                 }
 
                 is Resource.Success -> _selectedAccountBalance.doubleValue = it.data
