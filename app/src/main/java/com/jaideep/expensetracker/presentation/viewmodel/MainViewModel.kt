@@ -24,12 +24,14 @@ import com.jaideep.expensetracker.model.RunJobForData
 import com.jaideep.expensetracker.model.dto.CategoryDto
 import com.jaideep.expensetracker.model.dto.TransactionDto
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.toList
@@ -84,6 +86,8 @@ class MainViewModel @Inject constructor(
     private val _isFirstAppInitialization = MutableLiveData<Boolean>()
     var isFirstAppInitialization = _isFirstAppInitialization
 
+    private val _hasCategoriesLoaded = MutableStateFlow<Boolean>(false)
+
     private var runJobForData: MutableStateFlow<RunJobForData<String>> = MutableStateFlow(
         RunJobForData()
     )
@@ -91,8 +95,6 @@ class MainViewModel @Inject constructor(
     init {
         getAllAccounts()
         getAllCategories()
-        getTransactionPagingSource()
-        getInitialTransactions(TransactionMethod.GET_ALL_TRANSACTIONS)
     }
 
     fun addDefaultCategories() {
@@ -127,7 +129,7 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    private fun getAllCategories() = viewModelScope.launch {
+    private fun getAllCategories() = viewModelScope.launch(EtDispatcher.io) {
         getAllCategoriesUseCase().collect {
             when (it) {
                 is Resource.Loading -> {
@@ -136,6 +138,13 @@ class MainViewModel @Inject constructor(
 
                 is Resource.Success -> {
                     _categories.value = it.data
+                    _hasCategoriesLoaded.value = true
+                    _hasCategoriesLoaded.collectLatest { hasCategoriesLoaded ->
+                    if (hasCategoriesLoaded && _transactions.value.isEmpty()) {
+                            getTransactionPagingSource()
+                            getInitialTransactions(TransactionMethod.GET_ALL_TRANSACTIONS)
+                        }
+                    }
                 }
 
                 is Resource.Error -> {
