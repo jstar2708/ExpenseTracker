@@ -21,6 +21,8 @@ import com.jaideep.expensetracker.domain.usecase.GetAllAccountsUseCase
 import com.jaideep.expensetracker.domain.usecase.GetAllCategoriesUseCase
 import com.jaideep.expensetracker.domain.usecase.GetInitialTransactionsUseCase
 import com.jaideep.expensetracker.model.RunJobForData
+import com.jaideep.expensetracker.model.TransactionMethodData
+import com.jaideep.expensetracker.model.TransactionMethodDataForDates
 import com.jaideep.expensetracker.model.dto.CategoryDto
 import com.jaideep.expensetracker.model.dto.TransactionDto
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -36,6 +38,7 @@ import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import java.time.LocalDate
+import java.time.ZoneId
 import javax.inject.Inject
 
 @HiltViewModel
@@ -73,8 +76,12 @@ class MainViewModel @Inject constructor(
         }.toList()
     }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
-    private val transactionMethod: MutableStateFlow<TransactionMethod> =
-        MutableStateFlow(TransactionMethod.GET_ALL_TRANSACTIONS)
+    private val _transactionMethodData: MutableStateFlow<TransactionMethodData> = MutableStateFlow(
+        TransactionMethodData(
+            TransactionMethod.GET_ALL_TRANSACTIONS,
+            "All Accounts"
+        )
+    )
 
     val pagedTransactionItems: MutableStateFlow<Flow<PagingData<Transaction>>> =
         MutableStateFlow(Pager(config = PagingConfig(pageSize = 50), pagingSourceFactory = {
@@ -156,7 +163,9 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch(EtDispatcher.io) {
             if (this.isActive) {
                 getInitialTransactionsUseCase(
-                    runJobForData.value.data, null, null, transactionMethod
+                    TransactionMethodData(
+                        transactionMethod, runJobForData.value.data ?: ""
+                    )
                 ).collectLatest {
                     when (it) {
                         is Resource.Loading -> {
@@ -175,61 +184,117 @@ class MainViewModel @Inject constructor(
             }
         }
 
-    fun updateTransactionMethod(transactionMethod: TransactionMethod) {
-        this.transactionMethod.value = transactionMethod
+    fun updateTransactionMethod(
+        accountName: String,
+        isCredit: Boolean,
+        isDebit: Boolean,
+        startDate: LocalDate?,
+        endDate: LocalDate?
+    ) {
+        val transactionMethod = if (accountName == "All Accounts") {
+            if (isCredit) {
+                if (startDate != null && endDate != null) TransactionMethod.GET_CREDIT_TRANSACTIONS_BETWEEN_DATES
+                else TransactionMethod.GET_CREDIT_TRANSACTIONS
+            } else if (isDebit) {
+                if (startDate != null && endDate != null) TransactionMethod.GET_DEBIT_TRANSACTIONS_BETWEEN_DATES
+                else TransactionMethod.GET_DEBIT_TRANSACTIONS
+            } else {
+                if (startDate != null && endDate != null) {
+                    TransactionMethod.GET_TRANSACTIONS_BETWEEN_DATES
+                } else {
+                    TransactionMethod.GET_ALL_TRANSACTIONS
+                }
+            }
+        } else {
+            if (isCredit) {
+                if (startDate != null && endDate != null) TransactionMethod.GET_CREDIT_TRANSACTIONS_BETWEEN_DATES_FOR_ACCOUNT
+                else TransactionMethod.GET_CREDIT_TRANSACTIONS_FOR_ACCOUNT
+            } else if (isDebit) {
+                if (startDate != null && endDate != null) TransactionMethod.GET_DEBIT_TRANSACTIONS_BETWEEN_DATES_FOR_ACCOUNT
+                else TransactionMethod.GET_DEBIT_TRANSACTIONS_FOR_ACCOUNT
+            } else {
+                if (startDate != null && endDate != null) TransactionMethod.GET_TRANSACTIONS_BETWEEN_DATES_FOR_ACCOUNT
+                else TransactionMethod.GET_TRANSACTIONS_FOR_ACCOUNT
+            }
+        }
+        if (startDate != null && endDate != null) {
+            val startDateLong =
+                startDate.atStartOfDay(ZoneId.of("Asia/Kolkata")).toEpochSecond().times(1000)
+            val endDateLong =
+                endDate.atStartOfDay(ZoneId.of("Asia/Kolkata")).toEpochSecond().times(1000)
+            _transactionMethodData.value = TransactionMethodDataForDates(
+                transactionMethod,
+                accountName,
+                startDateLong,
+                endDateLong
+            )
+        } else {
+            _transactionMethodData.value = TransactionMethodData(transactionMethod, accountName)
+        }
     }
 
     private fun getTransactionPagingSource() = viewModelScope.launch {
-        transactionMethod.collectLatest {
+        _transactionMethodData.collectLatest { transactionMethodData ->
             pagedTransactionItems.value =
                 Pager(config = PagingConfig(pageSize = 50), pagingSourceFactory = {
-                    when (it) {
-                        TransactionMethod.GET_DEBIT_TRANSACTIONS -> transactionPagingRepository.getDebitTransactions()
-                        TransactionMethod.GET_TRANSACTIONS_FOR_ACCOUNT -> transactionPagingRepository.getTransactionsForAccount(
-                            1,
-                        )
-
-                        TransactionMethod.GET_DEBIT_TRANSACTIONS_FOR_ACCOUNT -> transactionPagingRepository.getDebitTransactionsForAccount(
-                            1,
-                        )
-
-                        TransactionMethod.GET_CREDIT_TRANSACTIONS_FOR_ACCOUNT -> transactionPagingRepository.getCreditTransactionsForAccount(
-                            1
-                        )
-
+                    val accountId =
+                        _accounts.value.firstOrNull { it.accountName == transactionMethodData.accountName }?.id ?: 0
+                    if (transactionMethodData is TransactionMethodDataForDates) when (transactionMethodData.transactionMethod) {
                         TransactionMethod.GET_CREDIT_TRANSACTIONS_BETWEEN_DATES_FOR_ACCOUNT -> transactionPagingRepository.getCreditTransactionBetweenDatesForAccount(
-                            1,
-                            1L,
-                            1,
+                            accountId,
+                            transactionMethodData.startDate,
+                            transactionMethodData.endDate,
                         )
 
                         TransactionMethod.GET_DEBIT_TRANSACTIONS_BETWEEN_DATES_FOR_ACCOUNT -> transactionPagingRepository.getDebitTransactionBetweenDatesForAccount(
-                            1,
-                            1,
-                            1,
+                            accountId,
+                            transactionMethodData.startDate,
+                            transactionMethodData.endDate,
                         )
 
-                        TransactionMethod.GET_TRANSACTIONS_BETWEEN_DATES_FOR_ACCOUNT -> transactionPagingRepository.getTransactionBetweenDates(
-                            1,
-                            1,
+                        TransactionMethod.GET_TRANSACTIONS_BETWEEN_DATES_FOR_ACCOUNT -> transactionPagingRepository.getTransactionBetweenDatesForAccount(
+                            accountId,
+                            transactionMethodData.startDate,
+                            transactionMethodData.endDate
+                        )
+
+                        TransactionMethod.GET_CREDIT_TRANSACTIONS_BETWEEN_DATES -> transactionPagingRepository.getCreditTransactionBetweenDates(
+                            transactionMethodData.startDate,
+                            transactionMethodData.endDate,
+                        )
+
+                        TransactionMethod.GET_DEBIT_TRANSACTIONS_BETWEEN_DATES -> transactionPagingRepository.getDebitTransactionBetweenDates(
+                            transactionMethodData.startDate,
+                            transactionMethodData.endDate,
+                        )
+
+                        TransactionMethod.GET_TRANSACTIONS_BETWEEN_DATES -> transactionPagingRepository.getTransactionBetweenDates(
+                            transactionMethodData.startDate,
+                            transactionMethodData.endDate,
+                        )
+
+                        else -> transactionPagingRepository.getTransactionBetweenDates(
+                            transactionMethodData.startDate, transactionMethodData.endDate
+                        )
+                    }
+                    else when (transactionMethodData.transactionMethod) {
+                        TransactionMethod.GET_DEBIT_TRANSACTIONS -> transactionPagingRepository.getDebitTransactions()
+                        TransactionMethod.GET_TRANSACTIONS_FOR_ACCOUNT -> transactionPagingRepository.getTransactionsForAccount(
+                            accountId
+                        )
+
+                        TransactionMethod.GET_DEBIT_TRANSACTIONS_FOR_ACCOUNT -> transactionPagingRepository.getDebitTransactionsForAccount(
+                            accountId
+                        )
+
+                        TransactionMethod.GET_CREDIT_TRANSACTIONS_FOR_ACCOUNT -> transactionPagingRepository.getCreditTransactionsForAccount(
+                            accountId
                         )
 
                         TransactionMethod.GET_ALL_TRANSACTIONS -> transactionPagingRepository.getAllTransactions()
                         TransactionMethod.GET_CREDIT_TRANSACTIONS -> transactionPagingRepository.getCreditTransactions()
-                        TransactionMethod.GET_CREDIT_TRANSACTIONS_BETWEEN_DATES -> transactionPagingRepository.getCreditTransactionBetweenDates(
-                            1,
-                            1,
-                        )
+                        else -> transactionPagingRepository.getAllTransactions()
 
-                        TransactionMethod.GET_DEBIT_TRANSACTIONS_BETWEEN_DATES -> transactionPagingRepository.getDebitTransactionBetweenDates(
-                            1,
-                            1,
-                        )
-
-                        TransactionMethod.GET_TRANSACTIONS_BETWEEN_DATES -> transactionPagingRepository.getTransactionBetweenDates(
-                            1,
-                            1,
-                        )
                     }
                 }).flow.cachedIn(viewModelScope)
 

@@ -1,8 +1,5 @@
 package com.jaideep.expensetracker.presentation.viewmodel
 
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableDoubleStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jaideep.expensetracker.common.EtDispatcher
@@ -12,9 +9,9 @@ import com.jaideep.expensetracker.domain.usecase.calculation.GetAmountSpentFromA
 import com.jaideep.expensetracker.domain.usecase.calculation.GetAmountSpentTodayForAccountUseCase
 import com.jaideep.expensetracker.domain.usecase.calculation.GetCategoryAmountForWhichMaxAmountWasSpentFromAccountUseCase
 import com.jaideep.expensetracker.model.CategoryCardData
-import com.jaideep.expensetracker.model.RunJobForData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -25,19 +22,16 @@ class HomeViewModel @Inject constructor(
     private val getAmountSpentFromAccountThisMonth: GetAmountSpentFromAccountThisMonth,
     private val getCategoryAmountForWhichMaxAmountWasSpentFromAccountUseCase: GetCategoryAmountForWhichMaxAmountWasSpentFromAccountUseCase
 ) : ViewModel() {
-    private val _spentToday = mutableDoubleStateOf(0.0)
-    val spentToday: State<Double> = _spentToday
-    private val _selectedAccount = mutableStateOf("All Accounts")
-    val selectedAccount: State<String> = _selectedAccount
-    private val _selectedAccountBalance = mutableDoubleStateOf(0.0)
-    val selectedAccountBalance: State<Double> = _selectedAccountBalance
-    private val _amountSpentThisMonthFromAcc = mutableDoubleStateOf(0.0)
-    val amountSpentThisMonthFromAcc: State<Double> = _amountSpentThisMonthFromAcc
-    private val _getMaxSpentCategoryData = mutableStateOf(CategoryCardData())
-    val getMaxSpentCategoryData: State<CategoryCardData> = _getMaxSpentCategoryData
-    private var runJobForData: MutableStateFlow<RunJobForData<String>> = MutableStateFlow(
-        RunJobForData()
-    )
+    private val _spentToday = MutableStateFlow(0.0)
+    val spentToday: StateFlow<Double> = _spentToday
+    private val _selectedAccount = MutableStateFlow("All Accounts")
+    val selectedAccount: StateFlow<String> = _selectedAccount
+    private val _selectedAccountBalance = MutableStateFlow(0.0)
+    val selectedAccountBalance: StateFlow<Double> = _selectedAccountBalance
+    private val _amountSpentThisMonthFromAcc = MutableStateFlow(0.0)
+    val amountSpentThisMonthFromAcc: StateFlow<Double> = _amountSpentThisMonthFromAcc
+    private val _getMaxSpentCategoryData = MutableStateFlow(CategoryCardData())
+    val getMaxSpentCategoryData: StateFlow<CategoryCardData> = _getMaxSpentCategoryData
 
     private fun getAccountBalance() = viewModelScope.launch(EtDispatcher.io) {
         getAccountBalanceUseCase(selectedAccount.value).collect {
@@ -48,7 +42,7 @@ class HomeViewModel @Inject constructor(
                  */
                 }
 
-                is Resource.Success -> _selectedAccountBalance.doubleValue = it.data
+                is Resource.Success -> _selectedAccountBalance.value = it.data
             }
         }
     }
@@ -61,7 +55,7 @@ class HomeViewModel @Inject constructor(
                  Show error message, implement when you create error state variable */
                 }
 
-                is Resource.Success -> _spentToday.doubleValue = it.data
+                is Resource.Success -> _spentToday.value = it.data
             }
         }
     }
@@ -72,7 +66,7 @@ class HomeViewModel @Inject constructor(
                 is Resource.Error -> {}
                 is Resource.Loading -> {}
                 is Resource.Success -> {
-                    _amountSpentThisMonthFromAcc.doubleValue = it.data
+                    _amountSpentThisMonthFromAcc.value = it.data
                 }
             }
         }

@@ -73,7 +73,7 @@ private fun HomeScreenPreview() {
             selectedAccount = remember { mutableStateOf("All Accounts") },
             getInitialAccountSpecificData = {},
             categoryCardData = remember {
-                mutableStateOf(CategoryCardData())
+                mutableStateOf(CategoryCardData("Food", "Food", 0.0))
             },
             amountSpentThisMonthFromAcc = remember {
                 mutableDoubleStateOf(0.0)
@@ -96,12 +96,12 @@ fun HomeScreenRoot(
             homeViewModel.updateSelectedAccount(it)
             mainViewModel.updateInitialTransaction(it)
         },
-        accountBalance = homeViewModel.selectedAccountBalance,
-        spentToday = homeViewModel.spentToday,
-        selectedAccount = homeViewModel.selectedAccount,
+        accountBalance = homeViewModel.selectedAccountBalance.collectAsState(),
+        spentToday = homeViewModel.spentToday.collectAsState(),
+        selectedAccount = homeViewModel.selectedAccount.collectAsState(),
         getInitialAccountSpecificData = homeViewModel::getInitialAccountData,
-        categoryCardData = homeViewModel.getMaxSpentCategoryData,
-        amountSpentThisMonthFromAcc = homeViewModel.amountSpentThisMonthFromAcc
+        categoryCardData = homeViewModel.getMaxSpentCategoryData.collectAsState(),
+        amountSpentThisMonthFromAcc = homeViewModel.amountSpentThisMonthFromAcc.collectAsState()
     )
 }
 

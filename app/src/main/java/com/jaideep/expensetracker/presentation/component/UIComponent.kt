@@ -267,7 +267,8 @@ fun ExpenseTrackerTransactionCardItem(
     iconDescription: String,
     categoryName: String,
     transactionDescription: String,
-    amount: String
+    amount: String,
+    isCredit: Boolean = false
 ) {
     Column(
         modifier = Modifier
@@ -303,11 +304,11 @@ fun ExpenseTrackerTransactionCardItem(
                 )
             }
 
-            SimpleTextBold(
+            SimpleText(
                 text = amount,
                 modifier = Modifier.padding(4.dp),
                 overflow = TextOverflow.Ellipsis,
-                color = Color.Red
+                color = if (isCredit) Color.Green else Color.Black
             )
         }
     }
@@ -315,7 +316,7 @@ fun ExpenseTrackerTransactionCardItem(
 
 @Composable
 fun ExpenseTrackerTabLayout(
-    modifier: Modifier = Modifier, values: Array<String>, onClick: () -> Unit
+    modifier: Modifier = Modifier, values: Array<String>, onClick: (selectedTab: Int) -> Unit
 ) {
     var selectedTab by remember {
         mutableIntStateOf(0)
@@ -340,7 +341,7 @@ fun ExpenseTrackerTabLayout(
                 ),
                 onClick = {
                     selectedTab = index
-                    onClick()
+                    onClick(selectedTab)
                 },
                 selectedContentColor = Color.White,
                 unselectedContentColor = Color.Black

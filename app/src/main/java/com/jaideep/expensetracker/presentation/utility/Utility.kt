@@ -34,4 +34,6 @@ object Utility {
     fun getStartDateOfMonthInMillis(): Long {
         return LocalDate.now().withDayOfMonth(1).toEpochDay() * 86_400_000L
     }
+
+
 }

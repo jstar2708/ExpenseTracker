@@ -22,7 +22,9 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -32,6 +34,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -46,16 +49,17 @@ import com.jaideep.expensetracker.presentation.component.ExpenseTrackerTransacti
 import com.jaideep.expensetracker.presentation.component.SimpleText
 import com.jaideep.expensetracker.presentation.theme.AppTheme
 import com.jaideep.expensetracker.presentation.viewmodel.MainViewModel
+import com.jaideep.expensetracker.presentation.viewmodel.TransactionViewModel
 import java.time.LocalDate
 
 @Preview(showSystemUi = true, showBackground = true)
 @Composable
 fun TransactionScreenPreview() {
     AppTheme {
-        TransactionScreen(
-            navControllerRoot = NavController(Application()),
+        TransactionScreen(navControllerRoot = NavController(Application()),
             backPress = {},
             accounts = listOf("All accounts", "Cash"),
+            onAccountSpinnerValueChanged = { _, _, _, _, _ -> },
             transactions = listOf(
                 TransactionDto(
                     200.0, CategoryDto("Food", R.drawable.food), "No Message", LocalDate.now(), true
@@ -90,8 +94,14 @@ fun TransactionScreenPreview() {
                 TransactionDto(
                     200.0, CategoryDto("Food", R.drawable.food), "No Message", LocalDate.now(), true
                 ),
-            )
-        )
+            ),
+            updateCurrentTabValue = {},
+            selectedAccount = remember {
+                mutableStateOf("All Accounts")
+            },
+            selectedTab = remember {
+                mutableStateOf("")
+            })
     }
 }
 
@@ -99,10 +109,17 @@ fun TransactionScreenPreview() {
 fun TransactionScreenRoot(
     navHostControllerRoot: NavHostController, mainViewModel: MainViewModel, backPress: () -> Unit
 ) {
+    val transactionViewModel: TransactionViewModel = hiltViewModel()
     TransactionScreen(navControllerRoot = navHostControllerRoot,
         backPress = backPress,
         accounts = mainViewModel.accounts.collectAsState().value.toMutableList().apply {
             this.add(0, "All Accounts")
+        },
+        onAccountSpinnerValueChanged = { accountName, isCredit, isDebit, sDate, eDate ->
+            transactionViewModel.updateSelectedAccount(accountName)
+            mainViewModel.updateTransactionMethod(
+                accountName, isCredit, isDebit, sDate, eDate
+            )
         },
         transactions = mainViewModel.pagedTransactionItems.collectAsState().value.collectAsLazyPagingItems().itemSnapshotList.items.map { transaction ->
             TransactionDto(
@@ -112,7 +129,11 @@ fun TransactionScreenRoot(
                 LocalDate.ofEpochDay(transaction.createdTime / 86_400_000L),
                 transaction.isCredit == 1
             )
-        })
+        },
+        updateCurrentTabValue = transactionViewModel::updateCurrentTab,
+        selectedAccount = transactionViewModel.selectedAccount.collectAsState(),
+        selectedTab = transactionViewModel.selectedTabValue.collectAsState()
+    )
 }
 
 //@Preview(showSystemUi = true, showBackground = true)
@@ -122,7 +143,11 @@ fun TransactionScreen(
     navControllerRoot: NavController,
     backPress: () -> Unit,
     accounts: List<String>,
-    transactions: List<TransactionDto>
+    onAccountSpinnerValueChanged: (value: String, isCredit: Boolean, isDebit: Boolean, sDate: LocalDate?, eDate: LocalDate?) -> Unit,
+    transactions: List<TransactionDto>,
+    updateCurrentTabValue: (selectedTab: Int) -> Unit,
+    selectedAccount: State<String>,
+    selectedTab: State<String>
 ) {
     val savedStateHandle = navControllerRoot.currentBackStackEntry?.savedStateHandle
     val resultTransaction = savedStateHandle?.get<Boolean>("isTransactionSaved")
@@ -153,13 +178,30 @@ fun TransactionScreen(
                 .padding(it)
                 .fillMaxSize()
         ) {
-            ExpenseTrackerSpinner(values = accounts, onValueChanged = {
-
-            })
+            ExpenseTrackerSpinner(values = accounts,
+                initialValue = selectedAccount.value,
+                onValueChanged = { accountName ->
+                    onAccountSpinnerValueChanged(
+                        accountName,
+                        selectedTab.value == "Income",
+                        selectedTab.value == "Expense",
+                        null,
+                        null
+                    )
+                })
             Row(
                 Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically
             ) {
-                ExpenseTrackerTabLayout(values = arrayOf("All", "Income", "Expense"), onClick = {})
+                ExpenseTrackerTabLayout(values = arrayOf("All", "Income", "Expense"), onClick = {
+                    updateCurrentTabValue(it)
+                    onAccountSpinnerValueChanged(
+                        selectedAccount.value,
+                        it == 1,
+                        it == 2,
+                        null,
+                        null
+                    )
+                })
                 Icon(
                     painter = painterResource(id = R.drawable.filter),
                     contentDescription = "Filter",
@@ -186,7 +228,8 @@ fun TransactionScreen(
                             iconDescription = "Category icon",
                             categoryName = transactions[it].categoryDto.name,
                             transactionDescription = transactions[it].message,
-                            amount = transactions[it].amount.toString()
+                            amount = transactions[it].amount.toString(),
+                            isCredit = transactions[it].isCredit
                         )
                     }
                 }
