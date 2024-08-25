@@ -1,5 +1,6 @@
 package com.jaideep.expensetracker.presentation.component
 
+import com.jaideep.expensetracker.presentation.theme.greenColor
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -304,11 +305,11 @@ fun ExpenseTrackerTransactionCardItem(
                 )
             }
 
-            SimpleText(
+            SimpleTextBold(
                 text = amount,
                 modifier = Modifier.padding(4.dp),
                 overflow = TextOverflow.Ellipsis,
-                color = if (isCredit) Color.Green else Color.Black
+                color = if (isCredit) greenColor else Color.Black
             )
         }
     }
