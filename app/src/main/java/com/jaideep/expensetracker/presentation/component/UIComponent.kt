@@ -219,7 +219,12 @@ fun ExpenseTrackerCategoryCard(
 }
 
 @Composable
-fun ExpenseTrackerBlueButton(name: String, onClick: () -> Unit, modifier: Modifier) {
+fun ExpenseTrackerBlueButton(
+    name: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    containsIcon: Boolean = true
+) {
     Button(
         onClick = {
             onClick()
@@ -242,11 +247,13 @@ fun ExpenseTrackerBlueButton(name: String, onClick: () -> Unit, modifier: Modifi
         Spacer(
             modifier = Modifier.size(5.dp)
         )
-        Icon(
-            imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-            contentDescription = "Arrow icon",
-            modifier = Modifier.padding(8.dp)
-        )
+        if (containsIcon) {
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                contentDescription = "Arrow icon",
+                modifier = Modifier.padding(8.dp)
+            )
+        }
     }
 }
 
@@ -535,7 +542,7 @@ fun TextFieldDatePicker(
                 SimpleSmallText(
                     text = label,
                     color = if (isError.value) Color.Red else if (isFocused.value) MaterialTheme.colorScheme.secondary else Color.Gray,
-                    modifier = Modifier.background(MaterialTheme.colorScheme.surface)
+                    modifier = Modifier.background(Color.White)
                 )
             },
             leadingIcon = {

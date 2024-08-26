@@ -188,8 +188,8 @@ class MainViewModel @Inject constructor(
         accountName: String,
         isCredit: Boolean,
         isDebit: Boolean,
-        startDate: LocalDate?,
-        endDate: LocalDate?
+        startDate: String?,
+        endDate: String?
     ) {
         val transactionMethod = if (accountName == "All Accounts") {
             if (isCredit) {
@@ -219,9 +219,9 @@ class MainViewModel @Inject constructor(
         }
         if (startDate != null && endDate != null) {
             val startDateLong =
-                startDate.atStartOfDay(ZoneId.of("Asia/Kolkata")).toEpochSecond().times(1000)
+                LocalDate.parse(startDate).atStartOfDay(ZoneId.of("Asia/Kolkata")).toEpochSecond().times(1000)
             val endDateLong =
-                endDate.atStartOfDay(ZoneId.of("Asia/Kolkata")).toEpochSecond().times(1000)
+                LocalDate.parse(endDate).atStartOfDay(ZoneId.of("Asia/Kolkata")).toEpochSecond().times(1000)
             _transactionMethodData.value = TransactionMethodDataForDates(
                 transactionMethod,
                 accountName,
