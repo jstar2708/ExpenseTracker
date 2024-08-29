@@ -36,4 +36,6 @@ object Dependencies {
     val paging by lazy { "androidx.paging:paging-runtime:${Versions.paging}" }
     val pagingCompose by lazy { "androidx.paging:paging-compose:${Versions.paging}" }
     val pagingWithRoom by lazy { "androidx.room:room-paging:${Versions.roomPaging}" }
+
+    val kotlinImmutableLists by lazy { "org.jetbrains.kotlinx:kotlinx-collections-immutable${Versions.kotlinImmutableLists}" }
 }

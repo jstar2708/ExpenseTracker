@@ -7,6 +7,7 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import androidx.paging.map
 import com.jaideep.expensetracker.R
 import com.jaideep.expensetracker.common.AppComponents.getCategoryIconId
 import com.jaideep.expensetracker.common.EtDispatcher
@@ -26,13 +27,16 @@ import com.jaideep.expensetracker.model.TransactionMethodDataForDates
 import com.jaideep.expensetracker.model.dto.CategoryDto
 import com.jaideep.expensetracker.model.dto.TransactionDto
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.isActive
@@ -51,7 +55,9 @@ class MainViewModel @Inject constructor(
 ) : ViewModel() {
     private val _accounts: MutableStateFlow<List<Account>> = MutableStateFlow(ArrayList())
     var accounts: StateFlow<List<String>> = _accounts.map { list ->
-        list.asFlow().map { it.accountName }.toList()
+        list.asFlow().map { it.accountName }.toList().toMutableList().apply {
+            this.add(0, "All Accounts")
+        }
     }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
     private val _categories: MutableStateFlow<List<Category>> = MutableStateFlow(ArrayList())
@@ -78,15 +84,27 @@ class MainViewModel @Inject constructor(
 
     private val _transactionMethodData: MutableStateFlow<TransactionMethodData> = MutableStateFlow(
         TransactionMethodData(
-            TransactionMethod.GET_ALL_TRANSACTIONS,
-            "All Accounts"
+            TransactionMethod.GET_ALL_TRANSACTIONS, "All Accounts"
         )
     )
 
-    val pagedTransactionItems: MutableStateFlow<Flow<PagingData<Transaction>>> =
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private val _pagedTransactionItems: MutableStateFlow<Flow<PagingData<TransactionDto>>> =
         MutableStateFlow(Pager(config = PagingConfig(pageSize = 50), pagingSourceFactory = {
             transactionPagingRepository.getAllTransactions()
-        }).flow.cachedIn(viewModelScope))
+        }).flow.mapLatest { pagingData ->
+            pagingData.map { transaction ->
+                TransactionDto(
+                    transaction.amount,
+                    getCategoryDto(transaction.categoryId),
+                    transaction.message,
+                    LocalDate.ofEpochDay(transaction.createdTime / 86_400_000L),
+                    transaction.isCredit == 1
+                )
+            }
+        }.cachedIn(viewModelScope))
+
+    val pagedTransactionItems = _pagedTransactionItems.asStateFlow()
 
     private val _isFirstAppInitialization = MutableLiveData<Boolean>()
     var isFirstAppInitialization = _isFirstAppInitialization
@@ -100,6 +118,13 @@ class MainViewModel @Inject constructor(
     init {
         getAllAccounts()
         getAllCategories()
+    }
+
+
+    private fun collectPagedTransactionItems() = viewModelScope.launch(EtDispatcher.io) {
+        _pagedTransactionItems.collectLatest { pagingData ->
+
+        }
     }
 
     fun addDefaultCategories() {
@@ -193,13 +218,13 @@ class MainViewModel @Inject constructor(
     ) {
         val transactionMethod = if (accountName == "All Accounts") {
             if (isCredit) {
-                if (startDate != null && endDate != null) TransactionMethod.GET_CREDIT_TRANSACTIONS_BETWEEN_DATES
+                if (startDate != null && endDate != null && startDate.isNotBlank() && endDate.isNotBlank()) TransactionMethod.GET_CREDIT_TRANSACTIONS_BETWEEN_DATES
                 else TransactionMethod.GET_CREDIT_TRANSACTIONS
             } else if (isDebit) {
-                if (startDate != null && endDate != null) TransactionMethod.GET_DEBIT_TRANSACTIONS_BETWEEN_DATES
+                if (startDate != null && endDate != null && startDate.isNotBlank() && endDate.isNotBlank()) TransactionMethod.GET_DEBIT_TRANSACTIONS_BETWEEN_DATES
                 else TransactionMethod.GET_DEBIT_TRANSACTIONS
             } else {
-                if (startDate != null && endDate != null) {
+                if (startDate != null && endDate != null && startDate.isNotBlank() && endDate.isNotBlank()) {
                     TransactionMethod.GET_TRANSACTIONS_BETWEEN_DATES
                 } else {
                     TransactionMethod.GET_ALL_TRANSACTIONS
@@ -207,38 +232,39 @@ class MainViewModel @Inject constructor(
             }
         } else {
             if (isCredit) {
-                if (startDate != null && endDate != null) TransactionMethod.GET_CREDIT_TRANSACTIONS_BETWEEN_DATES_FOR_ACCOUNT
+                if (startDate != null && endDate != null && startDate.isNotBlank() && endDate.isNotBlank()) TransactionMethod.GET_CREDIT_TRANSACTIONS_BETWEEN_DATES_FOR_ACCOUNT
                 else TransactionMethod.GET_CREDIT_TRANSACTIONS_FOR_ACCOUNT
             } else if (isDebit) {
-                if (startDate != null && endDate != null) TransactionMethod.GET_DEBIT_TRANSACTIONS_BETWEEN_DATES_FOR_ACCOUNT
+                if (startDate != null && endDate != null && startDate.isNotBlank() && endDate.isNotBlank()) TransactionMethod.GET_DEBIT_TRANSACTIONS_BETWEEN_DATES_FOR_ACCOUNT
                 else TransactionMethod.GET_DEBIT_TRANSACTIONS_FOR_ACCOUNT
             } else {
-                if (startDate != null && endDate != null) TransactionMethod.GET_TRANSACTIONS_BETWEEN_DATES_FOR_ACCOUNT
+                if (startDate != null && endDate != null && startDate.isNotBlank() && endDate.isNotBlank()) TransactionMethod.GET_TRANSACTIONS_BETWEEN_DATES_FOR_ACCOUNT
                 else TransactionMethod.GET_TRANSACTIONS_FOR_ACCOUNT
             }
         }
-        if (startDate != null && endDate != null) {
+        if (startDate != null && endDate != null && startDate.isNotBlank() && endDate.isNotBlank()) {
             val startDateLong =
-                LocalDate.parse(startDate).atStartOfDay(ZoneId.of("Asia/Kolkata")).toEpochSecond().times(1000)
+                LocalDate.parse(startDate).atStartOfDay(ZoneId.of("Asia/Kolkata")).toEpochSecond()
+                    .times(1000)
             val endDateLong =
-                LocalDate.parse(endDate).atStartOfDay(ZoneId.of("Asia/Kolkata")).toEpochSecond().times(1000)
+                LocalDate.parse(endDate).atStartOfDay(ZoneId.of("Asia/Kolkata")).toEpochSecond()
+                    .times(1000)
             _transactionMethodData.value = TransactionMethodDataForDates(
-                transactionMethod,
-                accountName,
-                startDateLong,
-                endDateLong
+                transactionMethod, accountName, startDateLong, endDateLong
             )
         } else {
             _transactionMethodData.value = TransactionMethodData(transactionMethod, accountName)
         }
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     private fun getTransactionPagingSource() = viewModelScope.launch {
         _transactionMethodData.collectLatest { transactionMethodData ->
-            pagedTransactionItems.value =
+            _pagedTransactionItems.value =
                 Pager(config = PagingConfig(pageSize = 50), pagingSourceFactory = {
                     val accountId =
-                        _accounts.value.firstOrNull { it.accountName == transactionMethodData.accountName }?.id ?: 0
+                        _accounts.value.firstOrNull { it.accountName == transactionMethodData.accountName }?.id
+                            ?: 0
                     if (transactionMethodData is TransactionMethodDataForDates) when (transactionMethodData.transactionMethod) {
                         TransactionMethod.GET_CREDIT_TRANSACTIONS_BETWEEN_DATES_FOR_ACCOUNT -> transactionPagingRepository.getCreditTransactionBetweenDatesForAccount(
                             accountId,
@@ -296,12 +322,22 @@ class MainViewModel @Inject constructor(
                         else -> transactionPagingRepository.getAllTransactions()
 
                     }
-                }).flow.cachedIn(viewModelScope)
+                }).flow.mapLatest { pagingData ->
+                    pagingData.map { transaction ->
+                        TransactionDto(
+                            transaction.amount,
+                            getCategoryDto(transaction.categoryId),
+                            transaction.message,
+                            LocalDate.ofEpochDay(transaction.createdTime / 86_400_000L),
+                            transaction.isCredit == 1
+                        )
+                    }
+                }.cachedIn(viewModelScope)
 
         }
     }
 
-    fun getCategoryDto(categoryId: Int): CategoryDto {
+    private fun getCategoryDto(categoryId: Int): CategoryDto {
         val category: Category? = _categories.value.find {
             categoryId == it.id
         }

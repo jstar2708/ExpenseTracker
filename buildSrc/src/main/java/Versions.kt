@@ -1,4 +1,5 @@
 object Versions {
+    const val kotlinImmutableLists = ":0.3.7"
     const val paging = "3.2.1"
     const val roomPaging = "2.6.1"
     const val room = "2.6.1"

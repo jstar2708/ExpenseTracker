@@ -16,8 +16,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavHostController
+import androidx.navigation.NavOptions
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navOptions
 import com.jaideep.expensetracker.common.AppComponents
 import com.jaideep.expensetracker.presentation.navigation.BottomNavigationGraph
 import com.jaideep.expensetracker.presentation.viewmodel.MainViewModel
@@ -51,10 +53,14 @@ fun BottomNavigation(bottomNavController: NavHostController) {
                 NavigationBarItem(selected = currentDestination?.hierarchy?.any { it.route == bottomNavigationItem.route } == true,
 
                     onClick = {
-                        bottomNavController.navigate(bottomNavigationItem.route) {
-                            popUpTo(bottomNavController.graph.startDestinationId)
-                            launchSingleTop = true
-                        }
+                        bottomNavController.navigate(
+                            bottomNavigationItem.route,
+                            navOptions = navOptions {
+                                popUpTo(bottomNavController.graph.startDestinationId)
+                                launchSingleTop = true
+                                restoreState = true
+                            }
+                        )
                     },
 
                     label = {

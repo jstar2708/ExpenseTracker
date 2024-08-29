@@ -92,4 +92,6 @@ dependencies {
     implementation(Dependencies.pagingCompose)
     implementation(Dependencies.pagingWithRoom)
 
+    implementation(Dependencies.kotlinImmutableLists)
+
 }

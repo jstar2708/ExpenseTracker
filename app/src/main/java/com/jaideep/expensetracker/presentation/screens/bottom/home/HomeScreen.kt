@@ -83,9 +83,8 @@ private fun HomeScreenPreview() {
 
 @Composable
 fun HomeScreenRoot(
-    navControllerRoot: NavController, mainViewModel: MainViewModel
+    navControllerRoot: NavController, mainViewModel: MainViewModel, homeViewModel: HomeViewModel
 ) {
-    val homeViewModel: HomeViewModel = hiltViewModel()
     HomeScreen(
         navControllerRoot = navControllerRoot,
         accounts = mainViewModel.accounts.collectAsState().value.toMutableList().apply {
@@ -139,7 +138,8 @@ fun HomeScreen(
                 hostState = snackBarHostState
             ) {
                 Snackbar(
-                    snackbarData = it, containerColor = Color.DarkGray
+                    snackbarData = it,
+                    containerColor = Color.DarkGray
                 )
             }
         }, topBar = {
@@ -149,7 +149,7 @@ fun HomeScreen(
                 onNavigationIconClick = { },
                 actionIcon = Icons.Filled.Notifications,
                 actionDescription = "Notification icon",
-                onActionIconClick = { })
+                onActionIconClick = {  })
         }) {
             Column(
                 Modifier
