@@ -22,9 +22,9 @@ import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.jaideep.expensetracker.R
 import com.jaideep.expensetracker.common.DetailScreen
+import com.jaideep.expensetracker.presentation.component.card.ExpenseTrackerCategoryCard
 import com.jaideep.expensetracker.presentation.component.other.ExpenseTrackerAppBar
-import com.jaideep.expensetracker.presentation.component.ExpenseTrackerCategoryCard
-import com.jaideep.expensetracker.presentation.component.ExpenseTrackerSpinner
+import com.jaideep.expensetracker.presentation.component.other.ExpenseTrackerSpinner
 import com.jaideep.expensetracker.presentation.viewmodel.MainViewModel
 
 @Preview

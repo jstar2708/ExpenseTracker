@@ -43,12 +43,12 @@ import com.jaideep.expensetracker.common.DetailScreen
 import com.jaideep.expensetracker.model.DialogState
 import com.jaideep.expensetracker.model.dto.CategoryDto
 import com.jaideep.expensetracker.model.dto.TransactionDto
-import com.jaideep.expensetracker.presentation.component.other.ExpenseTrackerAppBar
-import com.jaideep.expensetracker.presentation.component.ExpenseTrackerSpinner
-import com.jaideep.expensetracker.presentation.component.ExpenseTrackerTabLayout
-import com.jaideep.expensetracker.presentation.component.ExpenseTrackerTransactionCardItem
+import com.jaideep.expensetracker.presentation.component.other.ExpenseTrackerTabLayout
 import com.jaideep.expensetracker.presentation.component.SimpleText
+import com.jaideep.expensetracker.presentation.component.card.ExpenseTrackerTransactionCardItem
 import com.jaideep.expensetracker.presentation.component.dialog.FilterDialog
+import com.jaideep.expensetracker.presentation.component.other.ExpenseTrackerAppBar
+import com.jaideep.expensetracker.presentation.component.other.ExpenseTrackerSpinner
 import com.jaideep.expensetracker.presentation.theme.AppTheme
 import com.jaideep.expensetracker.presentation.viewmodel.MainViewModel
 import com.jaideep.expensetracker.presentation.viewmodel.TransactionViewModel
@@ -232,7 +232,8 @@ fun TransactionScreen(
             Row(
                 Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically
             ) {
-                ExpenseTrackerTabLayout(values = tabItemsList,
+                ExpenseTrackerTabLayout(
+                    values = tabItemsList,
                     initialValue = selectedTab.value,
                     onClick = {
                         updateCurrentTabValue(it)

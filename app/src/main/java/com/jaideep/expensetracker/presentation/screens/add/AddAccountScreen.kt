@@ -36,7 +36,7 @@ import com.jaideep.expensetracker.R
 import com.jaideep.expensetracker.presentation.component.HeadingTextBold
 import com.jaideep.expensetracker.presentation.component.SimpleText
 import com.jaideep.expensetracker.presentation.component.SimpleTextBold
-import com.jaideep.expensetracker.presentation.component.TextFieldWithIcon
+import com.jaideep.expensetracker.presentation.component.textfield.TextFieldWithIcon
 import com.jaideep.expensetracker.presentation.theme.AppTheme
 import com.jaideep.expensetracker.presentation.viewmodel.AddAccountViewModel
 import com.jaideep.expensetracker.presentation.viewmodel.MainViewModel

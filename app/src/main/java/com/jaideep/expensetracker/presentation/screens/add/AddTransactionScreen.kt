@@ -44,11 +44,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.jaideep.expensetracker.R
 import com.jaideep.expensetracker.presentation.component.HeadingTextBold
-import com.jaideep.expensetracker.presentation.component.RadioButtonWithText
+import com.jaideep.expensetracker.presentation.component.button.RadioButtonWithText
 import com.jaideep.expensetracker.presentation.component.SimpleText
 import com.jaideep.expensetracker.presentation.component.TextFieldDatePicker
-import com.jaideep.expensetracker.presentation.component.TextFieldWithDropDown
-import com.jaideep.expensetracker.presentation.component.TextFieldWithIcon
+import com.jaideep.expensetracker.presentation.component.textfield.TextFieldWithDropDown
+import com.jaideep.expensetracker.presentation.component.textfield.TextFieldWithIcon
 import com.jaideep.expensetracker.presentation.theme.AppTheme
 import com.jaideep.expensetracker.presentation.viewmodel.AddTransactionViewModel
 import com.jaideep.expensetracker.presentation.viewmodel.MainViewModel
