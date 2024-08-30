@@ -1,11 +1,15 @@
 package com.jaideep.expensetracker.presentation.viewmodel
 
-import androidx.compose.animation.fadeOut
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.jaideep.expensetracker.model.DialogState
+import com.jaideep.expensetracker.model.dto.TransactionDto
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.immutableListOf
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toImmutableList
 import java.time.LocalDate
 import javax.inject.Inject
 
@@ -13,6 +17,7 @@ import javax.inject.Inject
 class TransactionViewModel @Inject constructor(
 
 ) : ViewModel() {
+    val tabItemsList: ImmutableList<String> = persistentListOf("All", "Income", "Expense")
     val selectedTabValue = mutableIntStateOf(0)
     val selectedAccount = mutableStateOf("All Accounts")
     val dialogState = mutableStateOf(

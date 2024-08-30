@@ -24,7 +24,7 @@ import androidx.compose.ui.window.DialogProperties
 import com.jaideep.expensetracker.model.DialogState
 import com.jaideep.expensetracker.presentation.component.SimpleText
 import com.jaideep.expensetracker.presentation.component.SimpleTextBold
-import com.jaideep.expensetracker.presentation.component.SmallPrimaryColorButton
+import com.jaideep.expensetracker.presentation.component.button.SmallPrimaryColorButton
 import com.jaideep.expensetracker.presentation.component.TextFieldDatePicker
 import com.jaideep.expensetracker.presentation.theme.AppTheme
 

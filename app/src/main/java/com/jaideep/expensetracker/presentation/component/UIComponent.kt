@@ -1,6 +1,5 @@
 package com.jaideep.expensetracker.presentation.component
 
-import com.jaideep.expensetracker.presentation.theme.greenColor
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -67,44 +66,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.jaideep.expensetracker.R
 import com.jaideep.expensetracker.presentation.theme.OpenSansFont
+import com.jaideep.expensetracker.presentation.theme.greenColor
 import com.jaideep.expensetracker.presentation.theme.md_theme_light_primary
 import com.jaideep.expensetracker.presentation.theme.md_theme_light_surface
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.PersistentList
 import java.time.LocalDate
 
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun ExpenseTrackerAppBar(
-    title: String,
-    navigationIcon: ImageVector,
-    navigationDescription: String,
-    onNavigationIconClick: () -> Unit,
-    actionIcon: ImageVector,
-    actionDescription: String,
-    onActionIconClick: () -> Unit,
-) {
-    TopAppBar(title = {
-        SimpleTextBold(
-            modifier = Modifier.padding(start = 4.dp, end = 4.dp), text = title
-        )
-    }, navigationIcon = {
-        IconButton(onClick = { onNavigationIconClick() }) {
-            Icon(
-                imageVector = navigationIcon,
-                contentDescription = navigationDescription,
-                modifier = Modifier.size(40.dp),
-            )
-        }
-    }, actions = {
-        IconButton(onClick = { onActionIconClick() }) {
-            Icon(
-                imageVector = actionIcon,
-                contentDescription = actionDescription,
-                modifier = Modifier.size(30.dp)
-            )
-        }
-    })
-}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -122,8 +90,7 @@ fun ExpenseTrackerSpinner(
         mutableStateOf(initialValue)
     }
 
-    ExposedDropdownMenuBox(
-        modifier = modifier,
+    ExposedDropdownMenuBox(modifier = modifier,
         expanded = isExpanded,
         onExpandedChange = { isExpanded = it }) {
         OutlinedTextField(value = selectedAccount,
@@ -220,10 +187,7 @@ fun ExpenseTrackerCategoryCard(
 
 @Composable
 fun ExpenseTrackerBlueButton(
-    name: String,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-    containsIcon: Boolean = true
+    name: String, onClick: () -> Unit, modifier: Modifier = Modifier, containsIcon: Boolean = true
 ) {
     Button(
         onClick = {
@@ -326,7 +290,7 @@ fun ExpenseTrackerTransactionCardItem(
 fun ExpenseTrackerTabLayout(
     modifier: Modifier = Modifier,
     initialValue: Int = 0,
-    values: Array<String>,
+    values: ImmutableList<String>,
     onClick: (selectedTab: Int) -> Unit
 ) {
     var selectedTab by remember {
@@ -456,8 +420,7 @@ fun TextFieldWithDropDown(
             showErrorText = showErrorText
         )
 
-        ExposedDropdownMenu(
-            expanded = isExpanded && !showErrorText.value,
+        ExposedDropdownMenu(expanded = isExpanded && !showErrorText.value,
             onDismissRequest = { isExpanded = false }) {
             values.forEach {
                 DropdownMenuItem(text = {
@@ -662,7 +625,7 @@ fun TextFieldDatePicker(
                     showDatePicker.value = true
                 },
             value = text,
-            onValueChange = {  },
+            onValueChange = { },
             readOnly = true,
             enabled = false,
             label = {

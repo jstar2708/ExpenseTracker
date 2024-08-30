@@ -43,7 +43,7 @@ import com.jaideep.expensetracker.common.DetailScreen
 import com.jaideep.expensetracker.model.DialogState
 import com.jaideep.expensetracker.model.dto.CategoryDto
 import com.jaideep.expensetracker.model.dto.TransactionDto
-import com.jaideep.expensetracker.presentation.component.ExpenseTrackerAppBar
+import com.jaideep.expensetracker.presentation.component.other.ExpenseTrackerAppBar
 import com.jaideep.expensetracker.presentation.component.ExpenseTrackerSpinner
 import com.jaideep.expensetracker.presentation.component.ExpenseTrackerTabLayout
 import com.jaideep.expensetracker.presentation.component.ExpenseTrackerTransactionCardItem
@@ -90,6 +90,7 @@ fun TransactionScreenPreview() {
                     200.0, CategoryDto("Food", R.drawable.food), "No Message", LocalDate.now(), true
                 )
             ),
+            tabItemsList = persistentListOf("All", "Income", "Expense"),
             updateCurrentTabValue = {},
             selectedAccount = remember {
                 mutableStateOf("All Accounts")
@@ -136,6 +137,7 @@ fun TransactionScreenRoot(
             )
         },
         transactions = mainViewModel.pagedTransactionItems.collectAsState().value.collectAsLazyPagingItems().itemSnapshotList.items.toImmutableList(),
+        tabItemsList = transactionViewModel.tabItemsList,
         updateCurrentTabValue = transactionViewModel::updateCurrentTab,
         selectedAccount = transactionViewModel.selectedAccount,
         selectedTab = transactionViewModel.selectedTabValue,
@@ -164,6 +166,7 @@ fun TransactionScreen(
     accounts: List<String>,
     onAccountSpinnerValueChanged: (value: String, isCredit: Boolean, isDebit: Boolean) -> Unit,
     transactions: ImmutableList<TransactionDto>,
+    tabItemsList: ImmutableList<String>,
     updateCurrentTabValue: (selectedTab: Int) -> Unit,
     selectedAccount: State<String>,
     selectedTab: State<Int>,
@@ -229,7 +232,7 @@ fun TransactionScreen(
             Row(
                 Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically
             ) {
-                ExpenseTrackerTabLayout(values = arrayOf("All", "Income", "Expense"),
+                ExpenseTrackerTabLayout(values = tabItemsList,
                     initialValue = selectedTab.value,
                     onClick = {
                         updateCurrentTabValue(it)

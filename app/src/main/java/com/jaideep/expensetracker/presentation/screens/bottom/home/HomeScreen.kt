@@ -42,12 +42,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.jaideep.expensetracker.common.DetailScreen
 import com.jaideep.expensetracker.model.CategoryCardData
 import com.jaideep.expensetracker.model.dto.TransactionDto
-import com.jaideep.expensetracker.presentation.component.ExpenseTrackerAppBar
 import com.jaideep.expensetracker.presentation.component.ExpenseTrackerBlueButton
 import com.jaideep.expensetracker.presentation.component.ExpenseTrackerCategoryCard
 import com.jaideep.expensetracker.presentation.component.ExpenseTrackerSpinner
@@ -55,6 +53,7 @@ import com.jaideep.expensetracker.presentation.component.ExpenseTrackerTransacti
 import com.jaideep.expensetracker.presentation.component.HeadingTextBold
 import com.jaideep.expensetracker.presentation.component.SimpleText
 import com.jaideep.expensetracker.presentation.component.SimpleTextBold
+import com.jaideep.expensetracker.presentation.component.other.ExpenseTrackerAppBar
 import com.jaideep.expensetracker.presentation.theme.AppTheme
 import com.jaideep.expensetracker.presentation.utility.Utility
 import com.jaideep.expensetracker.presentation.viewmodel.HomeViewModel
@@ -138,8 +137,7 @@ fun HomeScreen(
                 hostState = snackBarHostState
             ) {
                 Snackbar(
-                    snackbarData = it,
-                    containerColor = Color.DarkGray
+                    snackbarData = it, containerColor = Color.DarkGray
                 )
             }
         }, topBar = {
@@ -149,7 +147,7 @@ fun HomeScreen(
                 onNavigationIconClick = { },
                 actionIcon = Icons.Filled.Notifications,
                 actionDescription = "Notification icon",
-                onActionIconClick = {  })
+                onActionIconClick = { })
         }) {
             Column(
                 Modifier
