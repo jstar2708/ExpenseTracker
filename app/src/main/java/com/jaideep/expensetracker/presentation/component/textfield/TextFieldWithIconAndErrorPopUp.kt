@@ -5,6 +5,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -14,6 +15,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ErrorOutline
+import androidx.compose.material.icons.filled.Wallet
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -29,11 +31,24 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.jaideep.expensetracker.presentation.component.SimpleSmallText
+import com.jaideep.expensetracker.presentation.theme.AppTheme
 
 @Preview
 @Composable
 private fun TextFieldWithIconAndErrorPopUpPreview() {
+    AppTheme {
+        TextFieldWithIconAndErrorPopUp(label = "Enter account",
+            icon = Icons.Filled.Wallet,
+            iconColor = Color.White,
+            borderColor = Color.Black,
+            text = "",
+            isError = true,
+            errorMessage = "",
+            showErrorText = false,
+            onValueChange = {}) {
 
+        }
+    }
 }
 
 @Composable
@@ -46,6 +61,7 @@ fun TextFieldWithIconAndErrorPopUp(
     text: String,
     isError: Boolean,
     isReadOnly: Boolean = false,
+    enabled: Boolean = true,
     keyBoardOptions: KeyboardOptions = KeyboardOptions(),
     errorMessage: String,
     showErrorText: Boolean,
@@ -61,43 +77,47 @@ fun TextFieldWithIconAndErrorPopUp(
     Column(
         horizontalAlignment = Alignment.End
     ) {
-        TextField(modifier = modifier
-            .fillMaxWidth()
-            .onFocusChanged {
-                isFocused.value = it.hasFocus
-            }, value = text, readOnly = isReadOnly, onValueChange = {
-            onValueChange(it)
-        }, label = {
-            SimpleSmallText(
-                text = label,
-                color = if (isError) Color.Red else if (isFocused.value) MaterialTheme.colorScheme.secondary else Color.Gray,
-                modifier = Modifier.background(MaterialTheme.colorScheme.surface)
+        Box(contentAlignment = Alignment.CenterEnd) {
+            TextField(modifier = modifier
+                .fillMaxWidth()
+                .onFocusChanged {
+                    isFocused.value = it.hasFocus
+                }, value = text, readOnly = isReadOnly, onValueChange = {
+                onValueChange(it)
+            }, label = {
+                SimpleSmallText(
+                    text = label,
+                    color = if (isError) Color.Red else if (isFocused.value) MaterialTheme.colorScheme.secondary else Color.Gray,
+                    modifier = Modifier.background(MaterialTheme.colorScheme.surface)
+                )
+            }, leadingIcon = {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = "Icon",
+                    tint = if (isError) Color.Red else iconColor
+                )
+            },
+                enabled = enabled,
+                colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = borderColor,
+                unfocusedBorderColor = borderColor,
+                errorBorderColor = Color.Red,
+                focusedContainerColor = Color.White,
+                unfocusedContainerColor = Color.White,
+                errorContainerColor = Color.White
+            ), isError = isError, keyboardOptions = keyBoardOptions
             )
-        }, leadingIcon = {
-            Icon(
-                imageVector = icon,
-                contentDescription = "Icon",
-                tint = if (isError) Color.Red else iconColor
-            )
-        }, colors = OutlinedTextFieldDefaults.colors(
-            focusedBorderColor = borderColor,
-            unfocusedBorderColor = borderColor,
-            errorBorderColor = Color.Red,
-            focusedContainerColor = Color.White,
-            unfocusedContainerColor = Color.White,
-            errorContainerColor = Color.White
-        ), isError = isError, keyboardOptions = keyBoardOptions, trailingIcon = {
             if (isError) {
-                Column {
-                    Icon(imageVector = Icons.Filled.ErrorOutline,
-                        contentDescription = "Error icon",
-                        tint = Color.Red,
-                        modifier = Modifier.clickable {
-                            onErrorIconClick()
-                        })
-                }
+                Icon(
+                    imageVector = Icons.Filled.ErrorOutline,
+                    contentDescription = "Error icon",
+                    tint = Color.Red,
+                    modifier = Modifier.padding(8.dp, 0.dp).clickable {
+                        onErrorIconClick()
+                    })
+
             }
-        })
+        }
         AnimatedVisibility(
             visible = showErrorText, enter = fadeIn(), exit = fadeOut()
         ) {

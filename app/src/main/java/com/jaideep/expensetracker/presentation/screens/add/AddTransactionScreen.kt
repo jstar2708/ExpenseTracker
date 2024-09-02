@@ -41,8 +41,8 @@ import com.jaideep.expensetracker.R
 import com.jaideep.expensetracker.model.TextFieldWithIconState
 import com.jaideep.expensetracker.presentation.component.HeadingTextBold
 import com.jaideep.expensetracker.presentation.component.SimpleText
-import com.jaideep.expensetracker.presentation.component.TextFieldDatePicker
 import com.jaideep.expensetracker.presentation.component.button.RadioButtonWithText
+import com.jaideep.expensetracker.presentation.component.textfield.TextFieldDatePicker
 import com.jaideep.expensetracker.presentation.component.textfield.TextFieldWithDropDown
 import com.jaideep.expensetracker.presentation.component.textfield.TextFieldWithIconAndErrorPopUp
 import com.jaideep.expensetracker.presentation.viewmodel.AddTransactionViewModel
@@ -246,7 +246,9 @@ fun AddTransactionScreen(
                         text = dateState.text,
                         isError = dateState.isError,
                         errorMessage = "Enter a valid date",
-                        onValueChanged = dateState.onValueChange
+                        showErrorText = dateState.showError,
+                        onValueChanged = dateState.onValueChange,
+                        onErrorIconClick = dateState.onErrorIconClick
                     )
                     TextFieldWithIconAndErrorPopUp(
                         label = "Note",

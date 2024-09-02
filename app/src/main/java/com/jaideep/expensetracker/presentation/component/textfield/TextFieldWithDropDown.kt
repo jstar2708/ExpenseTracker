@@ -3,6 +3,8 @@ package com.jaideep.expensetracker.presentation.component.textfield
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountBalanceWallet
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -14,7 +16,28 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.tooling.preview.Preview
 import com.jaideep.expensetracker.presentation.component.SimpleText
+import com.jaideep.expensetracker.presentation.theme.AppTheme
+
+@Preview
+@Composable
+private fun TextFieldWithDropDownPreview() {
+    AppTheme {
+        TextFieldWithDropDown(values = listOf("All Accounts", "PNB"),
+            label = "Select Account",
+            icon = Icons.Filled.AccountBalanceWallet,
+            iconColor = Color.LightGray,
+            borderColor = Color.Black,
+            text = "",
+            isError = false,
+            errorMessage = "",
+            showErrorText = false,
+            onTextFieldValueChange = {}) {
+
+        }
+    }
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

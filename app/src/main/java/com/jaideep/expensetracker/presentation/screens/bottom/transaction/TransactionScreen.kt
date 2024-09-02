@@ -2,6 +2,7 @@ package com.jaideep.expensetracker.presentation.screens.bottom.transaction
 
 import android.app.Application
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -219,26 +220,16 @@ fun TransactionScreen(
                     ) {
                         clearDialogDate()
                         updateTransactionList()
+
                     }
                 }
             }
-            ExpenseTrackerSpinner(values = accounts,
-                initialValue = selectedAccount.value,
-                onValueChanged = { accountName ->
-                    onAccountSpinnerValueChanged(
-                        accountName, selectedTab.value == 1, selectedTab.value == 2
-                    )
-                })
-            Row(
-                Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically
-            ) {
-                ExpenseTrackerTabLayout(
-                    values = tabItemsList,
-                    initialValue = selectedTab.value,
-                    onClick = {
-                        updateCurrentTabValue(it)
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                ExpenseTrackerSpinner(values = accounts,
+                    initialValue = selectedAccount.value,
+                    onValueChanged = { accountName ->
                         onAccountSpinnerValueChanged(
-                            selectedAccount.value, it == 1, it == 2
+                            accountName, selectedTab.value == 1, selectedTab.value == 2
                         )
                     })
                 Icon(
@@ -254,6 +245,14 @@ fun TransactionScreen(
                     tint = Color.Unspecified
                 )
             }
+            ExpenseTrackerTabLayout(values = tabItemsList,
+                initialValue = selectedTab.value,
+                onClick = {
+                    updateCurrentTabValue(it)
+                    onAccountSpinnerValueChanged(
+                        selectedAccount.value, it == 1, it == 2
+                    )
+                })
 
             if (transactions.isNotEmpty()) {
                 LazyColumn(

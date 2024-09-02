@@ -25,7 +25,7 @@ import com.jaideep.expensetracker.model.DialogState
 import com.jaideep.expensetracker.presentation.component.SimpleText
 import com.jaideep.expensetracker.presentation.component.SimpleTextBold
 import com.jaideep.expensetracker.presentation.component.button.SmallPrimaryColorButton
-import com.jaideep.expensetracker.presentation.component.TextFieldDatePicker
+import com.jaideep.expensetracker.presentation.component.textfield.TextFieldDatePicker
 import com.jaideep.expensetracker.presentation.theme.AppTheme
 
 @Preview
@@ -78,31 +78,31 @@ fun FilterDialog(
                 color = Color.Black,
                 modifier = Modifier.padding(16.dp)
             )
-            TextFieldDatePicker(
-                modifier = Modifier.padding(16.dp, 8.dp),
+            TextFieldDatePicker(modifier = Modifier.padding(16.dp, 8.dp),
                 text = dialogState.value.fromDate,
-                label = "Enter From Date",
+                label = if (dialogState.value.fromDate.isBlank()) "Enter From Date" else "From Date",
                 icon = Icons.Filled.CalendarMonth,
                 iconColor = Color.Gray,
                 borderColor = Color.LightGray,
                 errorMessage = "Enter correct date",
-                onValueChanged = updateFromDate
-            )
+                showErrorText = false,
+                onValueChanged = updateFromDate,
+                onErrorIconClick = {})
 
             SimpleTextBold(
                 text = "To", color = Color.Black, modifier = Modifier.padding(16.dp, 8.dp)
             )
 
-            TextFieldDatePicker(
-                modifier = Modifier.padding(16.dp, 8.dp),
+            TextFieldDatePicker(modifier = Modifier.padding(16.dp, 8.dp),
                 text = dialogState.value.toDate,
-                label = "Enter From Date",
+                label = if (dialogState.value.toDate.isBlank()) "Enter To Date" else "To Date",
                 icon = Icons.Filled.CalendarMonth,
                 iconColor = Color.Gray,
                 borderColor = Color.LightGray,
                 errorMessage = "Enter correct date",
-                onValueChanged = updateToDate
-            )
+                showErrorText = false,
+                onValueChanged = updateToDate,
+                onErrorIconClick = {})
 
             if (dialogState.value.showError) {
                 Row(
