@@ -19,7 +19,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -27,14 +26,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.jaideep.expensetracker.presentation.component.SimpleSmallText
 
 @Preview
 @Composable
-private fun TextFieldWithIconAndErrorPopUp() {
+private fun TextFieldWithIconAndErrorPopUpPreview() {
 
 }
 
@@ -45,21 +43,20 @@ fun TextFieldWithIconAndErrorPopUp(
     icon: ImageVector,
     iconColor: Color,
     borderColor: Color,
-    text: MutableState<TextFieldValue> = remember {
-        mutableStateOf(TextFieldValue(""))
-    },
-    isError: MutableState<Boolean> = remember {
-        mutableStateOf(false)
-    },
+    text: String,
+    isError: Boolean,
     isReadOnly: Boolean = false,
     keyBoardOptions: KeyboardOptions = KeyboardOptions(),
     errorMessage: String,
-    showErrorText: MutableState<Boolean>
+    showErrorText: Boolean,
+    onValueChange: (value: String) -> Unit,
+    onErrorIconClick: () -> Unit
 ) {
 
     val isFocused = remember {
         mutableStateOf(false)
     }
+
 
     Column(
         horizontalAlignment = Alignment.End
@@ -68,19 +65,19 @@ fun TextFieldWithIconAndErrorPopUp(
             .fillMaxWidth()
             .onFocusChanged {
                 isFocused.value = it.hasFocus
-            }, value = text.value, readOnly = isReadOnly, onValueChange = {
-            text.value = it
+            }, value = text, readOnly = isReadOnly, onValueChange = {
+            onValueChange(it)
         }, label = {
             SimpleSmallText(
                 text = label,
-                color = if (isError.value) Color.Red else if (isFocused.value) MaterialTheme.colorScheme.secondary else Color.Gray,
+                color = if (isError) Color.Red else if (isFocused.value) MaterialTheme.colorScheme.secondary else Color.Gray,
                 modifier = Modifier.background(MaterialTheme.colorScheme.surface)
             )
         }, leadingIcon = {
             Icon(
                 imageVector = icon,
                 contentDescription = "Icon",
-                tint = if (isError.value) Color.Red else iconColor
+                tint = if (isError) Color.Red else iconColor
             )
         }, colors = OutlinedTextFieldDefaults.colors(
             focusedBorderColor = borderColor,
@@ -89,22 +86,20 @@ fun TextFieldWithIconAndErrorPopUp(
             focusedContainerColor = Color.White,
             unfocusedContainerColor = Color.White,
             errorContainerColor = Color.White
-        ), isError = isError.value, keyboardOptions = keyBoardOptions, trailingIcon = {
-            if (isError.value) {
+        ), isError = isError, keyboardOptions = keyBoardOptions, trailingIcon = {
+            if (isError) {
                 Column {
                     Icon(imageVector = Icons.Filled.ErrorOutline,
                         contentDescription = "Error icon",
                         tint = Color.Red,
                         modifier = Modifier.clickable {
-                            if (isError.value) {
-                                showErrorText.value = !showErrorText.value
-                            }
+                            onErrorIconClick()
                         })
                 }
             }
         })
         AnimatedVisibility(
-            visible = showErrorText.value, enter = fadeIn(), exit = fadeOut()
+            visible = showErrorText, enter = fadeIn(), exit = fadeOut()
         ) {
             Column {
                 Spacer(modifier = Modifier.height(8.dp))

@@ -49,133 +49,134 @@ import com.jaideep.expensetracker.presentation.theme.OpenSansFont
 import java.time.LocalDate
 
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun TextFieldDatePicker(
-    modifier: Modifier = Modifier,
-    label: String,
-    icon: ImageVector,
-    iconColor: Color,
-    borderColor: Color,
-    text: MutableState<TextFieldValue> = remember {
-        mutableStateOf(TextFieldValue(""))
-    },
-    isError: MutableState<Boolean> = remember {
-        mutableStateOf(false)
-    },
-    errorMessage: String,
-    onValueChanged: (value: String) -> Unit = {}
-) {
 
-    val isFocused = remember {
-        mutableStateOf(false)
-    }
-    val showDatePicker = remember {
-        mutableStateOf(false)
-    }
-    val showErrorText = remember {
-        mutableStateOf(false)
-    }
-
-    val dateState = rememberDatePickerState()
-
-    if (showDatePicker.value) {
-        DatePickerDialog(onDismissRequest = { showDatePicker.value = false }, confirmButton = {
-            Button(onClick = {
-                dateState.selectedDateMillis?.let { date ->
-                    val dateString = LocalDate.ofEpochDay(date / 86_400_000L).toString()
-                    onValueChanged(dateString)
-                    text.value = TextFieldValue(dateString)
-                }
-                showDatePicker.value = false
-            }) {
-                Text(text = "Ok")
-            }
-        }, dismissButton = {
-            Button(onClick = {
-                showDatePicker.value = false
-            }) {
-                Text(text = "Cancel")
-            }
-        }) {
-            DatePicker(state = dateState)
-        }
-    }
-
-
-    Column(
-        horizontalAlignment = Alignment.End
-    ) {
-        TextField(
-            modifier = modifier
-                .focusable()
-                .fillMaxWidth()
-                .onFocusChanged {
-                    isFocused.value = it.hasFocus
-                }
-                .clickable {
-                    showDatePicker.value = true
-                },
-            value = text.value,
-            onValueChange = { onValueChanged(it.text) },
-            readOnly = true,
-            enabled = false,
-            label = {
-                SimpleSmallText(
-                    text = label,
-                    color = if (isError.value) Color.Red else if (isFocused.value) MaterialTheme.colorScheme.secondary else Color.Gray,
-                    modifier = Modifier.background(Color.White)
-                )
-            },
-            leadingIcon = {
-                Icon(
-                    imageVector = icon,
-                    contentDescription = "Icon",
-                    tint = if (isError.value) Color.Red else iconColor
-                )
-            },
-            trailingIcon = {
-                if (isError.value) {
-                    Column {
-                        Icon(imageVector = Icons.Filled.ErrorOutline,
-                            contentDescription = "Error icon",
-                            tint = Color.Red,
-                            modifier = Modifier.clickable {
-                                if (isError.value) {
-                                    showErrorText.value = !showErrorText.value
-                                }
-                            })
-                    }
-                }
-            },
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = borderColor,
-                unfocusedBorderColor = borderColor,
-                disabledBorderColor = borderColor,
-                errorBorderColor = Color.Red,
-                focusedContainerColor = Color.White,
-                unfocusedContainerColor = Color.White,
-                errorContainerColor = Color.White,
-                disabledContainerColor = Color.White,
-                disabledTextColor = Color.Black
-            ),
-            isError = isError.value,
-        )
-
-        AnimatedVisibility(
-            visible = showErrorText.value, enter = fadeIn(), exit = fadeOut()
-        ) {
-            Column {
-                Spacer(modifier = Modifier.height(8.dp))
-                SimpleSmallText(
-                    Modifier
-                        .background(color = Color.White, RoundedCornerShape(8.dp))
-                        .padding(8.dp), text = errorMessage, color = Color.Red
-                )
-            }
-        }
-    }
-}
+//@OptIn(ExperimentalMaterial3Api::class)
+//@Composable
+//fun TextFieldDatePicker(
+//    modifier: Modifier = Modifier,
+//    label: String,
+//    icon: ImageVector,
+//    iconColor: Color,
+//    borderColor: Color,
+//    text: MutableState<TextFieldValue> = remember {
+//        mutableStateOf(TextFieldValue(""))
+//    },
+//    isError: MutableState<Boolean> = remember {
+//        mutableStateOf(false)
+//    },
+//    errorMessage: String,
+//    onValueChanged: (value: String) -> Unit = {}
+//) {
+//
+//    val isFocused = remember {
+//        mutableStateOf(false)
+//    }
+//    val showDatePicker = remember {
+//        mutableStateOf(false)
+//    }
+//    val showErrorText = remember {
+//        mutableStateOf(false)
+//    }
+//
+//    val dateState = rememberDatePickerState()
+//
+//    if (showDatePicker.value) {
+//        DatePickerDialog(onDismissRequest = { showDatePicker.value = false }, confirmButton = {
+//            Button(onClick = {
+//                dateState.selectedDateMillis?.let { date ->
+//                    val dateString = LocalDate.ofEpochDay(date / 86_400_000L).toString()
+//                    onValueChanged(dateString)
+//                    text.value = TextFieldValue(dateString)
+//                }
+//                showDatePicker.value = false
+//            }) {
+//                Text(text = "Ok")
+//            }
+//        }, dismissButton = {
+//            Button(onClick = {
+//                showDatePicker.value = false
+//            }) {
+//                Text(text = "Cancel")
+//            }
+//        }) {
+//            DatePicker(state = dateState)
+//        }
+//    }
+//
+//
+//    Column(
+//        horizontalAlignment = Alignment.End
+//    ) {
+//        TextField(
+//            modifier = modifier
+//                .focusable()
+//                .fillMaxWidth()
+//                .onFocusChanged {
+//                    isFocused.value = it.hasFocus
+//                }
+//                .clickable {
+//                    showDatePicker.value = true
+//                },
+//            value = text.value,
+//            onValueChange = { onValueChanged(it.text) },
+//            readOnly = true,
+//            enabled = false,
+//            label = {
+//                SimpleSmallText(
+//                    text = label,
+//                    color = if (isError.value) Color.Red else if (isFocused.value) MaterialTheme.colorScheme.secondary else Color.Gray,
+//                    modifier = Modifier.background(Color.White)
+//                )
+//            },
+//            leadingIcon = {
+//                Icon(
+//                    imageVector = icon,
+//                    contentDescription = "Icon",
+//                    tint = if (isError.value) Color.Red else iconColor
+//                )
+//            },
+//            trailingIcon = {
+//                if (isError.value) {
+//                    Column {
+//                        Icon(imageVector = Icons.Filled.ErrorOutline,
+//                            contentDescription = "Error icon",
+//                            tint = Color.Red,
+//                            modifier = Modifier.clickable {
+//                                if (isError.value) {
+//                                    showErrorText.value = !showErrorText.value
+//                                }
+//                            })
+//                    }
+//                }
+//            },
+//            colors = OutlinedTextFieldDefaults.colors(
+//                focusedBorderColor = borderColor,
+//                unfocusedBorderColor = borderColor,
+//                disabledBorderColor = borderColor,
+//                errorBorderColor = Color.Red,
+//                focusedContainerColor = Color.White,
+//                unfocusedContainerColor = Color.White,
+//                errorContainerColor = Color.White,
+//                disabledContainerColor = Color.White,
+//                disabledTextColor = Color.Black
+//            ),
+//            isError = isError.value,
+//        )
+//
+//        AnimatedVisibility(
+//            visible = showErrorText.value, enter = fadeIn(), exit = fadeOut()
+//        ) {
+//            Column {
+//                Spacer(modifier = Modifier.height(8.dp))
+//                SimpleSmallText(
+//                    Modifier
+//                        .background(color = Color.White, RoundedCornerShape(8.dp))
+//                        .padding(8.dp), text = errorMessage, color = Color.Red
+//                )
+//            }
+//        }
+//    }
+//}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -264,9 +265,7 @@ fun TextFieldDatePicker(
                             contentDescription = "Error icon",
                             tint = Color.Red,
                             modifier = Modifier.clickable {
-                                if (isError) {
-                                    showErrorText.value = !showErrorText.value
-                                }
+                                showErrorText.value = !showErrorText.value
                             })
                     }
                 }

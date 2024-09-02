@@ -30,8 +30,8 @@ class HomeViewModel @Inject constructor(
     val selectedAccountBalance: StateFlow<Double> = _selectedAccountBalance
     private val _amountSpentThisMonthFromAcc = MutableStateFlow(0.0)
     val amountSpentThisMonthFromAcc: StateFlow<Double> = _amountSpentThisMonthFromAcc
-    private val _getMaxSpentCategoryData = MutableStateFlow(CategoryCardData())
-    val getMaxSpentCategoryData: StateFlow<CategoryCardData> = _getMaxSpentCategoryData
+    private val _getMaxSpentCategoryData = MutableStateFlow<CategoryCardData?>(null)
+    val getMaxSpentCategoryData: StateFlow<CategoryCardData?> = _getMaxSpentCategoryData
 
     private fun getAccountBalance() = viewModelScope.launch(EtDispatcher.io) {
         getAccountBalanceUseCase(selectedAccount.value).collect {

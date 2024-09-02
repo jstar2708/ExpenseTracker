@@ -113,7 +113,7 @@ fun HomeScreen(
     accountBalance: State<Double>,
     spentToday: State<Double>,
     selectedAccount: State<String>,
-    categoryCardData: State<CategoryCardData>,
+    categoryCardData: State<CategoryCardData?>,
     amountSpentThisMonthFromAcc: State<Double>
 ) {
     val savedStateHandle = navControllerRoot.currentBackStackEntry?.savedStateHandle
@@ -266,7 +266,7 @@ fun TransactionSummary(transactions: List<TransactionDto>) {
 fun SummaryCard(
     accountBalance: State<Double>,
     spentToday: State<Double>,
-    categoryCardData: State<CategoryCardData>,
+    categoryCardData: State<CategoryCardData?>,
     amountSpentThisMonthFromAcc: State<Double>
 ) {
     Card(
@@ -302,15 +302,18 @@ fun SummaryCard(
                     textAlignment = TextAlign.Center
                 )
             }
-            ExpenseTrackerCategoryCard(
-                iconId = Utility.getCategoryIconId(categoryCardData.value.iconName),
-                iconDescription = "${categoryCardData.value.categoryName} icon",
-                categoryName = categoryCardData.value.categoryName,
-                spendValue = "${categoryCardData.value.amountSpent} / ${amountSpentThisMonthFromAcc.value}",
-                progressValue = (categoryCardData.value.amountSpent / amountSpentThisMonthFromAcc.value).toFloat(),
-                trackColor = Color.Yellow
-            )
-            Spacer(modifier = Modifier.height(20.dp))
+
+            categoryCardData.value?.let { categoryCardData ->
+                ExpenseTrackerCategoryCard(
+                    iconId = Utility.getCategoryIconId(categoryCardData.iconName),
+                    iconDescription = "${categoryCardData.categoryName} icon",
+                    categoryName = categoryCardData.categoryName,
+                    spendValue = "${categoryCardData.amountSpent} / ${amountSpentThisMonthFromAcc.value}",
+                    progressValue = (categoryCardData.amountSpent / amountSpentThisMonthFromAcc.value).toFloat(),
+                    trackColor = Color.Yellow
+                )
+                Spacer(modifier = Modifier.height(20.dp))
+            }
         }
     }
 }

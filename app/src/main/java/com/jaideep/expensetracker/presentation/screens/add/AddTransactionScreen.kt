@@ -27,82 +27,77 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.jaideep.expensetracker.R
+import com.jaideep.expensetracker.model.TextFieldWithIconState
 import com.jaideep.expensetracker.presentation.component.HeadingTextBold
-import com.jaideep.expensetracker.presentation.component.button.RadioButtonWithText
 import com.jaideep.expensetracker.presentation.component.SimpleText
 import com.jaideep.expensetracker.presentation.component.TextFieldDatePicker
+import com.jaideep.expensetracker.presentation.component.button.RadioButtonWithText
 import com.jaideep.expensetracker.presentation.component.textfield.TextFieldWithDropDown
-import com.jaideep.expensetracker.presentation.component.textfield.TextFieldWithIcon
-import com.jaideep.expensetracker.presentation.theme.AppTheme
+import com.jaideep.expensetracker.presentation.component.textfield.TextFieldWithIconAndErrorPopUp
 import com.jaideep.expensetracker.presentation.viewmodel.AddTransactionViewModel
 import com.jaideep.expensetracker.presentation.viewmodel.MainViewModel
 
-@Preview(showSystemUi = true, showBackground = true)
-@Composable
-fun AddTransactionPreview() {
-    AppTheme {
-        AddTransactionScreen(radioButtonValue = "Income",
-            detailsMessage = "Please provide transaction details",
-            screenTitle = "Add Transaction",
-            accountName = remember {
-                mutableStateOf(TextFieldValue(""))
-            },
-            categoryName = remember {
-                mutableStateOf(TextFieldValue(""))
-            },
-            amount = remember {
-                mutableStateOf(TextFieldValue(""))
-            },
-            date = remember {
-                mutableStateOf(TextFieldValue(""))
-            },
-            note = remember {
-                mutableStateOf(TextFieldValue(""))
-            },
-            isDateIncorrect = remember {
-                mutableStateOf(false)
-            },
-            isAmountIncorrect = remember {
-                mutableStateOf(false)
-            },
-            toggleRadioButton = {},
-            accounts = listOf(),
-            categories = listOf(),
-            isCategoryIncorrect = remember {
-                mutableStateOf(false)
-            },
-            isAccountIncorrect = remember {
-                mutableStateOf(false)
-            },
-            exitScreen = remember {
-                mutableStateOf(
-                    false
-                )
-            },
-            saveTransaction = { _, _, _, _, _, _ ->
-
-            },
-            backPress = {
-
-            })
-    }
-}
+//@Preview(showSystemUi = true, showBackground = true)
+//@Composable
+//fun AddTransactionPreview() {
+//    AppTheme {
+//        AddTransactionScreen(radioButtonValue = "Income",
+//            detailsMessage = "Please provide transaction details",
+//            screenTitle = "Add Transaction",
+//            accountName = remember {
+//                mutableStateOf(TextFieldValue(""))
+//            },
+//            categoryName = remember {
+//                mutableStateOf(TextFieldValue(""))
+//            },
+//            amount = remember {
+//                mutableStateOf(TextFieldValue(""))
+//            },
+//            date = remember {
+//                mutableStateOf(TextFieldValue(""))
+//            },
+//            note = remember {
+//                mutableStateOf(TextFieldValue(""))
+//            },
+//            isDateIncorrect = remember {
+//                mutableStateOf(false)
+//            },
+//            isAmountIncorrect = remember {
+//                mutableStateOf(false)
+//            },
+//            toggleRadioButton = {},
+//            accounts = listOf(),
+//            categories = listOf(),
+//            isCategoryIncorrect = remember {
+//                mutableStateOf(false)
+//            },
+//            isAccountIncorrect = remember {
+//                mutableStateOf(false)
+//            },
+//            exitScreen = remember {
+//                mutableStateOf(
+//                    false
+//                )
+//            },
+//            saveTransaction = { _, _, _, _, _, _ ->
+//
+//            },
+//            backPress = {
+//
+//            })
+//    }
+//}
 
 @Composable
 fun AddTransactionScreenRoot(
@@ -110,56 +105,46 @@ fun AddTransactionScreenRoot(
     mainViewModel: MainViewModel,
     viewModel: AddTransactionViewModel = hiltViewModel()
 ) {
-    AddTransactionScreen(radioButtonValue = viewModel.radioButtonValue,
+    AddTransactionScreen(radioButtonValue = viewModel.radioButtonValue.value,
         detailsMessage = viewModel.screenDetail,
         screenTitle = viewModel.screenTitle,
         toggleRadioButton = viewModel::toggleRadioButton,
-        accountName = viewModel.accountName,
-        categoryName = viewModel.categoryName,
-        amount = viewModel.amount,
-        date = viewModel.date,
-        note = viewModel.note,
-        isAmountIncorrect = viewModel.isAmountIncorrect,
-        isDateIncorrect = viewModel.isDateIncorrect,
-        isAccountIncorrect = viewModel.isAccountNameIncorrect,
-        isCategoryIncorrect = viewModel.isCategoryNameIncorrect,
         exitScreen = viewModel.exitScreen,
         accounts = viewModel.accounts.collectAsState().value,
         categories = viewModel.categories.collectAsState().value,
-        saveTransaction = viewModel::saveTransaction,
+        saveTransaction = viewModel::validateAndSaveTransaction,
+        accountState = viewModel.accountState.value,
+        noteState = viewModel.noteState.value,
+        amountState = viewModel.amountState.value,
+        categoryState = viewModel.categoryState.value,
+        dateState = viewModel.dateState.value,
         backPress = {
             val savedStateHandle = navControllerRoot.previousBackStackEntry?.savedStateHandle
-            savedStateHandle?.set("isTransactionSaved", viewModel.isTransactionSaved.value)
+            savedStateHandle?.set("isTransactionSaved", viewModel.isTransactionSaved)
             navControllerRoot.popBackStack()
         })
 }
 
 @Composable
 fun AddTransactionScreen(
-    radioButtonValue: String,
+    radioButtonValue: Int,
     detailsMessage: String,
     screenTitle: String,
-    accountName: MutableState<TextFieldValue>,
-    categoryName: MutableState<TextFieldValue>,
-    amount: MutableState<TextFieldValue>,
-    date: MutableState<TextFieldValue>,
-    note: MutableState<TextFieldValue>,
-    isAmountIncorrect: MutableState<Boolean>,
-    isDateIncorrect: MutableState<Boolean>,
-    isAccountIncorrect: MutableState<Boolean>,
-    isCategoryIncorrect: MutableState<Boolean>,
-    exitScreen: MutableState<Boolean>,
-    toggleRadioButton: (value: String) -> Unit,
+    exitScreen: Boolean,
     accounts: List<String>,
     categories: List<String>,
-    saveTransaction: (
-        accountName: String, categoryName: String, amount: String, date: String, note: String, isCredit: Boolean
-    ) -> Unit,
+    accountState: TextFieldWithIconState,
+    noteState: TextFieldWithIconState,
+    amountState: TextFieldWithIconState,
+    categoryState: TextFieldWithIconState,
+    dateState: TextFieldWithIconState,
+    toggleRadioButton: (value: Int) -> Unit,
+    saveTransaction: () -> Unit,
     backPress: () -> Unit
 ) {
 
-    LaunchedEffect(key1 = exitScreen.value) {
-        if (exitScreen.value) {
+    LaunchedEffect(key1 = exitScreen) {
+        if (exitScreen) {
             backPress()
         }
     }
@@ -195,22 +180,22 @@ fun AddTransactionScreen(
                         horizontalArrangement = Arrangement.SpaceEvenly
                     ) {
                         RadioButtonWithText(
-                            isSelected = radioButtonValue == "Income",
+                            isSelected = radioButtonValue == 0,
                             text = "Income",
                             selectedColor = Color.White,
                             unselectedColor = Color.White,
                             textColor = Color.White
                         ) {
-                            toggleRadioButton("Income")
+                            toggleRadioButton(0)
                         }
                         RadioButtonWithText(
-                            isSelected = radioButtonValue == "Expense",
+                            isSelected = radioButtonValue == 1,
                             text = "Expense",
                             selectedColor = Color.White,
                             unselectedColor = Color.White,
                             textColor = Color.White
                         ) {
-                            toggleRadioButton("Expense")
+                            toggleRadioButton(1)
                         }
                     }
 
@@ -220,9 +205,12 @@ fun AddTransactionScreen(
                         icon = Icons.Filled.AccountBalanceWallet,
                         iconColor = MaterialTheme.colorScheme.onSecondaryContainer,
                         borderColor = Color.Black,
-                        text = accountName,
-                        isError = isAccountIncorrect,
-                        errorMessage = "Account name cannot be blank"
+                        text = accountState.text,
+                        isError = accountState.isError,
+                        errorMessage = "Account name cannot be blank",
+                        showErrorText = accountState.showError,
+                        onTextFieldValueChange = accountState.onValueChange,
+                        onErrorIconClick = accountState.onErrorIconClick
                     )
                     TextFieldWithDropDown(
                         values = categories,
@@ -230,54 +218,59 @@ fun AddTransactionScreen(
                         icon = Icons.Filled.Category,
                         iconColor = MaterialTheme.colorScheme.onSecondaryContainer,
                         borderColor = Color.Black,
-                        text = categoryName,
-                        isError = isCategoryIncorrect,
-                        errorMessage = "Category name cannot be blank"
+                        text = categoryState.text,
+                        isError = categoryState.isError,
+                        errorMessage = "Category name cannot be blank",
+                        showErrorText = categoryState.showError,
+                        onTextFieldValueChange = categoryState.onValueChange,
+                        onErrorIconClick = categoryState.onErrorIconClick
                     )
-                    TextFieldWithIcon(
+                    TextFieldWithIconAndErrorPopUp(
                         label = "Amount",
                         icon = Icons.Filled.CurrencyRupee,
                         iconColor = MaterialTheme.colorScheme.onSecondaryContainer,
                         borderColor = Color.Black,
                         keyBoardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
-                        text = amount,
-                        isError = isAmountIncorrect,
-                        errorMessage = "Enter a valid amount"
+                        text = amountState.text,
+                        isError = amountState.isError,
+                        errorMessage = "Enter a valid amount",
+                        showErrorText = amountState.showError,
+                        onValueChange = amountState.onValueChange,
+                        onErrorIconClick = amountState.onErrorIconClick
                     )
                     TextFieldDatePicker(
                         label = "Date",
                         icon = Icons.Filled.CalendarMonth,
                         iconColor = MaterialTheme.colorScheme.onSecondaryContainer,
                         borderColor = Color.Black,
-                        text = date,
-                        isError = isDateIncorrect,
-                        errorMessage = "Enter a valid date"
+                        text = dateState.text,
+                        isError = dateState.isError,
+                        errorMessage = "Enter a valid date",
+                        onValueChanged = dateState.onValueChange
                     )
-                    TextFieldWithIcon(
+                    TextFieldWithIconAndErrorPopUp(
                         label = "Note",
                         icon = Icons.AutoMirrored.Filled.Note,
                         iconColor = MaterialTheme.colorScheme.onSecondaryContainer,
                         borderColor = Color.Black,
-                        text = note
+                        text = noteState.text,
+                        isError = false,
+                        showErrorText = false,
+                        errorMessage = "",
+                        onValueChange = noteState.onValueChange,
+                        onErrorIconClick = noteState.onErrorIconClick
                     )
 
-                    Button(modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(8.dp)
-                        .height(60.dp),
+                    Button(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(8.dp)
+                            .height(60.dp),
                         colors = ButtonColors(
                             Color.White, Color.Blue, Color.White, Color.White
                         ),
-                        onClick = {
-                            saveTransaction(
-                                accountName.value.text,
-                                categoryName.value.text,
-                                amount.value.text,
-                                date.value.text,
-                                note.value.text,
-                                radioButtonValue == "Income"
-                            )
-                        }) {
+                        onClick = saveTransaction
+                    ) {
                         Text(
                             text = "Save", color = Color.Blue
                         )
