@@ -122,7 +122,7 @@ class MainViewModel @Inject constructor(
 
 
     private fun collectPagedTransactionItems() = viewModelScope.launch(EtDispatcher.io) {
-        _pagedTransactionItems.collectLatest { pagingData ->
+        _pagedTransactionItems.collectLatest {
 
         }
     }

@@ -1,6 +1,5 @@
 package com.jaideep.expensetracker.presentation.screens.bottom
 
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -16,7 +15,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavHostController
-import androidx.navigation.NavOptions
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
@@ -35,7 +33,6 @@ fun BottomNavigationScreen(navHostControllerRoot: NavHostController, mainViewMod
 }
 
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun BottomNavigation(bottomNavController: NavHostController) {
     val navBackStackEntry by bottomNavController.currentBackStackEntryAsState()
@@ -59,8 +56,7 @@ fun BottomNavigation(bottomNavController: NavHostController) {
                                 popUpTo(bottomNavController.graph.startDestinationId)
                                 launchSingleTop = true
                                 restoreState = true
-                            }
-                        )
+                            })
                     },
 
                     label = {

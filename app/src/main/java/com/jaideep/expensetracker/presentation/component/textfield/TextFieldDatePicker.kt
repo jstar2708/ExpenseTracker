@@ -1,5 +1,6 @@
 package com.jaideep.expensetracker.presentation.component.textfield
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material.icons.Icons
@@ -8,6 +9,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
@@ -89,7 +91,9 @@ fun TextFieldDatePicker(
         horizontalAlignment = Alignment.End
     ) {
         TextFieldWithIconAndErrorPopUp(
-            modifier = modifier.clickable { showDatePicker.value = true },
+            modifier = modifier
+                .background(MaterialTheme.colorScheme.surface)
+                .clickable { showDatePicker.value = true },
             label = label,
             isReadOnly = true,
             icon = icon,

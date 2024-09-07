@@ -261,7 +261,6 @@ fun TransactionSummary(transactions: List<TransactionDto>) {
     }
 }
 
-//@Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun SummaryCard(
     accountBalance: State<Double>,

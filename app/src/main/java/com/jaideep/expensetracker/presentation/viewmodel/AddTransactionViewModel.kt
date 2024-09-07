@@ -24,7 +24,9 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.time.delay
 import kotlinx.coroutines.withContext
+import java.time.Duration
 import java.time.LocalDate
 import java.time.ZoneId
 import java.time.format.DateTimeParseException
@@ -38,7 +40,7 @@ class AddTransactionViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _accounts: MutableStateFlow<List<Account>> = MutableStateFlow(ArrayList())
-    var accounts: StateFlow<List<String>> = _accounts.map { it ->
+    var accounts: StateFlow<List<String>> = _accounts.map {
         it.asFlow().map { account ->
             account.accountName
         }.toList()
@@ -46,7 +48,7 @@ class AddTransactionViewModel @Inject constructor(
 
 
     private val _categories: MutableStateFlow<List<Category>> = MutableStateFlow(ArrayList())
-    var categories: StateFlow<List<String>> = _categories.map { it ->
+    var categories: StateFlow<List<String>> = _categories.map {
         it.asFlow().map { category ->
             category.categoryName
         }.toList()
@@ -99,9 +101,13 @@ class AddTransactionViewModel @Inject constructor(
     var screenDetail by mutableStateOf("Please provide transaction details")
         private set
 
-    var dataRetrievalError by mutableStateOf(false)
+    var accountRetrievalError by mutableStateOf(false)
         private set
-    var isLoading by mutableStateOf(true)
+    var isAccountLoading by mutableStateOf(true)
+        private set
+    var categoryRetrievalError by mutableStateOf(false)
+        private set
+    var isCategoryLoading by mutableStateOf(true)
         private set
     var errorMessage by mutableStateOf("")
         private set
@@ -222,21 +228,22 @@ class AddTransactionViewModel @Inject constructor(
                 is Resource.Error -> {
                     withContext(EtDispatcher.main) {
                         errorMessage = it.message
-                        dataRetrievalError = true
-                        isLoading = false
+                        categoryRetrievalError = true
+                        isCategoryLoading = false
                     }
                 }
 
                 is Resource.Success -> {
                     withContext(EtDispatcher.main) {
                         _categories.value = it.data
-                        isLoading = false
+                        isCategoryLoading = false
                     }
                 }
 
                 is Resource.Loading -> {
                     withContext(EtDispatcher.main) {
-                        isLoading = true
+                        delay(Duration.ofMillis(500))
+                        isCategoryLoading = true
                     }
                 }
             }
@@ -250,21 +257,22 @@ class AddTransactionViewModel @Inject constructor(
                     is Resource.Error -> {
                         withContext(EtDispatcher.main) {
                             errorMessage = it.message
-                            dataRetrievalError = true
-                            isLoading = false
+                            accountRetrievalError = true
+                            isAccountLoading = false
                         }
                     }
 
                     is Resource.Success -> {
                         withContext(EtDispatcher.main) {
                             _accounts.value = it.data
-                            isLoading = false
+                            isAccountLoading = false
                         }
                     }
 
                     is Resource.Loading -> {
                         withContext(EtDispatcher.main) {
-                            isLoading = true
+                            delay(Duration.ofMillis(500))
+                            isAccountLoading = true
                         }
                     }
                 }

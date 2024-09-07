@@ -24,7 +24,7 @@ fun RootNavigationGraph(mainViewModel: MainViewModel) {
             BottomNavigationScreen(navHostControllerRoot, mainViewModel)
         }
         composable(DetailScreen.ADD_TRANSACTION) {
-            AddTransactionScreenRoot(navHostControllerRoot, mainViewModel)
+            AddTransactionScreenRoot(navHostControllerRoot)
         }
         composable(DetailScreen.ADD_ACCOUNT) {
             AddAccountScreenRoot(navHostControllerRoot, mainViewModel)

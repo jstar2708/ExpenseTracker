@@ -12,6 +12,7 @@ import com.jaideep.expensetracker.model.CategoryCardData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -48,7 +49,7 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun getAmountSpentTodayForSelectedAccount() = viewModelScope.launch(EtDispatcher.io) {
-        getAmountSpentTodayForAccountUseCase(selectedAccount.value).collect {
+        getAmountSpentTodayForAccountUseCase(selectedAccount.value).collectLatest {
             when (it) {
                 is Resource.Loading -> {}
                 is Resource.Error -> {/*
