@@ -109,7 +109,7 @@ class MainViewModel @Inject constructor(
     private val _isFirstAppInitialization = MutableLiveData<Boolean>()
     var isFirstAppInitialization = _isFirstAppInitialization
 
-    private val _hasCategoriesLoaded = MutableStateFlow<Boolean>(false)
+    private val _hasCategoriesLoaded = MutableStateFlow(false)
 
     private var runJobForData: MutableStateFlow<RunJobForData<String>> = MutableStateFlow(
         RunJobForData()
