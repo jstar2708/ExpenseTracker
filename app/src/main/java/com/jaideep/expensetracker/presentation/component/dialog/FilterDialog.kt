@@ -11,9 +11,6 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -32,17 +29,9 @@ import com.jaideep.expensetracker.presentation.theme.AppTheme
 @Composable
 private fun FilterDialogPreview() {
     AppTheme {
-        FilterDialog(dialogState = remember {
-            mutableStateOf(
-                DialogState(
-                    showDialog = true,
-                    fromDate = "",
-                    toDate = "",
-                    showError = false,
-                    errorMessage = ""
-                )
-            )
-        },
+        FilterDialog(dialogState = DialogState(
+            showDialog = true, fromDate = "", toDate = "", showError = false, errorMessage = ""
+        ),
             updateTransactionList = {},
             checkValidDate = { true },
             hideDialog = {},
@@ -55,7 +44,7 @@ private fun FilterDialogPreview() {
 
 @Composable
 fun FilterDialog(
-    dialogState: State<DialogState>,
+    dialogState: DialogState,
     updateTransactionList: () -> Unit,
     checkValidDate: () -> Boolean,
     hideDialog: () -> Unit,
@@ -79,8 +68,8 @@ fun FilterDialog(
                 modifier = Modifier.padding(16.dp)
             )
             TextFieldDatePicker(modifier = Modifier.padding(16.dp, 8.dp),
-                text = dialogState.value.fromDate,
-                label = if (dialogState.value.fromDate.isBlank()) "Enter From Date" else "From Date",
+                text = dialogState.fromDate,
+                label = if (dialogState.fromDate.isBlank()) "Enter From Date" else "From Date",
                 icon = Icons.Filled.CalendarMonth,
                 iconColor = Color.Gray,
                 borderColor = Color.LightGray,
@@ -94,8 +83,8 @@ fun FilterDialog(
             )
 
             TextFieldDatePicker(modifier = Modifier.padding(16.dp, 8.dp),
-                text = dialogState.value.toDate,
-                label = if (dialogState.value.toDate.isBlank()) "Enter To Date" else "To Date",
+                text = dialogState.toDate,
+                label = if (dialogState.toDate.isBlank()) "Enter To Date" else "To Date",
                 icon = Icons.Filled.CalendarMonth,
                 iconColor = Color.Gray,
                 borderColor = Color.LightGray,
@@ -104,7 +93,7 @@ fun FilterDialog(
                 onValueChanged = updateToDate,
                 onErrorIconClick = {})
 
-            if (dialogState.value.showError) {
+            if (dialogState.showError) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -120,7 +109,7 @@ fun FilterDialog(
                     )
                     SimpleText(
                         modifier = Modifier.weight(.85f),
-                        text = dialogState.value.errorMessage,
+                        text = dialogState.errorMessage,
                         color = Color.Red
                     )
                 }

@@ -23,10 +23,7 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -65,7 +62,7 @@ fun TransactionScreenPreview() {
     AppTheme {
         TransactionScreen(navControllerRoot = NavController(Application()),
             backPress = {},
-            accounts = listOf("All accounts", "Cash"),
+            accounts = persistentListOf("All accounts", "Cash"),
             onAccountSpinnerValueChanged = { _, _, _ -> },
             transactions = persistentListOf(
                 TransactionDto(
@@ -94,22 +91,14 @@ fun TransactionScreenPreview() {
             ),
             tabItemsList = persistentListOf("All", "Income", "Expense"),
             updateCurrentTabValue = {},
-            selectedAccount = remember {
-                mutableStateOf("All Accounts")
-            },
-            selectedTab = remember {
-                mutableIntStateOf(0)
-            },
+            selectedAccount = "All Accounts",
+            selectedTab = 0,
             toggleDialogVisibility = {},
             updateTransactionList = {},
             checkValidDate = { true },
-            dialogState = remember {
-                mutableStateOf(
-                    DialogState(
-                        false, String(), String(), false, String()
-                    )
-                )
-            },
+            dialogState = DialogState(
+                false, String(), String(), false, String()
+            ),
             updateFromDate = {},
             updateToDate = {},
             clearDialogDate = {})
@@ -140,7 +129,7 @@ fun TransactionScreenRoot(
         TransactionScreen(
             navControllerRoot = navHostControllerRoot,
             backPress = backPress,
-            accounts = mainViewModel.accounts.collectAsState().value,
+            accounts = mainViewModel.accounts.collectAsState().value.toImmutableList(),
             onAccountSpinnerValueChanged = { accountName, isCredit, isDebit ->
                 transactionViewModel.updateSelectedAccount(accountName)
                 mainViewModel.updateTransactionMethod(
@@ -154,8 +143,8 @@ fun TransactionScreenRoot(
             transactions = mainViewModel.pagedTransactionItems.collectAsState().value.collectAsLazyPagingItems().itemSnapshotList.items.toImmutableList(),
             tabItemsList = transactionViewModel.tabItemsList,
             updateCurrentTabValue = transactionViewModel::updateCurrentTab,
-            selectedAccount = transactionViewModel.selectedAccount,
-            selectedTab = transactionViewModel.selectedTabValue,
+            selectedAccount = transactionViewModel.selectedAccount.value,
+            selectedTab = transactionViewModel.selectedTabValue.intValue,
             toggleDialogVisibility = transactionViewModel::toggleDialogVisibility,
             updateTransactionList = {
                 mainViewModel.updateTransactionMethod(
@@ -166,7 +155,7 @@ fun TransactionScreenRoot(
                     transactionViewModel.dialogState.value.toDate
                 )
             },
-            dialogState = transactionViewModel.dialogState,
+            dialogState = transactionViewModel.dialogState.value,
             checkValidDate = transactionViewModel::checkValidDate,
             updateFromDate = transactionViewModel::updateFromDate,
             updateToDate = transactionViewModel::updateToDate,
@@ -178,21 +167,21 @@ fun TransactionScreenRoot(
 @Composable
 fun TransactionScreen(
     navControllerRoot: NavController,
-    backPress: () -> Unit,
-    accounts: List<String>,
-    onAccountSpinnerValueChanged: (value: String, isCredit: Boolean, isDebit: Boolean) -> Unit,
+    accounts: ImmutableList<String>,
     transactions: ImmutableList<TransactionDto>,
     tabItemsList: ImmutableList<String>,
-    updateCurrentTabValue: (selectedTab: Int) -> Unit,
-    selectedAccount: State<String>,
-    selectedTab: State<Int>,
-    dialogState: State<DialogState>,
+    selectedAccount: String,
+    selectedTab: Int,
+    dialogState: DialogState,
     toggleDialogVisibility: () -> Unit,
     updateTransactionList: () -> Unit,
     checkValidDate: () -> Boolean,
     updateFromDate: (date: String) -> Unit,
     updateToDate: (date: String) -> Unit,
-    clearDialogDate: () -> Unit
+    clearDialogDate: () -> Unit,
+    backPress: () -> Unit,
+    updateCurrentTabValue: (selectedTab: Int) -> Unit,
+    onAccountSpinnerValueChanged: (value: String, isCredit: Boolean, isDebit: Boolean) -> Unit
 ) {
     val savedStateHandle = navControllerRoot.currentBackStackEntry?.savedStateHandle
     val resultTransaction = savedStateHandle?.get<Boolean>("isTransactionSaved")
@@ -223,7 +212,7 @@ fun TransactionScreen(
                 .padding(it)
                 .fillMaxSize()
         ) {
-            if (dialogState.value.showDialog) {
+            if (dialogState.showDialog) {
                 Row {
                     FilterDialog(
                         dialogState = dialogState,
@@ -241,10 +230,10 @@ fun TransactionScreen(
             }
             Row(verticalAlignment = Alignment.CenterVertically) {
                 ExpenseTrackerSpinner(values = accounts,
-                    initialValue = selectedAccount.value,
+                    initialValue = selectedAccount,
                     onValueChanged = { accountName ->
                         onAccountSpinnerValueChanged(
-                            accountName, selectedTab.value == 1, selectedTab.value == 2
+                            accountName, selectedTab == 1, selectedTab == 2
                         )
                     })
                 Icon(
@@ -260,15 +249,12 @@ fun TransactionScreen(
                     tint = Color.Unspecified
                 )
             }
-            ExpenseTrackerTabLayout(
-                values = tabItemsList,
-                initialValue = selectedTab.value,
-                onClick = {
-                    updateCurrentTabValue(it)
-                    onAccountSpinnerValueChanged(
-                        selectedAccount.value, it == 1, it == 2
-                    )
-                })
+            ExpenseTrackerTabLayout(values = tabItemsList, initialValue = selectedTab, onClick = {
+                updateCurrentTabValue(it)
+                onAccountSpinnerValueChanged(
+                    selectedAccount, it == 1, it == 2
+                )
+            })
 
             if (transactions.isNotEmpty()) {
                 LazyColumn(
