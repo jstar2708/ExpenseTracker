@@ -18,45 +18,37 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.jaideep.expensetracker.R
+import com.jaideep.expensetracker.model.TextFieldWithIconAndErrorPopUpState
 import com.jaideep.expensetracker.presentation.component.HeadingTextBold
 import com.jaideep.expensetracker.presentation.component.SimpleText
 import com.jaideep.expensetracker.presentation.component.SimpleTextBold
-import com.jaideep.expensetracker.presentation.component.textfield.TextFieldWithIcon
+import com.jaideep.expensetracker.presentation.component.textfield.TextFieldWithIconAndErrorPopUp
 import com.jaideep.expensetracker.presentation.theme.AppTheme
 import com.jaideep.expensetracker.presentation.viewmodel.AddCategoryViewModel
-import com.jaideep.expensetracker.presentation.viewmodel.MainViewModel
 
 @Preview
 @Composable
 private fun AddCategoryScreenPreview() {
     AppTheme {
         AddCategoryScreen(
-            categoryName = remember {
-                mutableStateOf(TextFieldValue(""))
-            },
-            isError = remember {
-                mutableStateOf(false)
-            },
-            errorMessage = remember {
-                mutableStateOf("")
-            },
-            exitScreen = remember {
-                mutableStateOf(false)
-            },
-            saveCategory = { _ -> },
+            TextFieldWithIconAndErrorPopUpState("",
+                isError = false,
+                showError = false,
+                onValueChange = { _ -> },
+                onErrorIconClick = {},
+                errorMessage = ""
+            ),
+            exitScreen = false,
+            saveCategory = {},
         ) {
 
         }
@@ -64,15 +56,13 @@ private fun AddCategoryScreenPreview() {
 }
 
 @Composable
-fun AddCategoryScreenRoot(navControllerRoot: NavHostController, mainViewModel: MainViewModel) {
+fun AddCategoryScreenRoot(navControllerRoot: NavHostController) {
     val addCategoryViewModel: AddCategoryViewModel = hiltViewModel()
     AppTheme {
         AddCategoryScreen(
-            categoryName = addCategoryViewModel.categoryName,
-            isError = addCategoryViewModel.isCategoryNameIncorrect,
-            errorMessage = addCategoryViewModel.errorMessage,
-            saveCategory = addCategoryViewModel::saveCategory,
-            exitScreen = addCategoryViewModel.exitScreen,
+            categoryState = addCategoryViewModel.categoryState.value,
+            saveCategory = addCategoryViewModel::validateAndSaveCategory,
+            exitScreen = addCategoryViewModel.exitScreen.value,
         ) {
             val savedStateHandle = navControllerRoot.previousBackStackEntry?.savedStateHandle
             savedStateHandle?.set("isCategorySaved", addCategoryViewModel.isCategorySaved.value)
@@ -83,16 +73,14 @@ fun AddCategoryScreenRoot(navControllerRoot: NavHostController, mainViewModel: M
 
 @Composable
 fun AddCategoryScreen(
-    categoryName: MutableState<TextFieldValue>,
-    isError: MutableState<Boolean>,
-    errorMessage: MutableState<String>,
-    saveCategory: (categoryName: String) -> Unit,
-    exitScreen: MutableState<Boolean>,
+    categoryState: TextFieldWithIconAndErrorPopUpState,
+    exitScreen: Boolean,
+    saveCategory: () -> Unit,
     backPress: () -> Unit
 ) {
 
-    LaunchedEffect(key1 = exitScreen.value) {
-        if (exitScreen.value) {
+    LaunchedEffect(key1 = exitScreen) {
+        if (exitScreen) {
             backPress()
         }
     }
@@ -132,14 +120,17 @@ fun AddCategoryScreen(
                         color = MaterialTheme.colorScheme.onPrimary
                     )
                     Spacer(modifier = Modifier.height(20.dp))
-                    TextFieldWithIcon(
+                    TextFieldWithIconAndErrorPopUp(
                         label = "Category Name",
                         icon = Icons.Filled.AccountBalanceWallet,
                         iconColor = MaterialTheme.colorScheme.onSecondaryContainer,
                         borderColor = Color.Black,
-                        text = categoryName,
-                        isError = isError,
-                        errorMessage = errorMessage.value
+                        text = categoryState.text,
+                        isError = categoryState.isError,
+                        errorMessage = categoryState.errorMessage,
+                        onValueChange = categoryState.onValueChange,
+                        onErrorIconClick = categoryState.onErrorIconClick,
+                        showErrorText = categoryState.showError
                     )
 
                     Spacer(modifier = Modifier.height(10.dp))
@@ -149,7 +140,7 @@ fun AddCategoryScreen(
                         .height(60.dp),
                         colors = ButtonColors(Color.White, Color.Blue, Color.White, Color.White),
                         onClick = {
-                            saveCategory(categoryName.value.text)
+                            saveCategory()
                         }) {
                         SimpleTextBold(
                             text = "Save", color = Color.Blue

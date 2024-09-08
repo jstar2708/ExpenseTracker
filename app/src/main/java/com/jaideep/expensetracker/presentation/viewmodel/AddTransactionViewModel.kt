@@ -14,7 +14,7 @@ import com.jaideep.expensetracker.data.local.entities.Transaction
 import com.jaideep.expensetracker.domain.repository.TransactionPagingRepository
 import com.jaideep.expensetracker.domain.usecase.GetAllAccountsUseCase
 import com.jaideep.expensetracker.domain.usecase.GetAllCategoriesUseCase
-import com.jaideep.expensetracker.model.TextFieldWithIconState
+import com.jaideep.expensetracker.model.TextFieldWithIconAndErrorPopUpState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -55,43 +55,59 @@ class AddTransactionViewModel @Inject constructor(
     }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
     val accountState = mutableStateOf(
-        TextFieldWithIconState(text = "",
+        TextFieldWithIconAndErrorPopUpState(
+            text = "",
             isError = false,
             showError = false,
             onValueChange = { updateAccountTextState(it) },
-            onErrorIconClick = { updateAccountErrorState() })
+            onErrorIconClick = { updateAccountErrorState() },
+            errorMessage = ""
+        )
     )
 
     val noteState = mutableStateOf(
-        TextFieldWithIconState(text = "",
+        TextFieldWithIconAndErrorPopUpState(
+            text = "",
             isError = false,
             showError = false,
             onValueChange = { updateNoteTextState(it) },
-            onErrorIconClick = { updateNoteErrorState() })
+            onErrorIconClick = { updateNoteErrorState() },
+            errorMessage = ""
+        )
     )
 
     val amountState = mutableStateOf(
-        TextFieldWithIconState(text = "",
+        TextFieldWithIconAndErrorPopUpState(
+            text = "",
             isError = false,
             showError = false,
             onValueChange = { updateAmountTextState(it) },
-            onErrorIconClick = { updateAmountErrorState() })
+            onErrorIconClick = { updateAmountErrorState() },
+            errorMessage = ""
+        )
+
     )
 
     val categoryState = mutableStateOf(
-        TextFieldWithIconState(text = "",
+        TextFieldWithIconAndErrorPopUpState(
+            text = "",
             isError = false,
             showError = false,
             onValueChange = { updateCategoryTextState(it) },
-            onErrorIconClick = { updateCategoryErrorState() })
+            onErrorIconClick = { updateCategoryErrorState() },
+            errorMessage = ""
+        )
     )
 
     val dateState = mutableStateOf(
-        TextFieldWithIconState(text = "",
+        TextFieldWithIconAndErrorPopUpState(
+            text = "",
             isError = false,
             showError = false,
             onValueChange = { updateDateTextState(it) },
-            onErrorIconClick = { updateDateErrorState() })
+            onErrorIconClick = { updateDateErrorState() },
+            errorMessage = ""
+        )
     )
 
     var screenTitle by mutableStateOf("Add Transaction")
@@ -123,102 +139,112 @@ class AddTransactionViewModel @Inject constructor(
     }
 
     private fun updateAccountTextState(value: String) {
-        accountState.value = TextFieldWithIconState(
+        accountState.value = TextFieldWithIconAndErrorPopUpState(
             text = value,
             isError = accountState.value.isError,
             showError = accountState.value.showError,
             onValueChange = accountState.value.onValueChange,
-            onErrorIconClick = accountState.value.onErrorIconClick
+            onErrorIconClick = accountState.value.onErrorIconClick,
+            errorMessage = accountState.value.errorMessage
         )
     }
 
     private fun updateDateErrorState() {
-        dateState.value = TextFieldWithIconState(
+        dateState.value = TextFieldWithIconAndErrorPopUpState(
             text = dateState.value.text,
             isError = dateState.value.isError,
             showError = !dateState.value.showError,
             onValueChange = dateState.value.onValueChange,
-            onErrorIconClick = dateState.value.onErrorIconClick
+            onErrorIconClick = dateState.value.onErrorIconClick,
+            errorMessage = dateState.value.errorMessage
         )
     }
 
     private fun updateDateTextState(value: String) {
-        dateState.value = TextFieldWithIconState(
+        dateState.value = TextFieldWithIconAndErrorPopUpState(
             text = value,
             isError = dateState.value.isError,
             showError = dateState.value.showError,
             onValueChange = dateState.value.onValueChange,
-            onErrorIconClick = dateState.value.onErrorIconClick
+            onErrorIconClick = dateState.value.onErrorIconClick,
+            errorMessage = dateState.value.errorMessage
         )
     }
 
     private fun updateCategoryErrorState() {
-        categoryState.value = TextFieldWithIconState(
+        categoryState.value = TextFieldWithIconAndErrorPopUpState(
             text = categoryState.value.text,
             isError = categoryState.value.isError,
             showError = !categoryState.value.showError,
             onValueChange = categoryState.value.onValueChange,
-            onErrorIconClick = categoryState.value.onErrorIconClick
+            onErrorIconClick = categoryState.value.onErrorIconClick,
+            errorMessage = categoryState.value.errorMessage
         )
     }
 
     private fun updateCategoryTextState(value: String) {
-        categoryState.value = TextFieldWithIconState(
+        categoryState.value = TextFieldWithIconAndErrorPopUpState(
             text = value,
             isError = categoryState.value.isError,
             showError = categoryState.value.showError,
             onValueChange = categoryState.value.onValueChange,
-            onErrorIconClick = categoryState.value.onErrorIconClick
+            onErrorIconClick = categoryState.value.onErrorIconClick,
+            errorMessage = categoryState.value.errorMessage
         )
     }
 
     private fun updateAmountErrorState() {
-        amountState.value = TextFieldWithIconState(
+        amountState.value = TextFieldWithIconAndErrorPopUpState(
             text = amountState.value.text,
             isError = amountState.value.isError,
             showError = !amountState.value.showError,
             onValueChange = amountState.value.onValueChange,
-            onErrorIconClick = amountState.value.onErrorIconClick
+            onErrorIconClick = amountState.value.onErrorIconClick,
+            errorMessage = amountState.value.errorMessage
         )
     }
 
     private fun updateAmountTextState(value: String) {
-        amountState.value = TextFieldWithIconState(
+        amountState.value = TextFieldWithIconAndErrorPopUpState(
             text = value,
             isError = amountState.value.isError,
             showError = amountState.value.showError,
             onValueChange = amountState.value.onValueChange,
-            onErrorIconClick = amountState.value.onErrorIconClick
+            onErrorIconClick = amountState.value.onErrorIconClick,
+            errorMessage = amountState.value.errorMessage
         )
     }
 
     private fun updateNoteErrorState() {
-        noteState.value = TextFieldWithIconState(
+        noteState.value = TextFieldWithIconAndErrorPopUpState(
             text = noteState.value.text,
             isError = noteState.value.isError,
             showError = !noteState.value.showError,
             onValueChange = noteState.value.onValueChange,
-            onErrorIconClick = noteState.value.onErrorIconClick
+            onErrorIconClick = noteState.value.onErrorIconClick,
+            errorMessage = noteState.value.errorMessage
         )
     }
 
     private fun updateNoteTextState(value: String) {
-        noteState.value = TextFieldWithIconState(
+        noteState.value = TextFieldWithIconAndErrorPopUpState(
             text = value,
             isError = noteState.value.isError,
             showError = noteState.value.showError,
             onValueChange = noteState.value.onValueChange,
-            onErrorIconClick = noteState.value.onErrorIconClick
+            onErrorIconClick = noteState.value.onErrorIconClick,
+            errorMessage = noteState.value.errorMessage
         )
     }
 
     private fun updateAccountErrorState() {
-        accountState.value = TextFieldWithIconState(
+        accountState.value = TextFieldWithIconAndErrorPopUpState(
             text = accountState.value.text,
             isError = accountState.value.isError,
             showError = !accountState.value.showError,
             onValueChange = accountState.value.onValueChange,
-            onErrorIconClick = accountState.value.onErrorIconClick
+            onErrorIconClick = accountState.value.onErrorIconClick,
+            errorMessage = amountState.value.errorMessage
         )
     }
 
@@ -334,12 +360,13 @@ class AddTransactionViewModel @Inject constructor(
         try {
             LocalDate.parse(dateState.value.text)
         } catch (de: DateTimeParseException) {
-            dateState.value = TextFieldWithIconState(
+            dateState.value = TextFieldWithIconAndErrorPopUpState(
                 text = dateState.value.text,
                 isError = true,
                 showError = !dateState.value.showError,
                 onValueChange = dateState.value.onValueChange,
-                onErrorIconClick = dateState.value.onErrorIconClick
+                onErrorIconClick = dateState.value.onErrorIconClick,
+                errorMessage = "Enter a valid date"
             )
             return false
         }
@@ -350,12 +377,13 @@ class AddTransactionViewModel @Inject constructor(
         try {
             amountState.value.text.toDouble()
         } catch (ne: NumberFormatException) {
-            amountState.value = TextFieldWithIconState(
+            amountState.value = TextFieldWithIconAndErrorPopUpState(
                 text = amountState.value.text,
                 isError = true,
                 showError = amountState.value.showError,
                 onValueChange = amountState.value.onValueChange,
-                onErrorIconClick = amountState.value.onErrorIconClick
+                onErrorIconClick = amountState.value.onErrorIconClick,
+                errorMessage = "Enter a valid number"
             )
             return false
         }
@@ -364,12 +392,13 @@ class AddTransactionViewModel @Inject constructor(
 
     private fun checkCategoryError(): Boolean {
         if (categoryState.value.text.isBlank()) {
-            categoryState.value = TextFieldWithIconState(
+            categoryState.value = TextFieldWithIconAndErrorPopUpState(
                 text = categoryState.value.text,
                 isError = true,
                 showError = categoryState.value.showError,
                 onValueChange = categoryState.value.onValueChange,
-                onErrorIconClick = categoryState.value.onErrorIconClick
+                onErrorIconClick = categoryState.value.onErrorIconClick,
+                errorMessage = "Category cannot be empty"
             )
             return false
         }
@@ -378,12 +407,13 @@ class AddTransactionViewModel @Inject constructor(
 
     private fun checkAccountError(): Boolean {
         if (accountState.value.text.isBlank()) {
-            accountState.value = TextFieldWithIconState(
+            accountState.value = TextFieldWithIconAndErrorPopUpState(
                 text = accountState.value.text,
                 isError = true,
                 showError = accountState.value.showError,
                 onValueChange = accountState.value.onValueChange,
-                onErrorIconClick = accountState.value.onErrorIconClick
+                onErrorIconClick = accountState.value.onErrorIconClick,
+                errorMessage = "Account cannot be empty"
             )
             return false
         }

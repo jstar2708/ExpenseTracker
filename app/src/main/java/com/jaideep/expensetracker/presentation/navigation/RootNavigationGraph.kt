@@ -27,10 +27,10 @@ fun RootNavigationGraph(mainViewModel: MainViewModel) {
             AddTransactionScreenRoot(navHostControllerRoot)
         }
         composable(DetailScreen.ADD_ACCOUNT) {
-            AddAccountScreenRoot(navHostControllerRoot, mainViewModel)
+            AddAccountScreenRoot(navHostControllerRoot)
         }
         composable(DetailScreen.ADD_CATEGORY) {
-            AddCategoryScreenRoot(navHostControllerRoot, mainViewModel)
+            AddCategoryScreenRoot(navHostControllerRoot)
         }
     }
 }

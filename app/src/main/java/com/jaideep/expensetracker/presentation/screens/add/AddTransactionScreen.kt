@@ -40,7 +40,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.jaideep.expensetracker.R
-import com.jaideep.expensetracker.model.TextFieldWithIconState
+import com.jaideep.expensetracker.model.TextFieldWithIconAndErrorPopUpState
 import com.jaideep.expensetracker.presentation.component.HeadingTextBold
 import com.jaideep.expensetracker.presentation.component.SimpleText
 import com.jaideep.expensetracker.presentation.component.button.RadioButtonWithText
@@ -58,42 +58,51 @@ import kotlinx.collections.immutable.toImmutableList
 @Composable
 fun AddTransactionPreview() {
     AppTheme {
-        AddTransactionScreen(radioButtonValue = 0,
+        AddTransactionScreen(
+            radioButtonValue = 0,
             detailsMessage = "Please provide transaction details",
             screenTitle = "Add Transaction",
             accounts = persistentListOf("All Accounts", "PNB"),
             categories = persistentListOf("Food", "Shopping"),
-            accountState = TextFieldWithIconState("",
+            accountState = TextFieldWithIconAndErrorPopUpState("",
                 isError = false,
                 showError = false,
-                { _ -> },
-                {}),
-            amountState = TextFieldWithIconState("",
+                onValueChange = { _ -> },
+                onErrorIconClick = {},
+                errorMessage = ""
+            ),
+            amountState = TextFieldWithIconAndErrorPopUpState("",
                 isError = false,
                 showError = false,
-                { _ -> },
-                {}),
-            noteState = TextFieldWithIconState("",
+                onValueChange = { _ -> },
+                onErrorIconClick = {},
+                errorMessage = ""
+            ),
+            noteState = TextFieldWithIconAndErrorPopUpState("",
                 isError = false,
                 showError = false,
-                { _ -> },
-                {}),
-            dateState = TextFieldWithIconState("",
+                onValueChange = { _ -> },
+                onErrorIconClick = {},
+                errorMessage = ""
+            ),
+            dateState = TextFieldWithIconAndErrorPopUpState("",
                 isError = false,
                 showError = false,
-                { _ -> },
-                {}),
-            categoryState = TextFieldWithIconState("",
+                onValueChange = { _ -> },
+                onErrorIconClick = {},
+                errorMessage = ""
+            ),
+            categoryState = TextFieldWithIconAndErrorPopUpState("",
                 isError = false,
                 showError = false,
-                { _ -> },
-                {}),
+                onValueChange = { _ -> },
+                onErrorIconClick = {},
+                errorMessage = ""
+            ),
             toggleRadioButton = {},
             saveTransaction = {},
             backPress = {},
             exitScreen = false,
-            dataRetrievalError = false,
-            isLoading = false
         )
     }
 }
@@ -102,26 +111,39 @@ fun AddTransactionPreview() {
 fun AddTransactionScreenRoot(
     navControllerRoot: NavHostController, viewModel: AddTransactionViewModel = hiltViewModel()
 ) {
-    AddTransactionScreen(radioButtonValue = viewModel.radioButtonValue.intValue,
-        detailsMessage = viewModel.screenDetail,
-        screenTitle = viewModel.screenTitle,
-        toggleRadioButton = viewModel::toggleRadioButton,
-        exitScreen = viewModel.exitScreen,
-        accounts = viewModel.accounts.collectAsState().value.toImmutableList(),
-        categories = viewModel.categories.collectAsState().value.toImmutableList(),
-        dataRetrievalError = viewModel.accountRetrievalError && viewModel.categoryRetrievalError,
-        isLoading = viewModel.isAccountLoading && viewModel.isCategoryLoading,
-        saveTransaction = viewModel::validateAndSaveTransaction,
-        accountState = viewModel.accountState.value,
-        noteState = viewModel.noteState.value,
-        amountState = viewModel.amountState.value,
-        categoryState = viewModel.categoryState.value,
-        dateState = viewModel.dateState.value,
-        backPress = {
-            val savedStateHandle = navControllerRoot.previousBackStackEntry?.savedStateHandle
-            savedStateHandle?.set("isTransactionSaved", viewModel.isTransactionSaved)
-            navControllerRoot.popBackStack()
-        })
+
+    if (viewModel.isCategoryLoading || viewModel.isAccountLoading) {
+        ExpenseTrackerProgressBar(Modifier.size(50.dp))
+    } else if (viewModel.categoryRetrievalError || viewModel.accountRetrievalError) {
+        Row(
+            modifier = Modifier.fillMaxSize(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Absolute.Center
+        ) {
+            SimpleText(
+                text = "Error loading accounts list", color = Color.Red
+            )
+        }
+    } else {
+        AddTransactionScreen(radioButtonValue = viewModel.radioButtonValue.intValue,
+            detailsMessage = viewModel.screenDetail,
+            screenTitle = viewModel.screenTitle,
+            toggleRadioButton = viewModel::toggleRadioButton,
+            exitScreen = viewModel.exitScreen,
+            accounts = viewModel.accounts.collectAsState().value.toImmutableList(),
+            categories = viewModel.categories.collectAsState().value.toImmutableList(),
+            saveTransaction = viewModel::validateAndSaveTransaction,
+            accountState = viewModel.accountState.value,
+            noteState = viewModel.noteState.value,
+            amountState = viewModel.amountState.value,
+            categoryState = viewModel.categoryState.value,
+            dateState = viewModel.dateState.value,
+            backPress = {
+                val savedStateHandle = navControllerRoot.previousBackStackEntry?.savedStateHandle
+                savedStateHandle?.set("isTransactionSaved", viewModel.isTransactionSaved)
+                navControllerRoot.popBackStack()
+            })
+    }
 }
 
 @Composable
@@ -130,15 +152,13 @@ fun AddTransactionScreen(
     detailsMessage: String,
     screenTitle: String,
     exitScreen: Boolean,
-    dataRetrievalError: Boolean,
-    isLoading: Boolean,
     accounts: ImmutableList<String>,
     categories: ImmutableList<String>,
-    accountState: TextFieldWithIconState,
-    noteState: TextFieldWithIconState,
-    amountState: TextFieldWithIconState,
-    categoryState: TextFieldWithIconState,
-    dateState: TextFieldWithIconState,
+    accountState: TextFieldWithIconAndErrorPopUpState,
+    noteState: TextFieldWithIconAndErrorPopUpState,
+    amountState: TextFieldWithIconAndErrorPopUpState,
+    categoryState: TextFieldWithIconAndErrorPopUpState,
+    dateState: TextFieldWithIconAndErrorPopUpState,
     toggleRadioButton: (value: Int) -> Unit,
     saveTransaction: () -> Unit,
     backPress: () -> Unit
@@ -151,154 +171,136 @@ fun AddTransactionScreen(
     }
 
     Surface(modifier = Modifier.fillMaxSize()) {
-        if (dataRetrievalError) {
-            Column(
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                SimpleText(text = "Unable to load user data")
-            }
-        } else if (isLoading) {
-            Column (
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ){
-                ExpenseTrackerProgressBar(
-                    modifier = Modifier.size(50.dp)
-                )
-            }
-        } else {
-            Column {
-                Image(
-                    painter = painterResource(id = R.drawable.app_icon),
-                    contentDescription = "App logo",
-                    alignment = Alignment.TopCenter,
+        Column {
+            Image(
+                painter = painterResource(id = R.drawable.app_icon),
+                contentDescription = "App logo",
+                alignment = Alignment.TopCenter,
+                modifier = Modifier
+                    .fillMaxWidth(1f)
+                    .defaultMinSize(minHeight = 150.dp)
+                    .padding(4.dp)
+            )
+            BlueBackground(Modifier.weight(1f)) {
+                Column(
                     modifier = Modifier
-                        .fillMaxWidth(1f)
-                        .defaultMinSize(minHeight = 150.dp)
-                        .padding(4.dp)
-                )
-                BlueBackground(Modifier.weight(1f)) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(8.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.SpaceEvenly
+                        .fillMaxSize()
+                        .padding(8.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    Spacer(modifier = Modifier.height(10.dp))
+                    HeadingTextBold(
+                        text = screenTitle, color = MaterialTheme.colorScheme.onPrimary
+                    )
+                    SimpleText(
+                        text = detailsMessage, color = MaterialTheme.colorScheme.onPrimary
+                    )
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceEvenly
                     ) {
-                        Spacer(modifier = Modifier.height(10.dp))
-                        HeadingTextBold(
-                            text = screenTitle, color = MaterialTheme.colorScheme.onPrimary
-                        )
-                        SimpleText(
-                            text = detailsMessage, color = MaterialTheme.colorScheme.onPrimary
-                        )
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceEvenly
+                        RadioButtonWithText(
+                            isSelected = radioButtonValue == 0,
+                            text = "Income",
+                            selectedColor = Color.White,
+                            unselectedColor = Color.White,
+                            textColor = Color.White
                         ) {
-                            RadioButtonWithText(
-                                isSelected = radioButtonValue == 0,
-                                text = "Income",
-                                selectedColor = Color.White,
-                                unselectedColor = Color.White,
-                                textColor = Color.White
-                            ) {
-                                toggleRadioButton(0)
-                            }
-                            RadioButtonWithText(
-                                isSelected = radioButtonValue == 1,
-                                text = "Expense",
-                                selectedColor = Color.White,
-                                unselectedColor = Color.White,
-                                textColor = Color.White
-                            ) {
-                                toggleRadioButton(1)
-                            }
+                            toggleRadioButton(0)
                         }
-
-                        TextFieldWithDropDown(
-                            values = accounts,
-                            label = "Choose Account",
-                            icon = Icons.Filled.AccountBalanceWallet,
-                            iconColor = MaterialTheme.colorScheme.onSecondaryContainer,
-                            borderColor = Color.Black,
-                            text = accountState.text,
-                            isError = accountState.isError,
-                            errorMessage = "Account name cannot be blank",
-                            showErrorText = accountState.showError,
-                            onTextFieldValueChange = accountState.onValueChange,
-                            onErrorIconClick = accountState.onErrorIconClick
-                        )
-                        TextFieldWithDropDown(
-                            values = categories,
-                            label = "Choose Category",
-                            icon = Icons.Filled.Category,
-                            iconColor = MaterialTheme.colorScheme.onSecondaryContainer,
-                            borderColor = Color.Black,
-                            text = categoryState.text,
-                            isError = categoryState.isError,
-                            errorMessage = "Category name cannot be blank",
-                            showErrorText = categoryState.showError,
-                            onTextFieldValueChange = categoryState.onValueChange,
-                            onErrorIconClick = categoryState.onErrorIconClick
-                        )
-                        TextFieldWithIconAndErrorPopUp(
-                            label = "Amount",
-                            icon = Icons.Filled.CurrencyRupee,
-                            iconColor = MaterialTheme.colorScheme.onSecondaryContainer,
-                            borderColor = Color.Black,
-                            keyBoardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
-                            text = amountState.text,
-                            isError = amountState.isError,
-                            errorMessage = "Enter a valid amount",
-                            showErrorText = amountState.showError,
-                            onValueChange = amountState.onValueChange,
-                            onErrorIconClick = amountState.onErrorIconClick
-                        )
-                        TextFieldDatePicker(
-                            label = "Date",
-                            icon = Icons.Filled.CalendarMonth,
-                            iconColor = MaterialTheme.colorScheme.onSecondaryContainer,
-                            borderColor = Color.Black,
-                            text = dateState.text,
-                            isError = dateState.isError,
-                            errorMessage = "Enter a valid date",
-                            showErrorText = dateState.showError,
-                            onValueChanged = dateState.onValueChange,
-                            onErrorIconClick = dateState.onErrorIconClick
-                        )
-                        TextFieldWithIconAndErrorPopUp(
-                            label = "Note",
-                            icon = Icons.AutoMirrored.Filled.Note,
-                            iconColor = MaterialTheme.colorScheme.onSecondaryContainer,
-                            borderColor = Color.Black,
-                            text = noteState.text,
-                            isError = false,
-                            showErrorText = false,
-                            errorMessage = "",
-                            onValueChange = noteState.onValueChange,
-                            onErrorIconClick = noteState.onErrorIconClick
-                        )
-
-                        Button(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(8.dp)
-                                .height(60.dp),
-                            colors = ButtonColors(
-                                Color.White, Color.Blue, Color.White, Color.White
-                            ),
-                            onClick = saveTransaction
+                        RadioButtonWithText(
+                            isSelected = radioButtonValue == 1,
+                            text = "Expense",
+                            selectedColor = Color.White,
+                            unselectedColor = Color.White,
+                            textColor = Color.White
                         ) {
-                            Text(
-                                text = "Save", color = Color.Blue
-                            )
+                            toggleRadioButton(1)
                         }
                     }
-                }
 
+                    TextFieldWithDropDown(
+                        values = accounts,
+                        label = "Choose Account",
+                        icon = Icons.Filled.AccountBalanceWallet,
+                        iconColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                        borderColor = Color.Black,
+                        text = accountState.text,
+                        isError = accountState.isError,
+                        errorMessage = accountState.errorMessage,
+                        showErrorText = accountState.showError,
+                        onTextFieldValueChange = accountState.onValueChange,
+                        onErrorIconClick = accountState.onErrorIconClick
+                    )
+                    TextFieldWithDropDown(
+                        values = categories,
+                        label = "Choose Category",
+                        icon = Icons.Filled.Category,
+                        iconColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                        borderColor = Color.Black,
+                        text = categoryState.text,
+                        isError = categoryState.isError,
+                        errorMessage = categoryState.errorMessage,
+                        showErrorText = categoryState.showError,
+                        onTextFieldValueChange = categoryState.onValueChange,
+                        onErrorIconClick = categoryState.onErrorIconClick
+                    )
+                    TextFieldWithIconAndErrorPopUp(
+                        label = "Amount",
+                        icon = Icons.Filled.CurrencyRupee,
+                        iconColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                        borderColor = Color.Black,
+                        keyBoardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+                        text = amountState.text,
+                        isError = amountState.isError,
+                        errorMessage = amountState.errorMessage,
+                        showErrorText = amountState.showError,
+                        onValueChange = amountState.onValueChange,
+                        onErrorIconClick = amountState.onErrorIconClick
+                    )
+                    TextFieldDatePicker(
+                        label = "Date",
+                        icon = Icons.Filled.CalendarMonth,
+                        iconColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                        borderColor = Color.Black,
+                        text = dateState.text,
+                        isError = dateState.isError,
+                        errorMessage = dateState.errorMessage,
+                        showErrorText = dateState.showError,
+                        onValueChanged = dateState.onValueChange,
+                        onErrorIconClick = dateState.onErrorIconClick
+                    )
+                    TextFieldWithIconAndErrorPopUp(
+                        label = "Note",
+                        icon = Icons.AutoMirrored.Filled.Note,
+                        iconColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                        borderColor = Color.Black,
+                        text = noteState.text,
+                        isError = false,
+                        showErrorText = false,
+                        errorMessage = "",
+                        onValueChange = noteState.onValueChange,
+                        onErrorIconClick = noteState.onErrorIconClick
+                    )
+
+                    Button(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(8.dp)
+                            .height(60.dp),
+                        colors = ButtonColors(
+                            Color.White, Color.Blue, Color.White, Color.White
+                        ),
+                        onClick = saveTransaction
+                    ) {
+                        Text(
+                            text = "Save", color = Color.Blue
+                        )
+                    }
+                }
             }
+
         }
     }
 }
