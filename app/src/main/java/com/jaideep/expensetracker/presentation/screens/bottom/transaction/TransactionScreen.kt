@@ -44,12 +44,13 @@ import com.jaideep.expensetracker.common.DetailScreen
 import com.jaideep.expensetracker.model.DialogState
 import com.jaideep.expensetracker.model.dto.CategoryDto
 import com.jaideep.expensetracker.model.dto.TransactionDto
-import com.jaideep.expensetracker.presentation.component.other.ExpenseTrackerTabLayout
 import com.jaideep.expensetracker.presentation.component.SimpleText
 import com.jaideep.expensetracker.presentation.component.card.ExpenseTrackerTransactionCardItem
 import com.jaideep.expensetracker.presentation.component.dialog.FilterDialog
 import com.jaideep.expensetracker.presentation.component.other.ExpenseTrackerAppBar
+import com.jaideep.expensetracker.presentation.component.other.ExpenseTrackerProgressBar
 import com.jaideep.expensetracker.presentation.component.other.ExpenseTrackerSpinner
+import com.jaideep.expensetracker.presentation.component.other.ExpenseTrackerTabLayout
 import com.jaideep.expensetracker.presentation.theme.AppTheme
 import com.jaideep.expensetracker.presentation.viewmodel.MainViewModel
 import com.jaideep.expensetracker.presentation.viewmodel.TransactionViewModel
@@ -123,41 +124,55 @@ fun TransactionScreenRoot(
     backPress: () -> Unit
 ) {
 
-    TransactionScreen(
-        navControllerRoot = navHostControllerRoot,
-        backPress = backPress,
-        accounts = mainViewModel.accounts.collectAsState().value,
-        onAccountSpinnerValueChanged = { accountName, isCredit, isDebit ->
-            transactionViewModel.updateSelectedAccount(accountName)
-            mainViewModel.updateTransactionMethod(
-                accountName,
-                isCredit,
-                isDebit,
-                transactionViewModel.dialogState.value.fromDate,
-                transactionViewModel.dialogState.value.toDate
+    if (mainViewModel.isAccountLoading || mainViewModel.isTransactionLoading || mainViewModel.isCategoryLoading) {
+        ExpenseTrackerProgressBar(Modifier.size(50.dp))
+    } else if (mainViewModel.transactionRetrievalError || mainViewModel.accountRetrievalError || mainViewModel.categoryRetrievalError) {
+        Row(
+            modifier = Modifier.fillMaxSize(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Absolute.Center
+        ) {
+            SimpleText(
+                text = "Error loading user data", color = Color.Red
             )
-        },
-        transactions = mainViewModel.pagedTransactionItems.collectAsState().value.collectAsLazyPagingItems().itemSnapshotList.items.toImmutableList(),
-        tabItemsList = transactionViewModel.tabItemsList,
-        updateCurrentTabValue = transactionViewModel::updateCurrentTab,
-        selectedAccount = transactionViewModel.selectedAccount,
-        selectedTab = transactionViewModel.selectedTabValue,
-        toggleDialogVisibility = transactionViewModel::toggleDialogVisibility,
-        updateTransactionList = {
-            mainViewModel.updateTransactionMethod(
-                transactionViewModel.selectedAccount.value,
-                transactionViewModel.selectedTabValue.intValue == 1,
-                transactionViewModel.selectedTabValue.intValue == 2,
-                transactionViewModel.dialogState.value.fromDate,
-                transactionViewModel.dialogState.value.toDate
-            )
-        },
-        dialogState = transactionViewModel.dialogState,
-        checkValidDate = transactionViewModel::checkValidDate,
-        updateFromDate = transactionViewModel::updateFromDate,
-        updateToDate = transactionViewModel::updateToDate,
-        clearDialogDate = transactionViewModel::clearDialogDate
-    )
+        }
+    } else {
+        TransactionScreen(
+            navControllerRoot = navHostControllerRoot,
+            backPress = backPress,
+            accounts = mainViewModel.accounts.collectAsState().value,
+            onAccountSpinnerValueChanged = { accountName, isCredit, isDebit ->
+                transactionViewModel.updateSelectedAccount(accountName)
+                mainViewModel.updateTransactionMethod(
+                    accountName,
+                    isCredit,
+                    isDebit,
+                    transactionViewModel.dialogState.value.fromDate,
+                    transactionViewModel.dialogState.value.toDate
+                )
+            },
+            transactions = mainViewModel.pagedTransactionItems.collectAsState().value.collectAsLazyPagingItems().itemSnapshotList.items.toImmutableList(),
+            tabItemsList = transactionViewModel.tabItemsList,
+            updateCurrentTabValue = transactionViewModel::updateCurrentTab,
+            selectedAccount = transactionViewModel.selectedAccount,
+            selectedTab = transactionViewModel.selectedTabValue,
+            toggleDialogVisibility = transactionViewModel::toggleDialogVisibility,
+            updateTransactionList = {
+                mainViewModel.updateTransactionMethod(
+                    transactionViewModel.selectedAccount.value,
+                    transactionViewModel.selectedTabValue.intValue == 1,
+                    transactionViewModel.selectedTabValue.intValue == 2,
+                    transactionViewModel.dialogState.value.fromDate,
+                    transactionViewModel.dialogState.value.toDate
+                )
+            },
+            dialogState = transactionViewModel.dialogState,
+            checkValidDate = transactionViewModel::checkValidDate,
+            updateFromDate = transactionViewModel::updateFromDate,
+            updateToDate = transactionViewModel::updateToDate,
+            clearDialogDate = transactionViewModel::clearDialogDate
+        )
+    }
 }
 
 @Composable
@@ -245,7 +260,8 @@ fun TransactionScreen(
                     tint = Color.Unspecified
                 )
             }
-            ExpenseTrackerTabLayout(values = tabItemsList,
+            ExpenseTrackerTabLayout(
+                values = tabItemsList,
                 initialValue = selectedTab.value,
                 onClick = {
                     updateCurrentTabValue(it)
