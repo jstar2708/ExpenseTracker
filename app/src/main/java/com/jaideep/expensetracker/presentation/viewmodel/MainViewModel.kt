@@ -1,5 +1,8 @@
 package com.jaideep.expensetracker.presentation.viewmodel
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -115,16 +118,22 @@ class MainViewModel @Inject constructor(
         RunJobForData()
     )
 
+    var accountRetrievalError by mutableStateOf(false)
+        private set
+    var isAccountLoading by mutableStateOf(true)
+        private set
+    var categoryRetrievalError by mutableStateOf(false)
+        private set
+    var isCategoryLoading by mutableStateOf(true)
+        private set
+    var isTransactionLoading by mutableStateOf(true)
+        private set
+    var transactionRetrievalError by mutableStateOf(false)
+        private set
+
     init {
         getAllAccounts()
         getAllCategories()
-    }
-
-
-    private fun collectPagedTransactionItems() = viewModelScope.launch(EtDispatcher.io) {
-        _pagedTransactionItems.collectLatest {
-
-        }
     }
 
     fun addDefaultCategories() {
@@ -145,15 +154,19 @@ class MainViewModel @Inject constructor(
         getAllAccountsUseCase().collect {
             when (it) {
                 is Resource.Loading -> {
-
+                    isAccountLoading = true
+                    accountRetrievalError = false
                 }
 
                 is Resource.Success -> {
+                    isAccountLoading = false
+                    accountRetrievalError = false
                     _accounts.value = it.data
                 }
 
                 is Resource.Error -> {
-
+                    isAccountLoading = false
+                    accountRetrievalError = true
                 }
             }
         }
@@ -163,12 +176,15 @@ class MainViewModel @Inject constructor(
         getAllCategoriesUseCase().collect {
             when (it) {
                 is Resource.Loading -> {
-
+                    isCategoryLoading = true
+                    categoryRetrievalError = false
                 }
 
                 is Resource.Success -> {
                     _categories.value = it.data
+                    isCategoryLoading = false
                     _hasCategoriesLoaded.value = true
+                    categoryRetrievalError = false
                     _hasCategoriesLoaded.collectLatest { hasCategoriesLoaded ->
                         if (hasCategoriesLoaded && _transactions.value.isEmpty()) {
                             getTransactionPagingSource()
@@ -178,7 +194,8 @@ class MainViewModel @Inject constructor(
                 }
 
                 is Resource.Error -> {
-
+                    isCategoryLoading = false
+                    categoryRetrievalError = true
                 }
             }
         }
@@ -194,15 +211,19 @@ class MainViewModel @Inject constructor(
                 ).collectLatest {
                     when (it) {
                         is Resource.Loading -> {
-
+                            isTransactionLoading = true
+                            transactionRetrievalError = false
                         }
 
                         is Resource.Success -> {
+                            isTransactionLoading = false
+                            transactionRetrievalError = false
                             _transactions.value = it.data
                         }
 
                         is Resource.Error -> {
-
+                            transactionRetrievalError = true
+                            isTransactionLoading = false
                         }
                     }
                 }
@@ -333,7 +354,6 @@ class MainViewModel @Inject constructor(
                         )
                     }
                 }.cachedIn(viewModelScope)
-
         }
     }
 

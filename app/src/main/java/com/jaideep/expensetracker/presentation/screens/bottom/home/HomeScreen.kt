@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
@@ -40,6 +41,7 @@ import com.jaideep.expensetracker.presentation.component.button.ExpenseTrackerBl
 import com.jaideep.expensetracker.presentation.component.card.ExpenseTrackerTransactionCardItem
 import com.jaideep.expensetracker.presentation.component.card.SummaryCard
 import com.jaideep.expensetracker.presentation.component.other.ExpenseTrackerAppBar
+import com.jaideep.expensetracker.presentation.component.other.ExpenseTrackerProgressBar
 import com.jaideep.expensetracker.presentation.component.other.ExpenseTrackerSpinner
 import com.jaideep.expensetracker.presentation.theme.AppTheme
 import com.jaideep.expensetracker.presentation.viewmodel.HomeViewModel
@@ -62,7 +64,7 @@ private fun HomeScreenPreview() {
             selectedAccount = "All Accounts",
             getInitialAccountSpecificData = {},
             categoryCardData = CategoryCardData("Food", "Food", 0.0),
-            amountSpentThisMonthFromAcc = 0.0
+            amountSpentThisMonthFromAcc = 0.0,
         )
     }
 }
@@ -71,21 +73,35 @@ private fun HomeScreenPreview() {
 fun HomeScreenRoot(
     navControllerRoot: NavController, mainViewModel: MainViewModel, homeViewModel: HomeViewModel
 ) {
-    HomeScreen(
-        navControllerRoot = navControllerRoot,
-        accounts = mainViewModel.accounts.collectAsState().value.toImmutableList(),
-        transactions = mainViewModel.transactions.collectAsState().value.toImmutableList(),
-        onAccountSpinnerValueChanged = {
-            homeViewModel.updateSelectedAccount(it)
-            mainViewModel.updateInitialTransaction(it)
-        },
-        accountBalance = homeViewModel.selectedAccountBalance.collectAsState().value,
-        spentToday = homeViewModel.spentToday.collectAsState().value,
-        selectedAccount = homeViewModel.selectedAccount.collectAsState().value,
-        getInitialAccountSpecificData = homeViewModel::getInitialAccountData,
-        categoryCardData = homeViewModel.getMaxSpentCategoryData.collectAsState().value,
-        amountSpentThisMonthFromAcc = homeViewModel.amountSpentThisMonthFromAcc.collectAsState().value
-    )
+    if (mainViewModel.isAccountLoading || mainViewModel.isTransactionLoading || mainViewModel.isCategoryLoading) {
+        ExpenseTrackerProgressBar(Modifier.size(50.dp))
+    } else if (mainViewModel.transactionRetrievalError || mainViewModel.accountRetrievalError || mainViewModel.categoryRetrievalError) {
+        Row(
+            modifier = Modifier.fillMaxSize(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Absolute.Center
+        ) {
+            SimpleText(
+                text = "Error loading user data", color = Color.Red
+            )
+        }
+    } else {
+        HomeScreen(
+            navControllerRoot = navControllerRoot,
+            accounts = mainViewModel.accounts.collectAsState().value.toImmutableList(),
+            transactions = mainViewModel.transactions.collectAsState().value.toImmutableList(),
+            onAccountSpinnerValueChanged = {
+                homeViewModel.updateSelectedAccount(it)
+                mainViewModel.updateInitialTransaction(it)
+            },
+            accountBalance = homeViewModel.selectedAccountBalance.collectAsState().value,
+            spentToday = homeViewModel.spentToday.collectAsState().value,
+            selectedAccount = homeViewModel.selectedAccount.collectAsState().value,
+            getInitialAccountSpecificData = homeViewModel::getInitialAccountData,
+            categoryCardData = homeViewModel.getMaxSpentCategoryData.collectAsState().value,
+            amountSpentThisMonthFromAcc = homeViewModel.amountSpentThisMonthFromAcc.collectAsState().value
+        )
+    }
 }
 
 @Composable
