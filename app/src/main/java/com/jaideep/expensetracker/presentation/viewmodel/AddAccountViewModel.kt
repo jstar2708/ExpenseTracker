@@ -24,8 +24,40 @@ class AddAccountViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _accounts: MutableStateFlow<List<Account>> = MutableStateFlow(ArrayList())
+    val accountState = mutableStateOf(
+        TextFieldWithIconAndErrorPopUpState(
+            text = "",
+            isError = false,
+            showError = false,
+            onValueChange = { updateAccountTextState(it) },
+            onErrorIconClick = { updateAccountErrorState() },
+            errorMessage = ""
+        )
+    )
 
-    init {
+    val amountState = mutableStateOf(
+        TextFieldWithIconAndErrorPopUpState(
+            text = "",
+            isError = false,
+            showError = false,
+            onValueChange = { updateAmountTextState(it) },
+            onErrorIconClick = { updateAmountErrorState() },
+            errorMessage = ""
+        )
+    )
+    var accountRetrievalError by mutableStateOf(false)
+        private set
+    var isAccountLoading by mutableStateOf(true)
+        private set
+    var screenTitle by mutableStateOf("Add Account")
+        private set
+    var screenDetail by mutableStateOf("Please provide account details")
+        private set
+    var exitScreen = mutableStateOf(false)
+        private set
+    var isAccountSaved = mutableStateOf(false)
+
+    fun initData() {
         getAllAccounts()
     }
 
@@ -50,40 +82,6 @@ class AddAccountViewModel @Inject constructor(
             }
         }
     }
-
-    val accountState = mutableStateOf(
-        TextFieldWithIconAndErrorPopUpState(
-            text = "",
-            isError = false,
-            showError = false,
-            onValueChange = { updateAccountTextState(it) },
-            onErrorIconClick = { updateAccountErrorState() },
-            errorMessage = ""
-        )
-    )
-
-    val amountState = mutableStateOf(
-        TextFieldWithIconAndErrorPopUpState(
-            text = "",
-            isError = false,
-            showError = false,
-            onValueChange = { updateAmountTextState(it) },
-            onErrorIconClick = { updateAmountErrorState() },
-            errorMessage = ""
-        )
-    )
-
-    var accountRetrievalError by mutableStateOf(false)
-        private set
-    var isAccountLoading by mutableStateOf(true)
-        private set
-    var screenTitle by mutableStateOf("Add Account")
-        private set
-    var screenDetail by mutableStateOf("Please provide account details")
-        private set
-    var exitScreen = mutableStateOf(false)
-        private set
-    var isAccountSaved = mutableStateOf(false)
 
     private fun updateAccountTextState(value: String) {
         accountState.value = TextFieldWithIconAndErrorPopUpState(

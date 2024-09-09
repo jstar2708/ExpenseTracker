@@ -4,6 +4,7 @@ import com.jaideep.expensetracker.data.local.dao.EtDao
 import com.jaideep.expensetracker.domain.repository.EtRepository
 import com.jaideep.expensetracker.model.CategoryCardData
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
 import javax.inject.Inject
 
 class EtRepositoryImpl @Inject constructor(
@@ -43,6 +44,17 @@ class EtRepositoryImpl @Inject constructor(
 
     override fun getAmountSpentFromAllAccountThisMonth(date: Long): Flow<Double> {
         return etDao.getTotalAmountSpentFromAllAccountsThisMonth(date)
+    }
+
+    override fun getCategoryCardsDataFromAllAccountsWithinDuration(date: Long): Flow<List<CategoryCardData>> {
+        return etDao.getCategoryCardsDataFromAllAccountsWithinDuration(date)
+    }
+
+    override fun getCategoryCardsDataFromAccountWithinDuration(
+        accountName: String,
+        date: Long
+    ): Flow<List<CategoryCardData>> {
+        return etDao.getCategoryCardsDataFromAccountWithinDuration(accountName, date)
     }
 
 }

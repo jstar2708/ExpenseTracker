@@ -15,6 +15,7 @@ import com.jaideep.expensetracker.presentation.screens.bottom.category.CategoryS
 import com.jaideep.expensetracker.presentation.screens.bottom.home.HomeScreenRoot
 import com.jaideep.expensetracker.presentation.screens.bottom.settings.SettingsScreen
 import com.jaideep.expensetracker.presentation.screens.bottom.transaction.TransactionScreenRoot
+import com.jaideep.expensetracker.presentation.viewmodel.CategoryViewModel
 import com.jaideep.expensetracker.presentation.viewmodel.HomeViewModel
 import com.jaideep.expensetracker.presentation.viewmodel.MainViewModel
 import com.jaideep.expensetracker.presentation.viewmodel.TransactionViewModel
@@ -59,8 +60,7 @@ fun BottomNavigationGraph(
                 navHostControllerRoot.getBackStackEntry(Graph.MAIN)
             }
             CategoryScreenRoot(
-                navHostControllerRoot,
-                mainViewModel,
+                navHostControllerRoot, mainViewModel, hiltViewModel<CategoryViewModel>(startEntry)
             ) {
                 bottomNavController.popBackStack()
             }

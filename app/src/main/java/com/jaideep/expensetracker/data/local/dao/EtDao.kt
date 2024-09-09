@@ -8,6 +8,8 @@ import com.jaideep.expensetracker.common.constant.sql.EtSql.GET_AMOUNT_SPENT_FRO
 import com.jaideep.expensetracker.common.constant.sql.EtSql.GET_AMOUNT_SPENT_FROM_ACCOUNT_TODAY
 import com.jaideep.expensetracker.common.constant.sql.EtSql.GET_AMOUNT_SPENT_FROM_ALL_ACCOUNTS_THIS_MONTH
 import com.jaideep.expensetracker.common.constant.sql.EtSql.GET_AMOUNT_SPENT_FROM_ALL_ACCOUNT_TODAY
+import com.jaideep.expensetracker.common.constant.sql.EtSql.GET_CATEGORY_CARDS_DATA_FROM_ACCOUNT_WITHIN_DURATION
+import com.jaideep.expensetracker.common.constant.sql.EtSql.GET_CATEGORY_CARDS_DATA_FROM_ALL_ACCOUNTS_WITHIN_DURATION
 import com.jaideep.expensetracker.common.constant.sql.EtSql.GET_CATEGORY_ON_WHICH_MAX_AMOUNT_SPENT_FROM_ACCOUNT_THIS_MONTH
 import com.jaideep.expensetracker.common.constant.sql.EtSql.GET_CATEGORY_ON_WHICH_MAX_AMOUNT_SPENT_FROM_ALL_ACCOUNTS_THIS_MONTH
 import com.jaideep.expensetracker.model.CategoryCardData
@@ -42,4 +44,10 @@ interface EtDao {
 
     @Query(GET_AMOUNT_SPENT_FROM_ALL_ACCOUNTS_THIS_MONTH)
     fun getTotalAmountSpentFromAllAccountsThisMonth(date: Long): Flow<Double>
+
+    @Query(GET_CATEGORY_CARDS_DATA_FROM_ALL_ACCOUNTS_WITHIN_DURATION)
+    fun getCategoryCardsDataFromAllAccountsWithinDuration(date: Long) : Flow<List<CategoryCardData>>
+
+    @Query(GET_CATEGORY_CARDS_DATA_FROM_ACCOUNT_WITHIN_DURATION)
+    fun getCategoryCardsDataFromAccountWithinDuration(accountName: String, date: Long) : Flow<List<CategoryCardData>>
 }

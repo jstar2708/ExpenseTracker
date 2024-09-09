@@ -23,7 +23,10 @@ import com.jaideep.expensetracker.domain.repository.CategoryRepository
 import com.jaideep.expensetracker.domain.repository.TransactionPagingRepository
 import com.jaideep.expensetracker.domain.usecase.GetAllAccountsUseCase
 import com.jaideep.expensetracker.domain.usecase.GetAllCategoriesUseCase
+import com.jaideep.expensetracker.domain.usecase.GetAllCategoryCardsDataUseCase
 import com.jaideep.expensetracker.domain.usecase.GetInitialTransactionsUseCase
+import com.jaideep.expensetracker.model.CategoryCardData
+import com.jaideep.expensetracker.model.CategoryCardPayload
 import com.jaideep.expensetracker.model.RunJobForData
 import com.jaideep.expensetracker.model.TransactionMethodData
 import com.jaideep.expensetracker.model.TransactionMethodDataForDates
@@ -54,6 +57,7 @@ class MainViewModel @Inject constructor(
     private val getAllAccountsUseCase: GetAllAccountsUseCase,
     private val getAllCategoriesUseCase: GetAllCategoriesUseCase,
     private val getInitialTransactionsUseCase: GetInitialTransactionsUseCase,
+    private val getAllCategoryCardsDataUseCase: GetAllCategoryCardsDataUseCase,
     private val categoryRepository: CategoryRepository
 ) : ViewModel() {
     private val _accounts: MutableStateFlow<List<Account>> = MutableStateFlow(ArrayList())
@@ -91,6 +95,11 @@ class MainViewModel @Inject constructor(
         )
     )
 
+    private val _categoryCardsData: MutableStateFlow<List<CategoryCardData>> =
+        MutableStateFlow(ArrayList())
+    var categoryCardsData: StateFlow<List<CategoryCardData>> =
+        _categoryCardsData.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
+
     @OptIn(ExperimentalCoroutinesApi::class)
     private val _pagedTransactionItems: MutableStateFlow<Flow<PagingData<TransactionDto>>> =
         MutableStateFlow(Pager(config = PagingConfig(pageSize = 50), pagingSourceFactory = {
@@ -114,9 +123,14 @@ class MainViewModel @Inject constructor(
 
     private val _hasCategoriesLoaded = MutableStateFlow(false)
 
-    private var runJobForData: MutableStateFlow<RunJobForData<String>> = MutableStateFlow(
-        RunJobForData()
-    )
+    private val initialTransactionsJobData: MutableStateFlow<RunJobForData<String>> =
+        MutableStateFlow(
+            RunJobForData()
+        )
+    private val categoryCardsDataJob: MutableStateFlow<RunJobForData<CategoryCardPayload>> =
+        MutableStateFlow(
+            RunJobForData()
+        )
 
     var accountRetrievalError by mutableStateOf(false)
         private set
@@ -130,10 +144,44 @@ class MainViewModel @Inject constructor(
         private set
     var transactionRetrievalError by mutableStateOf(false)
         private set
+    var isCategoryCardDataLoading by mutableStateOf(true)
+        private set
+    var categoryCardDataRetrievalError by mutableStateOf(false)
+        private set
 
     init {
         getAllAccounts()
         getAllCategories()
+    }
+
+    private fun getAllCategoryCardsData() = viewModelScope.launch(EtDispatcher.io) {
+        categoryCardsDataJob.value.data?.accountName?.let { accountName ->
+            categoryCardsDataJob.value.data?.duration?.let { duration ->
+                getAllCategoryCardsDataUseCase(
+                    accountName, duration
+                ).collectLatest {
+                    if (this.isActive) {
+                        when (it) {
+                            is Resource.Loading -> {
+                                isCategoryCardDataLoading = true
+                                categoryCardDataRetrievalError = false
+                            }
+
+                            is Resource.Success -> {
+                                isCategoryCardDataLoading = false
+                                categoryCardDataRetrievalError = false
+                                _categoryCardsData.value = it.data
+                            }
+
+                            is Resource.Error -> {
+                                isCategoryCardDataLoading = false
+                                categoryCardDataRetrievalError = true
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     fun addDefaultCategories() {
@@ -189,6 +237,7 @@ class MainViewModel @Inject constructor(
                         if (hasCategoriesLoaded && _transactions.value.isEmpty()) {
                             getTransactionPagingSource()
                             getInitialTransactions(TransactionMethod.GET_ALL_TRANSACTIONS)
+                            getAllCategoryCardsData()
                         }
                     }
                 }
@@ -203,12 +252,12 @@ class MainViewModel @Inject constructor(
 
     private fun getInitialTransactions(transactionMethod: TransactionMethod) =
         viewModelScope.launch(EtDispatcher.io) {
-            if (this.isActive) {
-                getInitialTransactionsUseCase(
-                    TransactionMethodData(
-                        transactionMethod, runJobForData.value.data ?: ""
-                    )
-                ).collectLatest {
+            getInitialTransactionsUseCase(
+                TransactionMethodData(
+                    transactionMethod, initialTransactionsJobData.value.data ?: ""
+                )
+            ).collectLatest {
+                if (this.isActive) {
                     when (it) {
                         is Resource.Loading -> {
                             isTransactionLoading = true
@@ -375,13 +424,23 @@ class MainViewModel @Inject constructor(
     }
 
     fun updateInitialTransaction(accountName: String) {
-        if (runJobForData.value.data == accountName) {
+        if (initialTransactionsJobData.value.data == accountName) {
             return
         }
-        runJobForData.value.job?.cancel()
-        runJobForData.value = RunJobForData(
+        initialTransactionsJobData.value.job?.cancel()
+        initialTransactionsJobData.value = RunJobForData(
             if (accountName == "All Accounts") getInitialTransactions(TransactionMethod.GET_ALL_TRANSACTIONS)
             else getInitialTransactions(TransactionMethod.GET_TRANSACTIONS_FOR_ACCOUNT), accountName
+        )
+    }
+
+    fun updateCategoryCardsData(categoryCardPayload: CategoryCardPayload) {
+        if (categoryCardsDataJob.value.data?.accountName == categoryCardPayload.accountName && categoryCardsDataJob.value.data?.duration == categoryCardPayload.duration) {
+            return
+        }
+        categoryCardsDataJob.value.job?.cancel()
+        categoryCardsDataJob.value = RunJobForData(
+            data = categoryCardPayload, job = getAllCategoryCardsData()
         )
     }
 }

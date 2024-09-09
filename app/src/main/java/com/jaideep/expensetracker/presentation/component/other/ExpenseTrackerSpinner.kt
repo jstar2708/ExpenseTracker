@@ -20,14 +20,15 @@ import androidx.compose.ui.unit.dp
 import com.jaideep.expensetracker.presentation.component.SimpleText
 import com.jaideep.expensetracker.presentation.theme.AppTheme
 import com.jaideep.expensetracker.presentation.theme.md_theme_light_surface
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
 
 @Preview
 @Composable
 private fun ExpenseTrackerSpinnerPreview() {
     AppTheme {
         ExpenseTrackerSpinner(
-            values = listOf("All Accounts", "Cash", "SBI"),
-            initialValue = "All Accounts"
+            values = persistentListOf("All Accounts", "Cash", "SBI"), initialValue = "All Accounts"
         ) {
 
         }
@@ -39,7 +40,7 @@ private fun ExpenseTrackerSpinnerPreview() {
 fun ExpenseTrackerSpinner(
     modifier: Modifier = Modifier,
     initialValue: String = "Initial Value",
-    values: List<String>,
+    values: ImmutableList<String>,
     onValueChanged: (value: String) -> Unit
 ) {
     var isExpanded by remember {
@@ -50,7 +51,8 @@ fun ExpenseTrackerSpinner(
         mutableStateOf(initialValue)
     }
 
-    ExposedDropdownMenuBox(modifier = modifier,
+    ExposedDropdownMenuBox(
+        modifier = modifier,
         expanded = isExpanded,
         onExpandedChange = { isExpanded = it }) {
         OutlinedTextField(value = selectedAccount,

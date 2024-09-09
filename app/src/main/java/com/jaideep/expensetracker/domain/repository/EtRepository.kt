@@ -15,5 +15,7 @@ interface EtRepository {
     fun getTotalAmountSpentFromAccountThisMonth(accountName: String, date: Long): Flow<Double>
     fun getCategoryOnWhichMaximumAmountSpentFromAllAccountsThisMonth(date: Long): Flow<CategoryCardData>
     fun getAmountSpentFromAllAccountThisMonth(date: Long): Flow<Double>
+    fun getCategoryCardsDataFromAllAccountsWithinDuration(date: Long): Flow<List<CategoryCardData>>
+    fun getCategoryCardsDataFromAccountWithinDuration(accountName: String, date: Long) : Flow<List<CategoryCardData>>
 
 }

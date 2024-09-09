@@ -57,7 +57,7 @@ fun ExpenseTrackerCategoryCard(
                 painter = painterResource(id = iconId),
                 contentDescription = iconDescription,
                 modifier = Modifier
-                    .padding(start = 8.dp, end = 8.dp)
+                    .padding(8.dp)
                     .size(30.dp),
                 tint = Color.Unspecified
             )

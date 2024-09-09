@@ -27,4 +27,18 @@ object EtSql {
             " group by categoryName, iconName)" +
             " Select categoryName, iconName, sum_amount as amountSpent" +
             " from category_sums where sum_amount = (select max(sum_amount) from category_sums)"
+    const val GET_CATEGORY_CARDS_DATA_FROM_ALL_ACCOUNTS_WITHIN_DURATION = "With category_sums as (Select categoryName, iconName, sum(amount) as sum_amount" +
+            " from `Transaction` inner join Category on `Transaction`.categoryId = Category.id" +
+            " where createdTime >= :date and isCredit = 0"+
+            " group by categoryName, iconName)" +
+            " Select categoryName, iconName, sum_amount as amountSpent" +
+            " from category_sums"
+    const val GET_CATEGORY_CARDS_DATA_FROM_ACCOUNT_WITHIN_DURATION = "With category_sums as (Select categoryName, iconName, sum(amount) as sum_amount" +
+            " from `Transaction` inner join Category on `Transaction`.categoryId = Category.id" +
+            " inner join Account on `Transaction`.accountId = Account.id" +
+            " where createdTime >= :date and isCredit = 0"+
+            " and accountName = :accountName" +
+            " group by categoryName, iconName)" +
+            " Select categoryName, iconName, sum_amount as amountSpent" +
+            " from category_sums"
 }

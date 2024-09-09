@@ -71,6 +71,11 @@ private fun AddAccountScreenPreview() {
 fun AddAccountScreenRoot(
     navController: NavHostController, addAccountViewModel: AddAccountViewModel = hiltViewModel()
 ) {
+
+    LaunchedEffect(key1 = true) {
+        addAccountViewModel.initData()
+    }
+
     if (addAccountViewModel.isAccountLoading) {
         ExpenseTrackerProgressBar(Modifier.size(50.dp))
     } else if (addAccountViewModel.accountRetrievalError) {
