@@ -221,7 +221,8 @@ fun TransactionSummary(transactions: List<TransactionDto>) {
                     iconDescription = "Category icon",
                     categoryName = transactions[it].categoryDto.name,
                     transactionDescription = transactions[it].message,
-                    amount = transactions[it].amount.toString()
+                    amount = transactions[it].amount.toString(),
+                    isCredit = transactions[it].isCredit
                 )
             }
         }

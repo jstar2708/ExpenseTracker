@@ -346,7 +346,7 @@ class AddTransactionViewModel @Inject constructor(
                             note,
                             (LocalDate.parse(date).atStartOfDay(ZoneId.of("Asia/Kolkata"))
                                 .toEpochSecond() * 1000),
-                            isCredit
+                            isCredit xor 1
                         )
                     )
                     isTransactionSaved = true

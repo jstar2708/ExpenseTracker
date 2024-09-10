@@ -24,10 +24,10 @@ class GetAllCategoryCardsDataUseCase @Inject constructor(
                 else Utility.getStartDateOfYearInMillis()
             )
         }
-        data.collectLatest {
+        data.collect {
             emit(Resource.Success(it))
         }
     }.catch {
-        emit(Resource.Error("Error while fetching the category card data"))
+        emit(Resource.Error("Error while fetching the category card data, ${it.message}"))
     }
 }

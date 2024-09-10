@@ -47,6 +47,8 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.time.delay
+import java.time.Duration
 import java.time.LocalDate
 import java.time.ZoneId
 import javax.inject.Inject
@@ -129,7 +131,10 @@ class MainViewModel @Inject constructor(
         )
     private val categoryCardsDataJob: MutableStateFlow<RunJobForData<CategoryCardPayload>> =
         MutableStateFlow(
-            RunJobForData()
+            RunJobForData(
+                data = CategoryCardPayload("All Accounts", "This Month"),
+                job = getAllCategoryCardsData()
+            )
         )
 
     var accountRetrievalError by mutableStateOf(false)
@@ -149,7 +154,7 @@ class MainViewModel @Inject constructor(
     var categoryCardDataRetrievalError by mutableStateOf(false)
         private set
 
-    init {
+    fun initData() {
         getAllAccounts()
         getAllCategories()
     }
@@ -168,9 +173,10 @@ class MainViewModel @Inject constructor(
                             }
 
                             is Resource.Success -> {
+                                _categoryCardsData.value = it.data
+                                delay(Duration.ofMillis(500))
                                 isCategoryCardDataLoading = false
                                 categoryCardDataRetrievalError = false
-                                _categoryCardsData.value = it.data
                             }
 
                             is Resource.Error -> {
@@ -207,9 +213,10 @@ class MainViewModel @Inject constructor(
                 }
 
                 is Resource.Success -> {
+                    _accounts.value = it.data
+                    delay(Duration.ofMillis(500))
                     isAccountLoading = false
                     accountRetrievalError = false
-                    _accounts.value = it.data
                 }
 
                 is Resource.Error -> {
@@ -230,6 +237,7 @@ class MainViewModel @Inject constructor(
 
                 is Resource.Success -> {
                     _categories.value = it.data
+                    delay(Duration.ofMillis(500))
                     isCategoryLoading = false
                     _hasCategoriesLoaded.value = true
                     categoryRetrievalError = false
@@ -265,9 +273,10 @@ class MainViewModel @Inject constructor(
                         }
 
                         is Resource.Success -> {
+                            _transactions.value = it.data
+                            delay(Duration.ofMillis(500))
                             isTransactionLoading = false
                             transactionRetrievalError = false
-                            _transactions.value = it.data
                         }
 
                         is Resource.Error -> {

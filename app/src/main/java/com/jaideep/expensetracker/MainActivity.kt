@@ -18,6 +18,9 @@ class MainActivity : ComponentActivity() {
             if (isFirstInitialization) {
                 mainViewModel.addDefaultCategories()
             }
+            else {
+                mainViewModel.initData()
+            }
         }
         mainViewModel.checkFirstAppInitialization()
         setContent {
