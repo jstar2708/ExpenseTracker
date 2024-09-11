@@ -27,7 +27,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
-import com.jaideep.expensetracker.common.DetailScreen
+import com.jaideep.expensetracker.common.AddScreen
 import com.jaideep.expensetracker.model.CategoryCardData
 import com.jaideep.expensetracker.model.CategoryCardPayload
 import com.jaideep.expensetracker.presentation.component.SimpleText
@@ -41,7 +41,6 @@ import com.jaideep.expensetracker.presentation.viewmodel.MainViewModel
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
-import kotlinx.coroutines.delay
 
 @Preview
 @Composable
@@ -88,8 +87,7 @@ fun CategoryScreenRoot(
                 categoryViewModel.onAccountSpinnerValueChanged(it)
                 mainViewModel.updateCategoryCardsData(
                     CategoryCardPayload(
-                        it,
-                        categoryViewModel.durationValue.value
+                        it, categoryViewModel.durationValue.value
                     )
                 )
             },
@@ -97,8 +95,7 @@ fun CategoryScreenRoot(
                 categoryViewModel.onDurationSpinnerValueChanged(it)
                 mainViewModel.updateCategoryCardsData(
                     CategoryCardPayload(
-                        categoryViewModel.accountValue.value,
-                        it
+                        categoryViewModel.accountValue.value, it
                     )
                 )
             },
@@ -140,19 +137,19 @@ fun CategoryScreen(
             actionIcon = Icons.Filled.Add,
             actionDescription = "Add Category icon"
         ) {
-            navControllerRoot.navigate(DetailScreen.ADD_CATEGORY)
+            navControllerRoot.navigate(AddScreen.ADD_CATEGORY)
         }
     }) {
         Column(Modifier.padding(it)) {
-            Row {
+            Row (modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)) {
                 ExpenseTrackerSpinner(
-                    modifier = Modifier.weight(1f),
+                    modifier = Modifier.weight(1f).padding(end = 4.dp),
                     initialValue = accountSpinnerValue,
                     values = accounts,
                     onValueChanged = onAccountSpinnerValueChange
                 )
                 ExpenseTrackerSpinner(
-                    modifier = Modifier.weight(1f),
+                    modifier = Modifier.weight(1f).padding(start = 4.dp),
                     initialValue = durationSpinnerValue,
                     values = durations,
                     onValueChanged = onDurationSpinnerValueChange

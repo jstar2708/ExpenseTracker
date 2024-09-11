@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Query
 import com.jaideep.expensetracker.common.constant.sql.EtSql.GET_ACCOUNT_BALANCE_BY_NAME
 import com.jaideep.expensetracker.common.constant.sql.EtSql.GET_ACCOUNT_BALANCE_FOR_ALL_ACCOUNTS
+import com.jaideep.expensetracker.common.constant.sql.EtSql.GET_ALL_CATEGORY_WISE_TRANSACTIONS_WITH_DATE
 import com.jaideep.expensetracker.common.constant.sql.EtSql.GET_AMOUNT_SPENT_FROM_ACCOUNT_THIS_MONTH
 import com.jaideep.expensetracker.common.constant.sql.EtSql.GET_AMOUNT_SPENT_FROM_ACCOUNT_TODAY
 import com.jaideep.expensetracker.common.constant.sql.EtSql.GET_AMOUNT_SPENT_FROM_ALL_ACCOUNTS_THIS_MONTH
@@ -12,6 +13,8 @@ import com.jaideep.expensetracker.common.constant.sql.EtSql.GET_CATEGORY_CARDS_D
 import com.jaideep.expensetracker.common.constant.sql.EtSql.GET_CATEGORY_CARDS_DATA_FROM_ALL_ACCOUNTS_WITHIN_DURATION
 import com.jaideep.expensetracker.common.constant.sql.EtSql.GET_CATEGORY_ON_WHICH_MAX_AMOUNT_SPENT_FROM_ACCOUNT_THIS_MONTH
 import com.jaideep.expensetracker.common.constant.sql.EtSql.GET_CATEGORY_ON_WHICH_MAX_AMOUNT_SPENT_FROM_ALL_ACCOUNTS_THIS_MONTH
+import com.jaideep.expensetracker.common.constant.sql.EtSql.GET__CATEGORY_WISE_ACCOUNT_TRANSACTIONS_WITH_DATE
+import com.jaideep.expensetracker.data.local.entities.Transaction
 import com.jaideep.expensetracker.model.CategoryCardData
 import kotlinx.coroutines.flow.Flow
 
@@ -50,4 +53,10 @@ interface EtDao {
 
     @Query(GET_CATEGORY_CARDS_DATA_FROM_ACCOUNT_WITHIN_DURATION)
     fun getCategoryCardsDataFromAccountWithinDuration(accountName: String, date: Long) : Flow<List<CategoryCardData>>
+
+    @Query(GET_ALL_CATEGORY_WISE_TRANSACTIONS_WITH_DATE)
+    fun getCategoryWiseAllAccountTransactionsWithDate(categoryName: String, date: Long) : Flow<List<Transaction>>
+
+    @Query(GET__CATEGORY_WISE_ACCOUNT_TRANSACTIONS_WITH_DATE)
+    fun getCategoryWiseAccountTransactionWithDate(categoryName: String, accountName: String, date: Long) : Flow<List<Transaction>>
 }

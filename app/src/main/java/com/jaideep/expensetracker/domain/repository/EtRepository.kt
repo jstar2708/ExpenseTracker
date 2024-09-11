@@ -1,5 +1,6 @@
 package com.jaideep.expensetracker.domain.repository
 
+import com.jaideep.expensetracker.data.local.entities.Transaction
 import com.jaideep.expensetracker.model.CategoryCardData
 import kotlinx.coroutines.flow.Flow
 
@@ -17,5 +18,7 @@ interface EtRepository {
     fun getAmountSpentFromAllAccountThisMonth(date: Long): Flow<Double>
     fun getCategoryCardsDataFromAllAccountsWithinDuration(date: Long): Flow<List<CategoryCardData>>
     fun getCategoryCardsDataFromAccountWithinDuration(accountName: String, date: Long) : Flow<List<CategoryCardData>>
+    fun getCategoryWiseAllAccountTransactionsWithDate(categoryName: String, date: Long) : Flow<List<Transaction>>
+    fun getCategoryWiseAccountTransactionWithDate(categoryName: String, accountName: String, date: Long) : Flow<List<Transaction>>
 
 }

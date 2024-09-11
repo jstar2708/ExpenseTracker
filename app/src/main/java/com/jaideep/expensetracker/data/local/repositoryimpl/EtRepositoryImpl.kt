@@ -1,6 +1,7 @@
 package com.jaideep.expensetracker.data.local.repositoryimpl
 
 import com.jaideep.expensetracker.data.local.dao.EtDao
+import com.jaideep.expensetracker.data.local.entities.Transaction
 import com.jaideep.expensetracker.domain.repository.EtRepository
 import com.jaideep.expensetracker.model.CategoryCardData
 import kotlinx.coroutines.flow.Flow
@@ -55,6 +56,18 @@ class EtRepositoryImpl @Inject constructor(
         date: Long
     ): Flow<List<CategoryCardData>> {
         return etDao.getCategoryCardsDataFromAccountWithinDuration(accountName, date)
+    }
+
+    override fun getCategoryWiseAllAccountTransactionsWithDate(categoryName: String, date: Long): Flow<List<Transaction>> {
+        return etDao.getCategoryWiseAllAccountTransactionsWithDate(categoryName, date)
+    }
+
+    override fun getCategoryWiseAccountTransactionWithDate(
+        categoryName: String,
+        accountName: String,
+        date: Long
+    ): Flow<List<Transaction>> {
+        return etDao.getCategoryWiseAccountTransactionWithDate(categoryName, accountName, date)
     }
 
 }

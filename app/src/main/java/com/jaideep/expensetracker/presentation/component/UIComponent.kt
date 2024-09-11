@@ -198,7 +198,9 @@ fun HeadingTextBold(
         style = MaterialTheme.typography.headlineMedium,
         fontWeight = FontWeight.ExtraBold,
         fontFamily = OpenSansFont.openSans,
-        color = color
+        color = color,
+        maxLines = 2,
+        overflow = TextOverflow.Ellipsis
     )
 }
 

@@ -32,7 +32,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.jaideep.expensetracker.common.DetailScreen
+import com.jaideep.expensetracker.common.AddScreen
 import com.jaideep.expensetracker.model.CategoryCardData
 import com.jaideep.expensetracker.model.dto.TransactionDto
 import com.jaideep.expensetracker.presentation.component.SimpleText
@@ -162,12 +162,12 @@ fun HomeScreen(
 
                     ExpenseTrackerBlueButton(
                         name = "Add\nAccount",
-                        onClick = { navControllerRoot.navigate(DetailScreen.ADD_ACCOUNT) },
+                        onClick = { navControllerRoot.navigate(AddScreen.ADD_ACCOUNT) },
                         modifier = Modifier.weight(1f)
                     )
                     ExpenseTrackerBlueButton(
                         name = "Add\nTransaction",
-                        onClick = { navControllerRoot.navigate(DetailScreen.ADD_TRANSACTION) },
+                        onClick = { navControllerRoot.navigate(AddScreen.ADD_TRANSACTION) },
                         modifier = Modifier.weight(1f)
                     )
                 }

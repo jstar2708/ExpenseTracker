@@ -82,6 +82,7 @@ class MainViewModel @Inject constructor(
     var transactions: StateFlow<List<TransactionDto>> = _transactions.map {
         it.asFlow().map { transaction ->
             TransactionDto(
+                transaction.id,
                 transaction.amount,
                 getCategoryDto(transaction.categoryId),
                 transaction.message,
@@ -109,6 +110,7 @@ class MainViewModel @Inject constructor(
         }).flow.mapLatest { pagingData ->
             pagingData.map { transaction ->
                 TransactionDto(
+                    transaction.id,
                     transaction.amount,
                     getCategoryDto(transaction.categoryId),
                     transaction.message,
@@ -404,6 +406,7 @@ class MainViewModel @Inject constructor(
                 }).flow.mapLatest { pagingData ->
                     pagingData.map { transaction ->
                         TransactionDto(
+                            transaction.id,
                             transaction.amount,
                             getCategoryDto(transaction.categoryId),
                             transaction.message,

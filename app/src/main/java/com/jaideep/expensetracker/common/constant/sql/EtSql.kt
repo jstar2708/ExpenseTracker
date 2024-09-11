@@ -41,4 +41,10 @@ object EtSql {
             " group by categoryName, iconName)" +
             " Select categoryName, iconName, sum_amount as amountSpent" +
             " from category_sums"
+    const val GET_ALL_CATEGORY_WISE_TRANSACTIONS_WITH_DATE = "Select `Transaction`.* from `Transaction` inner join" +
+            " Category on `Transaction`.categoryId = Category.id where Category.categoryName" +
+            " = :categoryName and `Transaction`.createdTime >= :date"
+    const val GET__CATEGORY_WISE_ACCOUNT_TRANSACTIONS_WITH_DATE = "Select `Transaction`.* from `Transaction` inner join" +
+            " Category on `Transaction`.categoryId = Category.id inner join Account on `Transaction`.accountId = Account.id where Category.categoryName" +
+            " = :categoryName and createdTime and Account.accountName = :accountName and `Transaction`.createdTime >= :date"
 }

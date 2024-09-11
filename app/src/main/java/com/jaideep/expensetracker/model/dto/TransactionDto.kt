@@ -3,6 +3,7 @@ package com.jaideep.expensetracker.model.dto
 import java.time.LocalDate
 
 data class TransactionDto(
+    val transactionId: Int,
     val amount: Double,
     val categoryDto: CategoryDto,
     val message: String,

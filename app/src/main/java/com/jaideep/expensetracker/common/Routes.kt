@@ -7,11 +7,15 @@ object MainScreen {
     const val SETTINGS = "SETTINGS"
 }
 
-object DetailScreen {
+object AddScreen {
     const val ADD_SCREEN = "add_screen"
     const val ADD_TRANSACTION = "ADD_TRANSACTIONS"
     const val ADD_ACCOUNT = "ADD_ACCOUNT"
     const val ADD_CATEGORY = "ADD_CATEGORY"
+}
+
+object DetailScreen {
+    const val CATEGORY_DETAILS = "category_details"
 }
 
 object Graph {

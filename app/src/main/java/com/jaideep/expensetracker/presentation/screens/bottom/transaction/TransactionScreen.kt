@@ -37,7 +37,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.jaideep.expensetracker.R
-import com.jaideep.expensetracker.common.DetailScreen
+import com.jaideep.expensetracker.common.AddScreen
 import com.jaideep.expensetracker.model.DialogState
 import com.jaideep.expensetracker.model.dto.CategoryDto
 import com.jaideep.expensetracker.model.dto.TransactionDto
@@ -66,27 +66,27 @@ fun TransactionScreenPreview() {
             onAccountSpinnerValueChanged = { _, _, _ -> },
             transactions = persistentListOf(
                 TransactionDto(
-                    200.0, CategoryDto("Food", R.drawable.food), "No Message", LocalDate.now(), true
+                    0, 200.0, CategoryDto("Food", R.drawable.food), "No Message", LocalDate.now(), true
                 ), TransactionDto(
-                    200.0, CategoryDto("Food", R.drawable.food), "No Message", LocalDate.now(), true
+                    0, 200.0, CategoryDto("Food", R.drawable.food), "No Message", LocalDate.now(), true
                 ), TransactionDto(
-                    200.0, CategoryDto("Food", R.drawable.food), "No Message", LocalDate.now(), true
+                    0, 200.0, CategoryDto("Food", R.drawable.food), "No Message", LocalDate.now(), true
                 ), TransactionDto(
-                    200.0, CategoryDto("Food", R.drawable.food), "No Message", LocalDate.now(), true
+                    0, 200.0, CategoryDto("Food", R.drawable.food), "No Message", LocalDate.now(), true
                 ), TransactionDto(
-                    200.0, CategoryDto("Food", R.drawable.food), "No Message", LocalDate.now(), true
+                    0, 200.0, CategoryDto("Food", R.drawable.food), "No Message", LocalDate.now(), true
                 ), TransactionDto(
-                    200.0, CategoryDto("Food", R.drawable.food), "No Message", LocalDate.now(), true
+                    0, 200.0, CategoryDto("Food", R.drawable.food), "No Message", LocalDate.now(), true
                 ), TransactionDto(
-                    200.0, CategoryDto("Food", R.drawable.food), "No Message", LocalDate.now(), true
+                    0, 200.0, CategoryDto("Food", R.drawable.food), "No Message", LocalDate.now(), true
                 ), TransactionDto(
-                    200.0, CategoryDto("Food", R.drawable.food), "No Message", LocalDate.now(), true
+                    0, 200.0, CategoryDto("Food", R.drawable.food), "No Message", LocalDate.now(), true
                 ), TransactionDto(
-                    200.0, CategoryDto("Food", R.drawable.food), "No Message", LocalDate.now(), true
+                    0, 200.0, CategoryDto("Food", R.drawable.food), "No Message", LocalDate.now(), true
                 ), TransactionDto(
-                    200.0, CategoryDto("Food", R.drawable.food), "No Message", LocalDate.now(), true
+                    0, 200.0, CategoryDto("Food", R.drawable.food), "No Message", LocalDate.now(), true
                 ), TransactionDto(
-                    200.0, CategoryDto("Food", R.drawable.food), "No Message", LocalDate.now(), true
+                    0, 200.0, CategoryDto("Food", R.drawable.food), "No Message", LocalDate.now(), true
                 )
             ),
             tabItemsList = persistentListOf("All", "Income", "Expense"),
@@ -204,7 +204,7 @@ fun TransactionScreen(
             actionIcon = Icons.Filled.Add,
             actionDescription = "Add transaction icon"
         ) {
-            navControllerRoot.navigate(DetailScreen.ADD_TRANSACTION)
+            navControllerRoot.navigate(AddScreen.ADD_TRANSACTION)
         }
     }) { it ->
         Column(

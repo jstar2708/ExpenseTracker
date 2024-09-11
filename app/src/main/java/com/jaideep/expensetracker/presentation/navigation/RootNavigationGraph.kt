@@ -4,12 +4,14 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.jaideep.expensetracker.common.AddScreen
 import com.jaideep.expensetracker.common.DetailScreen
 import com.jaideep.expensetracker.common.Graph
 import com.jaideep.expensetracker.presentation.screens.add.AddAccountScreenRoot
 import com.jaideep.expensetracker.presentation.screens.add.AddCategoryScreenRoot
 import com.jaideep.expensetracker.presentation.screens.add.AddTransactionScreenRoot
 import com.jaideep.expensetracker.presentation.screens.bottom.BottomNavigationScreen
+import com.jaideep.expensetracker.presentation.screens.details.CategoryDetailsScreenRoot
 import com.jaideep.expensetracker.presentation.viewmodel.MainViewModel
 
 @Composable
@@ -23,14 +25,17 @@ fun RootNavigationGraph(mainViewModel: MainViewModel) {
         composable(route = Graph.MAIN) {
             BottomNavigationScreen(navHostControllerRoot, mainViewModel)
         }
-        composable(DetailScreen.ADD_TRANSACTION) {
+        composable(AddScreen.ADD_TRANSACTION) {
             AddTransactionScreenRoot(navHostControllerRoot)
         }
-        composable(DetailScreen.ADD_ACCOUNT) {
+        composable(AddScreen.ADD_ACCOUNT) {
             AddAccountScreenRoot(navHostControllerRoot)
         }
-        composable(DetailScreen.ADD_CATEGORY) {
+        composable(AddScreen.ADD_CATEGORY) {
             AddCategoryScreenRoot(navHostControllerRoot)
+        }
+        composable(DetailScreen.CATEGORY_DETAILS) {
+            CategoryDetailsScreenRoot(navHostControllerRoot)
         }
     }
 }
