@@ -6,21 +6,20 @@ import androidx.lifecycle.viewModelScope
 import com.jaideep.expensetracker.common.EtDispatcher
 import com.jaideep.expensetracker.common.Resource
 import com.jaideep.expensetracker.data.local.entities.Account
-import com.jaideep.expensetracker.data.local.entities.Category
 import com.jaideep.expensetracker.data.local.entities.Transaction
 import com.jaideep.expensetracker.domain.usecase.GetAllAccountsUseCase
 import com.jaideep.expensetracker.domain.usecase.GetAllCategoryWiseTransactions
 import com.jaideep.expensetracker.domain.usecase.GetCategoryByNameUseCase
 import com.jaideep.expensetracker.model.DialogState
-import com.jaideep.expensetracker.model.RunJobForData
-import com.jaideep.expensetracker.presentation.utility.Utility.getCurrentDateInMillis
+import com.jaideep.expensetracker.model.dto.CategoryDto
+import com.jaideep.expensetracker.model.dto.TransactionDto
+import com.jaideep.expensetracker.presentation.utility.Utility.getCategoryIconId
 import com.jaideep.expensetracker.presentation.utility.Utility.stringDateToMillis
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
@@ -37,7 +36,20 @@ class CategoryDetailsViewModel @Inject constructor(
 ) : ViewModel() {
     val categoryName: MutableStateFlow<String> = MutableStateFlow(String())
     private val _transactions: MutableStateFlow<List<Transaction>> = MutableStateFlow(ArrayList())
-    var transactions: StateFlow<List<Transaction>> = _transactions.asStateFlow()
+    var transactions: StateFlow<List<TransactionDto>> = _transactions.map {
+        it.asFlow().map { transaction ->
+            TransactionDto(
+                transaction.id,
+                transaction.amount,
+                category.value ?: CategoryDto(
+                    categoryName.value, getCategoryIconId(categoryName.value)
+                ),
+                transaction.message,
+                LocalDate.ofEpochDay(transaction.createdTime / 86_400_000L),
+                transaction.isCredit == 1
+            )
+        }.toList()
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
     private val _accounts: MutableStateFlow<List<Account>> = MutableStateFlow(ArrayList())
     var accounts: StateFlow<List<String>> = _accounts.map {
         it.asFlow().map { account ->
@@ -46,11 +58,13 @@ class CategoryDetailsViewModel @Inject constructor(
     }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
     val accountValue = mutableStateOf("All Accounts")
-    val category: MutableStateFlow<Category?> = MutableStateFlow(null)
+    val category: MutableStateFlow<CategoryDto?> = MutableStateFlow(null)
     val isCategoryLoading = mutableStateOf(true)
     val categoryRetrievalError = mutableStateOf(false)
     val isTransactionsLoading = mutableStateOf(true)
     val transactionsRetrievalError = mutableStateOf(false)
+    val isAccountLoading = mutableStateOf(true)
+    val accountRetrievalError = mutableStateOf(false)
     val dialogState = mutableStateOf(
         DialogState(
             showDialog = false,
@@ -67,19 +81,22 @@ class CategoryDetailsViewModel @Inject constructor(
         this.categoryName.value = categoryName
         transactionJob = getCategoryWiseTransactions()
         getCategory()
+        getAllAccounts()
     }
 
-    private fun getCategory() = viewModelScope.launch (EtDispatcher.io) {
+    private fun getCategory() = viewModelScope.launch(EtDispatcher.io) {
         getCategoryUseCase(categoryName.value).collectLatest {
             when (it) {
                 is Resource.Error -> {
                     categoryRetrievalError.value = true
                     isCategoryLoading.value = false
                 }
+
                 is Resource.Loading -> {
                     categoryRetrievalError.value = false
                     isCategoryLoading.value = true
                 }
+
                 is Resource.Success -> {
                     category.value = it.data
                     categoryRetrievalError.value = false
@@ -95,7 +112,7 @@ class CategoryDetailsViewModel @Inject constructor(
         transactionJob = getCategoryWiseTransactions()
     }
 
-    fun onFilterApplied() {
+    fun updateTransactionList() {
         transactionJob?.cancel()
         transactionJob = getCategoryWiseTransactions()
     }
@@ -165,10 +182,36 @@ class CategoryDetailsViewModel @Inject constructor(
         )
     }
 
+    private fun getAllAccounts() = viewModelScope.launch(EtDispatcher.io) {
+        getAllAccountsUseCase().collectLatest {
+            if (this.isActive) {
+                when (it) {
+                    is Resource.Error -> {
+                        accountRetrievalError.value = true
+                        isAccountLoading.value = false
+                    }
+
+                    is Resource.Loading -> {
+                        isAccountLoading.value = true
+                        accountRetrievalError.value = false
+                    }
+
+                    is Resource.Success -> {
+                        _accounts.value = it.data
+                        isAccountLoading.value = false
+                        accountRetrievalError.value = false
+                    }
+                }
+            }
+        }
+    }
+
     private fun getCategoryWiseTransactions() = viewModelScope.launch(EtDispatcher.io) {
         val fromDate = stringDateToMillis(dialogState.value.fromDate)
         val toDate = stringDateToMillis(dialogState.value.toDate)
-        getAllCategoryWiseTransactions(accountValue.value, categoryName.value, fromDate, toDate).collectLatest {
+        getAllCategoryWiseTransactions(
+            accountValue.value, categoryName.value, fromDate, toDate
+        ).collectLatest {
             if (this.isActive) {
                 when (it) {
                     is Resource.Loading -> {

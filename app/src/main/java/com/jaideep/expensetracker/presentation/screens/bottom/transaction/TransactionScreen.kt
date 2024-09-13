@@ -213,7 +213,6 @@ fun TransactionScreen(
                 .fillMaxSize()
         ) {
             if (dialogState.showDialog) {
-                Row {
                     FilterDialog(
                         dialogState = dialogState,
                         updateTransactionList = updateTransactionList,
@@ -226,7 +225,6 @@ fun TransactionScreen(
                         updateTransactionList()
 
                     }
-                }
             }
             Row(verticalAlignment = Alignment.CenterVertically) {
                 ExpenseTrackerSpinner(values = accounts,
