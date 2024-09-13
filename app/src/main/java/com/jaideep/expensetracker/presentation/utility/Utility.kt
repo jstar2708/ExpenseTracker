@@ -1,8 +1,11 @@
 package com.jaideep.expensetracker.presentation.utility
 
+import android.util.Log
+import androidx.compose.animation.core.rememberTransition
 import com.jaideep.expensetracker.R
 import java.time.LocalDate
 import java.time.ZoneId
+import java.time.format.DateTimeParseException
 
 object Utility {
     fun getCategoryName(categoryId: Int): String {
@@ -37,6 +40,17 @@ object Utility {
 
     fun getStartDateOfYearInMillis(): Long {
         return LocalDate.now().withDayOfYear(1).toEpochDay() * 86_400_000L
+    }
+
+    fun stringDateToMillis(date: String): Long {
+        try {
+            return LocalDate.parse(date).atStartOfDay(ZoneId.of("Asia/Kolkata"))
+                .toEpochSecond() * 1000
+        }
+        catch (de: DateTimeParseException) {
+            Log.d("ERROR", "DateTimeParseException occurred while parsing date: $date")
+        }
+        return 0
     }
 
 

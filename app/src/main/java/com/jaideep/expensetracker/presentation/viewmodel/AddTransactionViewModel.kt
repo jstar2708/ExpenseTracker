@@ -15,6 +15,7 @@ import com.jaideep.expensetracker.domain.repository.TransactionPagingRepository
 import com.jaideep.expensetracker.domain.usecase.GetAllAccountsUseCase
 import com.jaideep.expensetracker.domain.usecase.GetAllCategoriesUseCase
 import com.jaideep.expensetracker.model.TextFieldWithIconAndErrorPopUpState
+import com.jaideep.expensetracker.presentation.utility.Utility.stringDateToMillis
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -46,8 +47,8 @@ class AddTransactionViewModel @Inject constructor(
         }.toList()
     }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
-
     private val _categories: MutableStateFlow<List<Category>> = MutableStateFlow(ArrayList())
+
     var categories: StateFlow<List<String>> = _categories.map {
         it.asFlow().map { category ->
             category.categoryName
@@ -85,7 +86,6 @@ class AddTransactionViewModel @Inject constructor(
             onErrorIconClick = { updateAmountErrorState() },
             errorMessage = ""
         )
-
     )
 
     val categoryState = mutableStateOf(
@@ -112,23 +112,31 @@ class AddTransactionViewModel @Inject constructor(
 
     var screenTitle by mutableStateOf("Add Transaction")
         private set
+
     var radioButtonValue = mutableIntStateOf(0)
         private set
+
     var screenDetail by mutableStateOf("Please provide transaction details")
         private set
 
     var accountRetrievalError by mutableStateOf(false)
         private set
+
     var isAccountLoading by mutableStateOf(true)
         private set
+
     var categoryRetrievalError by mutableStateOf(false)
         private set
+
     var isCategoryLoading by mutableStateOf(true)
         private set
+
     var errorMessage by mutableStateOf("")
         private set
+
     var exitScreen by mutableStateOf(false)
         private set
+
     var isTransactionSaved by mutableStateOf(false)
         private set
 
@@ -344,8 +352,7 @@ class AddTransactionViewModel @Inject constructor(
                             account.get().id,
                             category.get().id,
                             note,
-                            (LocalDate.parse(date).atStartOfDay(ZoneId.of("Asia/Kolkata"))
-                                .toEpochSecond() * 1000),
+                            stringDateToMillis(date),
                             isCredit xor 1
                         )
                     )

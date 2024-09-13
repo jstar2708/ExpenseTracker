@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.jaideep.expensetracker.common.AddScreen
+import com.jaideep.expensetracker.common.DetailScreen
 import com.jaideep.expensetracker.model.CategoryCardData
 import com.jaideep.expensetracker.model.CategoryCardPayload
 import com.jaideep.expensetracker.presentation.component.SimpleText
@@ -53,6 +54,7 @@ private fun CategoryScreenPreview() {
         durationSpinnerValue = "This Month",
         onAccountSpinnerValueChange = {},
         onDurationSpinnerValueChange = {},
+        onCategoryCardClick = {},
         backPress = {})
 }
 
@@ -99,6 +101,8 @@ fun CategoryScreenRoot(
                     )
                 )
             },
+            onCategoryCardClick = { categoryName -> navHostControllerRoot.navigate("${DetailScreen.CATEGORY_DETAILS}/$categoryName") },
+
             backPress = backPress
         )
     }
@@ -114,6 +118,7 @@ fun CategoryScreen(
     durationSpinnerValue: String,
     onAccountSpinnerValueChange: (value: String) -> Unit,
     onDurationSpinnerValueChange: (value: String) -> Unit,
+    onCategoryCardClick: (categoryName: String) -> Unit,
     backPress: () -> Unit
 ) {
     val savedStateHandle = navControllerRoot.currentBackStackEntry?.savedStateHandle
@@ -141,15 +146,19 @@ fun CategoryScreen(
         }
     }) {
         Column(Modifier.padding(it)) {
-            Row (modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)) {
+            Row(modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)) {
                 ExpenseTrackerSpinner(
-                    modifier = Modifier.weight(1f).padding(end = 4.dp),
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(end = 4.dp),
                     initialValue = accountSpinnerValue,
                     values = accounts,
-                    onValueChanged = onAccountSpinnerValueChange
+                    onValueChanged = onAccountSpinnerValueChange,
                 )
                 ExpenseTrackerSpinner(
-                    modifier = Modifier.weight(1f).padding(start = 4.dp),
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(start = 4.dp),
                     initialValue = durationSpinnerValue,
                     values = durations,
                     onValueChanged = onDurationSpinnerValueChange
@@ -163,7 +172,8 @@ fun CategoryScreen(
                         categoryName = categoryCardData.categoryName,
                         spendValue = "$${categoryCardData.amountSpent} / ${1000}",
                         progressValue = 0.8f,
-                        trackColor = Color.Yellow
+                        trackColor = Color.Yellow,
+                        onClick = onCategoryCardClick
                     )
                 }
             }

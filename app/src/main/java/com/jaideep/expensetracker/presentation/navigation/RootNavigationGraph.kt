@@ -1,9 +1,11 @@
 package com.jaideep.expensetracker.presentation.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.jaideep.expensetracker.common.AddScreen
 import com.jaideep.expensetracker.common.DetailScreen
 import com.jaideep.expensetracker.common.Graph
@@ -34,8 +36,12 @@ fun RootNavigationGraph(mainViewModel: MainViewModel) {
         composable(AddScreen.ADD_CATEGORY) {
             AddCategoryScreenRoot(navHostControllerRoot)
         }
-        composable(DetailScreen.CATEGORY_DETAILS) {
-            CategoryDetailsScreenRoot(navHostControllerRoot)
+        composable(DetailScreen.CATEGORY_DETAILS,
+            arguments = listOf(navArgument(name = "categoryName") {
+                type = NavType.StringType
+            })) { navBackStackEntry ->
+            val categoryName = navBackStackEntry.arguments?.getString("categoryName")
+            CategoryDetailsScreenRoot(navHostControllerRoot, categoryName)
         }
     }
 }

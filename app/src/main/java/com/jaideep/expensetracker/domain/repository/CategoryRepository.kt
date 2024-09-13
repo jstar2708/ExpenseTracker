@@ -9,4 +9,5 @@ interface CategoryRepository {
     fun getAllCategories(): Flow<List<Category>>
     suspend fun saveAllCategories(categories: List<Category>)
     suspend fun getAllCategoriesCount(): Int
+    suspend fun getCategoryByName(categoryName: String): Category
 }

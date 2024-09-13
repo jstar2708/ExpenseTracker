@@ -7,6 +7,7 @@ import androidx.room.Query
 import com.jaideep.expensetracker.common.constant.sql.CategorySql.GET_ALL_CATEGORIES
 import com.jaideep.expensetracker.common.constant.sql.CategorySql.GET_ALL_CATEGORIES_COUNT
 import com.jaideep.expensetracker.common.constant.sql.CategorySql.GET_CATEGORY_BY_ID
+import com.jaideep.expensetracker.common.constant.sql.CategorySql.GET_CATEGORY_BY_NAME
 import com.jaideep.expensetracker.data.local.entities.Category
 import kotlinx.coroutines.flow.Flow
 
@@ -26,4 +27,7 @@ interface CategoryDao {
 
     @Query(GET_ALL_CATEGORIES_COUNT)
     suspend fun getAllCategoriesCount(): Int
+
+    @Query(GET_CATEGORY_BY_NAME)
+    suspend fun getCategoryByName(categoryName: String): Category
 }

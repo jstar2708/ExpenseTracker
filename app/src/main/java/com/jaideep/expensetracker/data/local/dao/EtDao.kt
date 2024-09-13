@@ -13,7 +13,7 @@ import com.jaideep.expensetracker.common.constant.sql.EtSql.GET_CATEGORY_CARDS_D
 import com.jaideep.expensetracker.common.constant.sql.EtSql.GET_CATEGORY_CARDS_DATA_FROM_ALL_ACCOUNTS_WITHIN_DURATION
 import com.jaideep.expensetracker.common.constant.sql.EtSql.GET_CATEGORY_ON_WHICH_MAX_AMOUNT_SPENT_FROM_ACCOUNT_THIS_MONTH
 import com.jaideep.expensetracker.common.constant.sql.EtSql.GET_CATEGORY_ON_WHICH_MAX_AMOUNT_SPENT_FROM_ALL_ACCOUNTS_THIS_MONTH
-import com.jaideep.expensetracker.common.constant.sql.EtSql.GET__CATEGORY_WISE_ACCOUNT_TRANSACTIONS_WITH_DATE
+import com.jaideep.expensetracker.common.constant.sql.EtSql.GET_CATEGORY_WISE_ACCOUNT_TRANSACTIONS_WITH_DATE
 import com.jaideep.expensetracker.data.local.entities.Transaction
 import com.jaideep.expensetracker.model.CategoryCardData
 import kotlinx.coroutines.flow.Flow
@@ -55,8 +55,8 @@ interface EtDao {
     fun getCategoryCardsDataFromAccountWithinDuration(accountName: String, date: Long) : Flow<List<CategoryCardData>>
 
     @Query(GET_ALL_CATEGORY_WISE_TRANSACTIONS_WITH_DATE)
-    fun getCategoryWiseAllAccountTransactionsWithDate(categoryName: String, date: Long) : Flow<List<Transaction>>
+    fun getCategoryWiseAllAccountTransactionsWithDate(categoryName: String, fromDate: Long, toDate: Long) : Flow<List<Transaction>>
 
-    @Query(GET__CATEGORY_WISE_ACCOUNT_TRANSACTIONS_WITH_DATE)
-    fun getCategoryWiseAccountTransactionWithDate(categoryName: String, accountName: String, date: Long) : Flow<List<Transaction>>
+    @Query(GET_CATEGORY_WISE_ACCOUNT_TRANSACTIONS_WITH_DATE)
+    fun getCategoryWiseAccountTransactionWithDate(categoryName: String, accountName: String, fromDate: Long, toDate: Long) : Flow<List<Transaction>>
 }

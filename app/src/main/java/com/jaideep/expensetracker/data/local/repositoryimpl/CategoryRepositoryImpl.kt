@@ -29,4 +29,8 @@ class CategoryRepositoryImpl @Inject constructor(
         return dao.getAllCategoriesCount()
     }
 
+    override suspend fun getCategoryByName(categoryName: String): Category {
+        return dao.getCategoryByName(categoryName)
+    }
+
 }

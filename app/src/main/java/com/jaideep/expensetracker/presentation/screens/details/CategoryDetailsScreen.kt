@@ -18,8 +18,8 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -39,6 +39,7 @@ import com.jaideep.expensetracker.presentation.component.SimpleTextBold
 import com.jaideep.expensetracker.presentation.component.card.ExpenseTrackerTransactionCardItem
 import com.jaideep.expensetracker.presentation.component.other.ExpenseTrackerAppBar
 import com.jaideep.expensetracker.presentation.component.other.ExpenseTrackerSpinner
+import com.jaideep.expensetracker.presentation.utility.Utility.getCategoryIconId
 import com.jaideep.expensetracker.presentation.viewmodel.CategoryDetailsViewModel
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
@@ -59,9 +60,25 @@ private fun CategoryDetailsScreenPreview() {
 }
 
 @Composable
-fun CategoryDetailsScreenRoot(navHostController: NavHostController) {
+fun CategoryDetailsScreenRoot(navHostController: NavHostController, categoryName: String?) {
     val categoryDetailViewModel: CategoryDetailsViewModel = hiltViewModel()
+    if (categoryName != null) {
+        categoryDetailViewModel.initData(categoryName)
+        val categoryIconName = categoryDetailViewModel.category.collectAsState().value?.iconName ?: ""
+        CategoryDetailsScreen(
+            categoryIconId = getCategoryIconId(categoryIconName),
+            categoryName = categoryName,
+            dialogState = categoryDetailViewModel.dialogState.value,
+            selectedAccount = categoryDetailViewModel.accountValue.value,
+            accounts = categoryDetailViewModel.,
+            transactions = ,
+            toggleDialogVisibility = { /*TODO*/ }) {
 
+        }
+    }
+    else {
+        // Display error message
+    }
 }
 
 

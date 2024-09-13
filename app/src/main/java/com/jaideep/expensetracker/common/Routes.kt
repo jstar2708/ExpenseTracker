@@ -15,7 +15,7 @@ object AddScreen {
 }
 
 object DetailScreen {
-    const val CATEGORY_DETAILS = "category_details"
+    const val CATEGORY_DETAILS = "category_details/{categoryName}"
 }
 
 object Graph {

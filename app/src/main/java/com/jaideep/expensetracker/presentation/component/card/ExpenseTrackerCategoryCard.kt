@@ -1,7 +1,7 @@
 package com.jaideep.expensetracker.presentation.component.card
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -45,14 +45,14 @@ fun ExpenseTrackerCategoryCard(
     categoryName: String,
     spendValue: String,
     progressValue: Float,
-    trackColor: Color
+    trackColor: Color,
+    onClick: (categoryName: String) -> Unit = {}
 ) {
-    Column(
-        modifier = Modifier
-            .wrapContentWidth()
-            .padding(8.dp)
-            .background(MaterialTheme.colorScheme.background)
-    ) {
+    Column(modifier = Modifier
+        .wrapContentWidth()
+        .clickable { onClick(categoryName) }
+        .padding(8.dp)
+        .background(MaterialTheme.colorScheme.background)) {
         Row(modifier = Modifier.fillMaxWidth()) {
             Icon(
                 painter = painterResource(id = iconId),
