@@ -19,6 +19,7 @@ import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -69,12 +70,13 @@ private fun CategoryDetailsScreenPreview() {
 fun CategoryDetailsScreenRoot(navHostController: NavHostController, categoryName: String?) {
     val categoryDetailViewModel: CategoryDetailsViewModel = hiltViewModel()
     if (categoryName != null) {
-        categoryDetailViewModel.initData(categoryName)
+        LaunchedEffect(key1 = true) {
+            categoryDetailViewModel.initData(categoryName)
+        }
 
         if (categoryDetailViewModel.isCategoryLoading.value || categoryDetailViewModel.isAccountLoading.value || categoryDetailViewModel.isTransactionsLoading.value) {
             ExpenseTrackerProgressBar(Modifier.size(50.dp))
-        }
-        else if (categoryDetailViewModel.categoryRetrievalError.value || categoryDetailViewModel.transactionsRetrievalError.value || categoryDetailViewModel.accountRetrievalError.value) {
+        } else if (categoryDetailViewModel.categoryRetrievalError.value || categoryDetailViewModel.transactionsRetrievalError.value || categoryDetailViewModel.accountRetrievalError.value) {
             Row(
                 modifier = Modifier.fillMaxSize(),
                 verticalAlignment = Alignment.CenterVertically,
@@ -84,10 +86,10 @@ fun CategoryDetailsScreenRoot(navHostController: NavHostController, categoryName
                     text = "Error loading user data", color = Color.Red
                 )
             }
-        }
-        else {
+        } else {
             CategoryDetailsScreen(
-                categoryIconId = categoryDetailViewModel.category.collectAsState().value?.iconId ?: 0,
+                categoryIconId = categoryDetailViewModel.category.collectAsState().value?.iconId
+                    ?: 0,
                 categoryName = categoryName,
                 dialogState = categoryDetailViewModel.dialogState.value,
                 selectedAccount = categoryDetailViewModel.accountValue.value,
@@ -104,7 +106,6 @@ fun CategoryDetailsScreenRoot(navHostController: NavHostController, categoryName
             )
         }
     } else {
-        // Display error message
         Row(
             modifier = Modifier.fillMaxSize(),
             verticalAlignment = Alignment.CenterVertically,

@@ -46,5 +46,5 @@ object EtSql {
             " = :categoryName and `Transaction`.createdTime >= :fromDate and createdTime <= :toDate"
     const val GET_CATEGORY_WISE_ACCOUNT_TRANSACTIONS_WITH_DATE = "Select `Transaction`.* from `Transaction` inner join" +
             " Category on `Transaction`.categoryId = Category.id inner join Account on `Transaction`.accountId = Account.id where Category.categoryName" +
-            " = :categoryName and createdTime and Account.accountName = :accountName and `Transaction`.createdTime >= :fromDate and createdTime <= :toDate"
+            " = :categoryName and Account.accountName = :accountName and `Transaction`.createdTime >= :fromDate and createdTime <= :toDate"
 }

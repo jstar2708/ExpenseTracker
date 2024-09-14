@@ -36,7 +36,7 @@ fun RootNavigationGraph(mainViewModel: MainViewModel) {
         composable(AddScreen.ADD_CATEGORY) {
             AddCategoryScreenRoot(navHostControllerRoot)
         }
-        composable(DetailScreen.CATEGORY_DETAILS,
+        composable(DetailScreen.CATEGORY_DETAILS_ROUTE,
             arguments = listOf(navArgument(name = "categoryName") {
                 type = NavType.StringType
             })) { navBackStackEntry ->

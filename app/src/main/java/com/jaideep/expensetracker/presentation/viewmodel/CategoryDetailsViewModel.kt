@@ -15,7 +15,9 @@ import com.jaideep.expensetracker.model.dto.CategoryDto
 import com.jaideep.expensetracker.model.dto.TransactionDto
 import com.jaideep.expensetracker.presentation.utility.Utility.getCategoryIconId
 import com.jaideep.expensetracker.presentation.utility.Utility.stringDateToMillis
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -29,6 +31,7 @@ import kotlinx.coroutines.launch
 import java.time.LocalDate
 import javax.inject.Inject
 
+@HiltViewModel
 class CategoryDetailsViewModel @Inject constructor(
     private val getAllCategoryWiseTransactions: GetAllCategoryWiseTransactions,
     private val getCategoryUseCase: GetCategoryByNameUseCase,
@@ -51,10 +54,10 @@ class CategoryDetailsViewModel @Inject constructor(
         }.toList()
     }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
     private val _accounts: MutableStateFlow<List<Account>> = MutableStateFlow(ArrayList())
-    var accounts: StateFlow<List<String>> = _accounts.map {
-        it.asFlow().map { account ->
-            account.accountName
-        }.toList()
+    var accounts: StateFlow<List<String>> = _accounts.map { list ->
+        list.asFlow().map { it.accountName }.toList().toMutableList().apply {
+            this.add(0, "All Accounts")
+        }
     }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
     val accountValue = mutableStateOf("All Accounts")
@@ -99,6 +102,7 @@ class CategoryDetailsViewModel @Inject constructor(
 
                 is Resource.Success -> {
                     category.value = it.data
+                    delay(500)
                     categoryRetrievalError.value = false
                     isCategoryLoading.value = false
                 }
@@ -198,6 +202,7 @@ class CategoryDetailsViewModel @Inject constructor(
 
                     is Resource.Success -> {
                         _accounts.value = it.data
+                        delay(500)
                         isAccountLoading.value = false
                         accountRetrievalError.value = false
                     }
@@ -208,9 +213,15 @@ class CategoryDetailsViewModel @Inject constructor(
 
     private fun getCategoryWiseTransactions() = viewModelScope.launch(EtDispatcher.io) {
         val fromDate = stringDateToMillis(dialogState.value.fromDate)
-        val toDate = stringDateToMillis(dialogState.value.toDate)
+        var toDate = stringDateToMillis(dialogState.value.toDate)
+        if (toDate == 0L) {
+            toDate = Long.MAX_VALUE
+        }
+
         getAllCategoryWiseTransactions(
-            accountValue.value, categoryName.value, fromDate, toDate
+            categoryName.value,
+            accountValue.value,
+            fromDate, toDate
         ).collectLatest {
             if (this.isActive) {
                 when (it) {
@@ -221,6 +232,7 @@ class CategoryDetailsViewModel @Inject constructor(
 
                     is Resource.Success -> {
                         _transactions.value = it.data
+                        delay(500)
                         isTransactionsLoading.value = false
                         transactionsRetrievalError.value = false
                     }

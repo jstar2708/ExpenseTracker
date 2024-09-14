@@ -20,10 +20,10 @@ class GetAllCategoryWiseTransactions @Inject constructor(
                 categoryName, accountName, fromDate, toDate
             )
 
-        data.collectLatest {
+        data.collect {
             emit(Resource.Success(it))
         }
-    }.catch {
-        emit(Resource.Error("Error while fetching category specific transactions"))
+    }.catch { it ->
+        emit(Resource.Error("Error while fetching category specific transactions, ${it.message}"))
     }
 }
