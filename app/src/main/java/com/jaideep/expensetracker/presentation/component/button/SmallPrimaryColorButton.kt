@@ -1,5 +1,6 @@
 package com.jaideep.expensetracker.presentation.component.button
 
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -29,7 +30,7 @@ fun SmallPrimaryColorButton(
 ) {
     Button(
         onClick = onClick,
-        modifier = modifier.padding(0.dp, 0.dp, 0.dp, 8.dp),
+        modifier = modifier,
         shape = RoundedCornerShape(8.dp),
         colors = ButtonColors(
             MaterialTheme.colorScheme.primary,

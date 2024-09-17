@@ -189,7 +189,8 @@ fun HeadingTextBold(
     modifier: Modifier = Modifier,
     text: String,
     color: Color = Color.Black,
-    textAlignment: TextAlign = TextAlign.Start
+    textAlignment: TextAlign = TextAlign.Start,
+    maxLines: Int = Int.MAX_VALUE
 ) {
     Text(
         modifier = modifier,
@@ -199,8 +200,8 @@ fun HeadingTextBold(
         fontWeight = FontWeight.ExtraBold,
         fontFamily = OpenSansFont.openSans,
         color = color,
-        maxLines = 2,
-        overflow = TextOverflow.Ellipsis
+        overflow = TextOverflow.Ellipsis,
+        maxLines = maxLines
     )
 }
 
@@ -211,12 +212,13 @@ private fun HeadingTextPreview() {
 }
 
 @Composable
-fun HeadingText(text: String, color: Color = Color.Black) {
+fun HeadingText(text: String, color: Color = Color.Black, maxLines: Int = Int.MAX_VALUE) {
     Text(
         text = text,
         style = MaterialTheme.typography.headlineSmall,
         fontFamily = OpenSansFont.openSans,
-        color = color
+        color = color,
+        maxLines = maxLines
     )
 }
 
@@ -231,7 +233,8 @@ fun SimpleTextBold(
     modifier: Modifier = Modifier,
     text: String,
     color: Color = Color.Black,
-    overflow: TextOverflow = TextOverflow.Clip
+    overflow: TextOverflow = TextOverflow.Clip,
+    maxLines: Int = Int.MAX_VALUE
 ) {
     Text(
         modifier = modifier,
@@ -240,7 +243,8 @@ fun SimpleTextBold(
         fontWeight = FontWeight.Bold,
         fontFamily = OpenSansFont.openSans,
         color = color,
-        overflow = overflow
+        overflow = overflow,
+        maxLines = maxLines
     )
 }
 
@@ -256,7 +260,8 @@ fun SimpleText(
     text: String,
     color: Color = Color.Black,
     textAlignment: TextAlign = TextAlign.Start,
-    overflow: TextOverflow = TextOverflow.Clip
+    overflow: TextOverflow = TextOverflow.Clip,
+    maxLines: Int = Int.MAX_VALUE
 ) {
     Text(
         modifier = modifier,
@@ -265,17 +270,19 @@ fun SimpleText(
         fontFamily = OpenSansFont.openSans,
         color = color,
         textAlign = textAlignment,
-        overflow = overflow
+        overflow = overflow,
+        maxLines = maxLines
     )
 }
 
 @Composable
-fun SimpleSmallText(modifier: Modifier = Modifier, text: String, color: Color = Color.Black) {
+fun SimpleSmallText(modifier: Modifier = Modifier, text: String, color: Color = Color.Black, maxLines: Int = Int.MAX_VALUE) {
     Text(
         modifier = modifier,
         text = text,
         style = MaterialTheme.typography.bodyMedium,
         fontFamily = OpenSansFont.openSans,
-        color = color
+        color = color,
+        maxLines = maxLines
     )
 }
