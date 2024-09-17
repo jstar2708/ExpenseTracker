@@ -21,7 +21,7 @@ object AppComponents {
             "Transactions",
             Icons.Filled.CurrencyRupee,
             Icons.Outlined.CurrencyRupee,
-            MainScreen.TRANSACTIONS
+            MainScreen.TRANSACTION
         ), BottomNavigationItem(
             "Category", Icons.Filled.Category, Icons.Outlined.Category, MainScreen.CATEGORY
         ), BottomNavigationItem(

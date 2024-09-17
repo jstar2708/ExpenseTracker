@@ -1,4 +1,4 @@
-package com.jaideep.expensetracker.presentation.screens.add
+package com.jaideep.expensetracker.presentation.screens.cu
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -58,7 +58,7 @@ import kotlinx.collections.immutable.toImmutableList
 @Composable
 fun AddTransactionPreview() {
     AppTheme {
-        AddTransactionScreen(
+        CUTransactionScreen(
             radioButtonValue = 0,
             detailsMessage = "Please provide transaction details",
             screenTitle = "Add Transaction",
@@ -108,8 +108,10 @@ fun AddTransactionPreview() {
 }
 
 @Composable
-fun AddTransactionScreenRoot(
-    navControllerRoot: NavHostController, viewModel: AddTransactionViewModel = hiltViewModel()
+fun CUTransactionScreenRoot(
+    navControllerRoot: NavHostController,
+    isAdd: Boolean,
+    viewModel: AddTransactionViewModel = hiltViewModel()
 ) {
 
     if (viewModel.isCategoryLoading || viewModel.isAccountLoading) {
@@ -125,7 +127,7 @@ fun AddTransactionScreenRoot(
             )
         }
     } else {
-        AddTransactionScreen(radioButtonValue = viewModel.radioButtonValue.intValue,
+        CUTransactionScreen(radioButtonValue = viewModel.radioButtonValue.intValue,
             detailsMessage = viewModel.screenDetail,
             screenTitle = viewModel.screenTitle,
             toggleRadioButton = viewModel::toggleRadioButton,
@@ -147,7 +149,7 @@ fun AddTransactionScreenRoot(
 }
 
 @Composable
-fun AddTransactionScreen(
+fun CUTransactionScreen(
     radioButtonValue: Int,
     detailsMessage: String,
     screenTitle: String,

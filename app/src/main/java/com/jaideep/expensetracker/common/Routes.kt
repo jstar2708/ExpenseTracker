@@ -2,16 +2,18 @@ package com.jaideep.expensetracker.common
 
 object MainScreen {
     const val HOME = "HOME"
-    const val TRANSACTIONS = "TRANSACTIONS"
+    const val TRANSACTION = "TRANSACTIONS"
     const val CATEGORY = "CATEGORY"
     const val SETTINGS = "SETTINGS"
 }
 
 object AddScreen {
-    const val ADD_SCREEN = "add_screen"
-    const val ADD_TRANSACTION = "ADD_TRANSACTIONS"
-    const val ADD_ACCOUNT = "ADD_ACCOUNT"
-    const val ADD_CATEGORY = "ADD_CATEGORY"
+    const val CREATE_UPDATE_TRANSACTION = "cu_transaction"
+    const val CREATE_UPDATE_TRANSACTION_ROUTE = "cu_transaction/{isEdit}"
+    const val CREATE_UPDATE_ACCOUNT = "cu_account"
+    const val CREATE_UPDATE_ACCOUNT_ROUTE = "cu_account/{isEdit}"
+    const val CREATE_UPDATE_CATEGORY = "cu_category"
+    const val CREATE_UPDATE_CATEGORY_ROUTE = "cu_category/{isEdit}"
 }
 
 object DetailScreen {

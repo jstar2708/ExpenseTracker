@@ -1,6 +1,7 @@
 package com.jaideep.expensetracker.presentation.component.card
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -29,7 +30,9 @@ private fun ExpenseTrackerTransactionCardItemPreview() {
         iconDescription = "Fuel icon",
         categoryName = "Fuel",
         transactionDescription = "Petrol in scooter",
-        amount = "$49"
+        amount = "$49",
+        transactionId = 0,
+        onClick = {}
     )
 }
 
@@ -40,13 +43,18 @@ fun ExpenseTrackerTransactionCardItem(
     categoryName: String,
     transactionDescription: String,
     amount: String,
-    isCredit: Boolean = false
+    isCredit: Boolean = false,
+    transactionId: Int,
+    onClick: (id: Int) -> Unit
 ) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
             .background(MaterialTheme.colorScheme.background)
+            .clickable {
+                onClick(transactionId)
+            }
     ) {
         Row(
             Modifier

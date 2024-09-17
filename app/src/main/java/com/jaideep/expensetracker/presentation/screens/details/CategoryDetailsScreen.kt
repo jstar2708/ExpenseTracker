@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.jaideep.expensetracker.R
+import com.jaideep.expensetracker.common.AddScreen
 import com.jaideep.expensetracker.model.DialogState
 import com.jaideep.expensetracker.model.dto.TransactionDto
 import com.jaideep.expensetracker.presentation.component.HeadingTextBold
@@ -63,7 +64,8 @@ private fun CategoryDetailsScreenPreview() {
         clearDialogDate = {},
         updateFromDate = {},
         updateToDate = {},
-        checkValidDate = { true })
+        checkValidDate = { true },
+        onActionClicked = {})
 }
 
 @Composable
@@ -102,7 +104,10 @@ fun CategoryDetailsScreenRoot(navHostController: NavHostController, categoryName
                 updateTransactionList = categoryDetailViewModel::updateTransactionList,
                 updateToDate = categoryDetailViewModel::updateToDate,
                 updateFromDate = categoryDetailViewModel::updateFromDate,
-                checkValidDate = categoryDetailViewModel::checkValidDate
+                checkValidDate = categoryDetailViewModel::checkValidDate,
+                onActionClicked = {
+                    navHostController.navigate("${AddScreen.CREATE_UPDATE_CATEGORY}/${false}")
+                }
             )
         }
     } else {
@@ -134,7 +139,8 @@ fun CategoryDetailsScreen(
     updateFromDate: (value: String) -> Unit,
     updateToDate: (value: String) -> Unit,
     clearDialogDate: () -> Unit,
-    onBackPress: () -> Unit
+    onBackPress: () -> Unit,
+    onActionClicked: () -> Unit
 ) {
     Scaffold(topBar = {
         ExpenseTrackerAppBar(
@@ -143,10 +149,9 @@ fun CategoryDetailsScreen(
             navigationDescription = "Back button",
             onNavigationIconClick = onBackPress,
             actionIcon = Icons.Filled.Edit,
-            actionDescription = "Edit icon"
-        ) {
-
-        }
+            actionDescription = "Edit icon",
+            onActionIconClick = onActionClicked
+        )
     }) {
         Column(
             Modifier
@@ -224,7 +229,9 @@ fun CategoryDetailsScreen(
                             categoryName = transactions[i].categoryDto.name,
                             transactionDescription = transactions[i].message,
                             amount = transactions[i].amount.toString(),
-                            isCredit = transactions[i].isCredit
+                            isCredit = transactions[i].isCredit,
+                            transactionId = transactions[i].transactionId,
+                            onClick = {}
                         )
                     }
                 }

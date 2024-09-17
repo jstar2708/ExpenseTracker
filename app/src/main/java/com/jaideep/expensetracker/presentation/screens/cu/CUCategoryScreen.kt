@@ -1,4 +1,4 @@
-package com.jaideep.expensetracker.presentation.screens.add
+package com.jaideep.expensetracker.presentation.screens.cu
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -39,7 +39,7 @@ import com.jaideep.expensetracker.presentation.viewmodel.AddCategoryViewModel
 @Composable
 private fun AddCategoryScreenPreview() {
     AppTheme {
-        AddCategoryScreen(
+        CUCategoryScreen(
             TextFieldWithIconAndErrorPopUpState("",
                 isError = false,
                 showError = false,
@@ -56,10 +56,13 @@ private fun AddCategoryScreenPreview() {
 }
 
 @Composable
-fun AddCategoryScreenRoot(navControllerRoot: NavHostController) {
+fun CUCategoryScreenRoot(
+    navControllerRoot: NavHostController,
+    isAdd: Boolean
+) {
     val addCategoryViewModel: AddCategoryViewModel = hiltViewModel()
     AppTheme {
-        AddCategoryScreen(
+        CUCategoryScreen(
             categoryState = addCategoryViewModel.categoryState.value,
             saveCategory = addCategoryViewModel::validateAndSaveCategory,
             exitScreen = addCategoryViewModel.exitScreen.value,
@@ -72,7 +75,7 @@ fun AddCategoryScreenRoot(navControllerRoot: NavHostController) {
 }
 
 @Composable
-fun AddCategoryScreen(
+fun CUCategoryScreen(
     categoryState: TextFieldWithIconAndErrorPopUpState,
     exitScreen: Boolean,
     saveCategory: () -> Unit,

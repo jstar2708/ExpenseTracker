@@ -204,7 +204,7 @@ fun TransactionScreen(
             actionIcon = Icons.Filled.Add,
             actionDescription = "Add transaction icon"
         ) {
-            navControllerRoot.navigate(AddScreen.ADD_TRANSACTION)
+            navControllerRoot.navigate(AddScreen.CREATE_UPDATE_TRANSACTION)
         }
     }) { it ->
         Column(
@@ -267,7 +267,9 @@ fun TransactionScreen(
                             categoryName = transactions[it].categoryDto.name,
                             transactionDescription = transactions[it].message,
                             amount = transactions[it].amount.toString(),
-                            isCredit = transactions[it].isCredit
+                            isCredit = transactions[it].isCredit,
+                            transactionId = transactions[it].transactionId,
+                            onClick = { }
                         )
                     }
                 }

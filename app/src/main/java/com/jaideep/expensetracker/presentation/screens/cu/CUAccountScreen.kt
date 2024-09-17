@@ -1,4 +1,4 @@
-package com.jaideep.expensetracker.presentation.screens.add
+package com.jaideep.expensetracker.presentation.screens.cu
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -44,7 +44,7 @@ import com.jaideep.expensetracker.presentation.viewmodel.AddAccountViewModel
 @Composable
 private fun AddAccountScreenPreview() {
     AppTheme {
-        AddAccountScreen(screenTitle = "Add Account",
+        CUAccountScreen(screenTitle = "Add Account",
             screenDetail = "Please provide account details",
             accountState = TextFieldWithIconAndErrorPopUpState("",
                 isError = false,
@@ -68,8 +68,10 @@ private fun AddAccountScreenPreview() {
 }
 
 @Composable
-fun AddAccountScreenRoot(
-    navController: NavHostController, addAccountViewModel: AddAccountViewModel = hiltViewModel()
+fun CUAccountScreenRoot(
+    navController: NavHostController,
+    isAdd: Boolean,
+    addAccountViewModel: AddAccountViewModel = hiltViewModel()
 ) {
 
     LaunchedEffect(key1 = true) {
@@ -89,7 +91,7 @@ fun AddAccountScreenRoot(
             )
         }
     } else {
-        AddAccountScreen(
+        CUAccountScreen(
             screenTitle = addAccountViewModel.screenTitle,
             screenDetail = addAccountViewModel.screenDetail,
             exitScreen = addAccountViewModel.exitScreen.value,
@@ -105,7 +107,7 @@ fun AddAccountScreenRoot(
 }
 
 @Composable
-fun AddAccountScreen(
+fun CUAccountScreen(
     screenTitle: String,
     screenDetail: String,
     accountState: TextFieldWithIconAndErrorPopUpState,

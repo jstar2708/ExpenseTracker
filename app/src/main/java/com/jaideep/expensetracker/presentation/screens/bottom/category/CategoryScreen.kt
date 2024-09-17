@@ -142,7 +142,7 @@ fun CategoryScreen(
             actionIcon = Icons.Filled.Add,
             actionDescription = "Add Category icon"
         ) {
-            navControllerRoot.navigate(AddScreen.ADD_CATEGORY)
+            navControllerRoot.navigate(AddScreen.CREATE_UPDATE_CATEGORY)
         }
     }) {
         Column(Modifier.padding(it)) {

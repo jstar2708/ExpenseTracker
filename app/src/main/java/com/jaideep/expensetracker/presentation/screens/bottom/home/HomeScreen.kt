@@ -162,12 +162,12 @@ fun HomeScreen(
 
                     ExpenseTrackerBlueButton(
                         name = "Add\nAccount",
-                        onClick = { navControllerRoot.navigate(AddScreen.ADD_ACCOUNT) },
+                        onClick = { navControllerRoot.navigate(AddScreen.CREATE_UPDATE_ACCOUNT) },
                         modifier = Modifier.weight(1f)
                     )
                     ExpenseTrackerBlueButton(
                         name = "Add\nTransaction",
-                        onClick = { navControllerRoot.navigate(AddScreen.ADD_TRANSACTION) },
+                        onClick = { navControllerRoot.navigate(AddScreen.CREATE_UPDATE_TRANSACTION) },
                         modifier = Modifier.weight(1f)
                     )
                 }
@@ -222,7 +222,9 @@ fun TransactionSummary(transactions: List<TransactionDto>) {
                     categoryName = transactions[it].categoryDto.name,
                     transactionDescription = transactions[it].message,
                     amount = transactions[it].amount.toString(),
-                    isCredit = transactions[it].isCredit
+                    isCredit = transactions[it].isCredit,
+                    transactionId = transactions[it].transactionId,
+                    onClick = {}
                 )
             }
         }

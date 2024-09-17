@@ -9,9 +9,9 @@ import androidx.navigation.navArgument
 import com.jaideep.expensetracker.common.AddScreen
 import com.jaideep.expensetracker.common.DetailScreen
 import com.jaideep.expensetracker.common.Graph
-import com.jaideep.expensetracker.presentation.screens.add.AddAccountScreenRoot
-import com.jaideep.expensetracker.presentation.screens.add.AddCategoryScreenRoot
-import com.jaideep.expensetracker.presentation.screens.add.AddTransactionScreenRoot
+import com.jaideep.expensetracker.presentation.screens.cu.CUAccountScreenRoot
+import com.jaideep.expensetracker.presentation.screens.cu.CUCategoryScreenRoot
+import com.jaideep.expensetracker.presentation.screens.cu.CUTransactionScreenRoot
 import com.jaideep.expensetracker.presentation.screens.bottom.BottomNavigationScreen
 import com.jaideep.expensetracker.presentation.screens.details.CategoryDetailsScreenRoot
 import com.jaideep.expensetracker.presentation.viewmodel.MainViewModel
@@ -27,19 +27,36 @@ fun RootNavigationGraph(mainViewModel: MainViewModel) {
         composable(route = Graph.MAIN) {
             BottomNavigationScreen(navHostControllerRoot, mainViewModel)
         }
-        composable(AddScreen.ADD_TRANSACTION) {
-            AddTransactionScreenRoot(navHostControllerRoot)
+        composable(
+            AddScreen.CREATE_UPDATE_TRANSACTION_ROUTE, arguments = listOf(navArgument(name = "isEdit") {
+                this.type = NavType.BoolType
+            })
+        ) { navBackStackEntry ->
+            val isAdd = navBackStackEntry.arguments?.getBoolean("isEdit") ?: true
+            CUTransactionScreenRoot(navHostControllerRoot, isAdd)
         }
-        composable(AddScreen.ADD_ACCOUNT) {
-            AddAccountScreenRoot(navHostControllerRoot)
+        composable(
+            AddScreen.CREATE_UPDATE_ACCOUNT_ROUTE, arguments = listOf(navArgument(name = "isEdit") {
+                this.type = NavType.BoolType
+            })
+        ) { navBackStackEntry ->
+            val isAdd = navBackStackEntry.arguments?.getBoolean("isEdit") ?: true
+            CUAccountScreenRoot(navHostControllerRoot, isAdd)
         }
-        composable(AddScreen.ADD_CATEGORY) {
-            AddCategoryScreenRoot(navHostControllerRoot)
+        composable(
+            AddScreen.CREATE_UPDATE_CATEGORY_ROUTE, arguments = listOf(navArgument(name = "isEdit") {
+                this.type = NavType.BoolType
+            })
+        ) { navBackStackEntry ->
+            val isAdd = navBackStackEntry.arguments?.getBoolean("isEdit") ?: true
+            CUCategoryScreenRoot(navHostControllerRoot, isAdd)
         }
-        composable(DetailScreen.CATEGORY_DETAILS_ROUTE,
+        composable(
+            DetailScreen.CATEGORY_DETAILS_ROUTE,
             arguments = listOf(navArgument(name = "categoryName") {
                 type = NavType.StringType
-            })) { navBackStackEntry ->
+            })
+        ) { navBackStackEntry ->
             val categoryName = navBackStackEntry.arguments?.getString("categoryName")
             CategoryDetailsScreenRoot(navHostControllerRoot, categoryName)
         }
