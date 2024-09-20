@@ -43,6 +43,7 @@ import com.jaideep.expensetracker.model.dto.CategoryDto
 import com.jaideep.expensetracker.model.dto.TransactionDto
 import com.jaideep.expensetracker.presentation.component.SimpleText
 import com.jaideep.expensetracker.presentation.component.card.ExpenseTrackerTransactionCardItem
+import com.jaideep.expensetracker.presentation.component.dialog.ExpenseTrackerDialog
 import com.jaideep.expensetracker.presentation.component.dialog.FilterDialog
 import com.jaideep.expensetracker.presentation.component.other.ExpenseTrackerAppBar
 import com.jaideep.expensetracker.presentation.component.other.ExpenseTrackerProgressBar
@@ -66,31 +67,50 @@ fun TransactionScreenPreview() {
             onAccountSpinnerValueChanged = { _, _, _ -> },
             transactions = persistentListOf(
                 TransactionDto(
-                    0, 200.0, CategoryDto("Food", R.drawable.food), "No Message", LocalDate.now(), true
+                    transactionId = 0,
+                    amount = 200.0,
+                    categoryDto = CategoryDto("Food", R.drawable.food),
+                    message = "No Message",
+                    createdTime = LocalDate.now(),
+                    isCredit = true,
+                    accountName = "PNB",
+                ),TransactionDto(
+                    transactionId = 0,
+                    amount = 200.0,
+                    categoryDto = CategoryDto("Food", R.drawable.food),
+                    message = "No Message",
+                    createdTime = LocalDate.now(),
+                    isCredit = true,
+                    accountName = "PNB",
+                ),TransactionDto(
+                    transactionId = 0,
+                    amount = 200.0,
+                    categoryDto = CategoryDto("Food", R.drawable.food),
+                    message = "No Message",
+                    createdTime = LocalDate.now(),
+                    isCredit = true,
+                    accountName = "PNB",
                 ), TransactionDto(
-                    0, 200.0, CategoryDto("Food", R.drawable.food), "No Message", LocalDate.now(), true
+                    transactionId = 0,
+                    amount = 200.0,
+                    categoryDto = CategoryDto("Food", R.drawable.food),
+                    message = "No Message",
+                    createdTime = LocalDate.now(),
+                    isCredit = true,
+                    accountName = "PNB",
                 ), TransactionDto(
-                    0, 200.0, CategoryDto("Food", R.drawable.food), "No Message", LocalDate.now(), true
-                ), TransactionDto(
-                    0, 200.0, CategoryDto("Food", R.drawable.food), "No Message", LocalDate.now(), true
-                ), TransactionDto(
-                    0, 200.0, CategoryDto("Food", R.drawable.food), "No Message", LocalDate.now(), true
-                ), TransactionDto(
-                    0, 200.0, CategoryDto("Food", R.drawable.food), "No Message", LocalDate.now(), true
-                ), TransactionDto(
-                    0, 200.0, CategoryDto("Food", R.drawable.food), "No Message", LocalDate.now(), true
-                ), TransactionDto(
-                    0, 200.0, CategoryDto("Food", R.drawable.food), "No Message", LocalDate.now(), true
-                ), TransactionDto(
-                    0, 200.0, CategoryDto("Food", R.drawable.food), "No Message", LocalDate.now(), true
-                ), TransactionDto(
-                    0, 200.0, CategoryDto("Food", R.drawable.food), "No Message", LocalDate.now(), true
-                ), TransactionDto(
-                    0, 200.0, CategoryDto("Food", R.drawable.food), "No Message", LocalDate.now(), true
+                    transactionId = 0,
+                    amount = 200.0,
+                    categoryDto = CategoryDto("Food", R.drawable.food),
+                    message = "No Message",
+                    createdTime = LocalDate.now(),
+                    isCredit = true,
+                    accountName = "PNB",
                 )
             ),
             tabItemsList = persistentListOf("All", "Income", "Expense"),
             updateCurrentTabValue = {},
+            showDeleteDialog = false,
             selectedAccount = "All Accounts",
             selectedTab = 0,
             toggleDialogVisibility = {},
@@ -101,7 +121,11 @@ fun TransactionScreenPreview() {
             ),
             updateFromDate = {},
             updateToDate = {},
-            clearDialogDate = {})
+            clearDialogDate = {},
+            onTransactionEditClicked = {},
+            onTransactionDeleteClicked = {},
+            deleteTransaction = {},
+            hideDeleteDialog = {})
     }
 }
 
@@ -142,6 +166,7 @@ fun TransactionScreenRoot(
             },
             transactions = mainViewModel.pagedTransactionItems.collectAsState().value.collectAsLazyPagingItems().itemSnapshotList.items.toImmutableList(),
             tabItemsList = transactionViewModel.tabItemsList,
+            showDeleteDialog = transactionViewModel.showDeleteDialog.value,
             updateCurrentTabValue = transactionViewModel::updateCurrentTab,
             selectedAccount = transactionViewModel.selectedAccount.value,
             selectedTab = transactionViewModel.selectedTabValue.intValue,
@@ -159,7 +184,13 @@ fun TransactionScreenRoot(
             checkValidDate = transactionViewModel::checkValidDate,
             updateFromDate = transactionViewModel::updateFromDate,
             updateToDate = transactionViewModel::updateToDate,
-            clearDialogDate = transactionViewModel::clearDialogDate
+            clearDialogDate = transactionViewModel::clearDialogDate,
+            onTransactionDeleteClicked = transactionViewModel::onTransactionDeleteClicked,
+            onTransactionEditClicked = {
+                navHostControllerRoot.navigate("Edit Transaction Screen")
+            },
+            deleteTransaction = transactionViewModel::deleteTransaction,
+            hideDeleteDialog = transactionViewModel::hideDeleteDialog
         )
     }
 }
@@ -173,6 +204,7 @@ fun TransactionScreen(
     selectedAccount: String,
     selectedTab: Int,
     dialogState: DialogState,
+    showDeleteDialog: Boolean,
     toggleDialogVisibility: () -> Unit,
     updateTransactionList: () -> Unit,
     checkValidDate: () -> Boolean,
@@ -180,6 +212,10 @@ fun TransactionScreen(
     updateToDate: (date: String) -> Unit,
     clearDialogDate: () -> Unit,
     backPress: () -> Unit,
+    deleteTransaction: () -> Unit,
+    hideDeleteDialog: () -> Unit,
+    onTransactionDeleteClicked: (id: Int) -> Unit,
+    onTransactionEditClicked: (id: Int) -> Unit,
     updateCurrentTabValue: (selectedTab: Int) -> Unit,
     onAccountSpinnerValueChanged: (value: String, isCredit: Boolean, isDebit: Boolean) -> Unit
 ) {
@@ -212,19 +248,29 @@ fun TransactionScreen(
                 .padding(it)
                 .fillMaxSize()
         ) {
+            if (showDeleteDialog) {
+                ExpenseTrackerDialog(
+                    title = "Delete Transaction",
+                    message = "Do you want to delete this transaction ?",
+                    okButtonText = "Delete",
+                    cancelButtonText = "Cancel",
+                    onOkClick = deleteTransaction,
+                    onCancelClicked = hideDeleteDialog
+                )
+            }
             if (dialogState.showDialog) {
-                    FilterDialog(
-                        dialogState = dialogState,
-                        updateTransactionList = updateTransactionList,
-                        checkValidDate = checkValidDate,
-                        hideDialog = toggleDialogVisibility,
-                        updateFromDate = updateFromDate,
-                        updateToDate = updateToDate
-                    ) {
-                        clearDialogDate()
-                        updateTransactionList()
+                FilterDialog(
+                    dialogState = dialogState,
+                    updateTransactionList = updateTransactionList,
+                    checkValidDate = checkValidDate,
+                    hideDialog = toggleDialogVisibility,
+                    updateFromDate = updateFromDate,
+                    updateToDate = updateToDate
+                ) {
+                    clearDialogDate()
+                    updateTransactionList()
 
-                    }
+                }
             }
             Row(verticalAlignment = Alignment.CenterVertically) {
                 ExpenseTrackerSpinner(values = accounts,
@@ -269,7 +315,10 @@ fun TransactionScreen(
                             amount = transactions[it].amount.toString(),
                             isCredit = transactions[it].isCredit,
                             transactionId = transactions[it].transactionId,
-                            onClick = { }
+                            onDeleteIconClicked = onTransactionDeleteClicked,
+                            onEditIconClicked = onTransactionEditClicked,
+                            accountName = transactions[it].accountName,
+                            transactionDate = transactions[it].createdTime.toString()
                         )
                     }
                 }

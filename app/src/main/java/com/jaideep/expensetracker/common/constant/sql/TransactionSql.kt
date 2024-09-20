@@ -1,6 +1,7 @@
 package com.jaideep.expensetracker.common.constant.sql
 
 object TransactionSql {
+    const val DELETE_TRANSACTION_BY_ID = "DELETE FROM `Transaction` where id = :transactionId"
     const val GET_TRANSACTION_BY_ID = "SELECT * FROM `Transaction` WHERE id = :transactionId"
     const val GET_ALL_TRANSACTIONS = "SELECT * FROM `Transaction` ORDER BY createdTime DESC LIMIT :limit"
     const val GET_ALL_DEBIT_TRANSACTIONS = "SELECT * FROM `Transaction` WHERE isCredit = 0  ORDER BY createdTime DESC LIMIT :limit"

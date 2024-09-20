@@ -57,8 +57,8 @@ private fun CategoryDetailsScreenPreview() {
         transactions = persistentListOf(),
         dialogState = DialogState(false, "", "", false, ""),
         selectedAccount = "All Accounts",
-        toggleDialogVisibility = {},
-        onBackPress = {},
+        toggleDialogVisibility = {  },
+        onBackPress = { },
         onAccountSpinnerValueChanged = {},
         updateTransactionList = {},
         clearDialogDate = {},
@@ -231,12 +231,15 @@ fun CategoryDetailsScreen(
                             amount = transactions[i].amount.toString(),
                             isCredit = transactions[i].isCredit,
                             transactionId = transactions[i].transactionId,
-                            onClick = {}
+                            onDeleteIconClicked = {},
+                            onEditIconClicked = { },
+                            accountName = transactions[i].accountName,
+                            transactionDate = transactions[i].createdTime.toString()
                         )
                     }
                 }
             } else {
-                Row(
+                Row (
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.fillMaxHeight()
                 ) {

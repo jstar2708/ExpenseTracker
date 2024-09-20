@@ -36,4 +36,5 @@ interface TransactionRepository {
 
     suspend fun saveTransaction(transaction: Transaction)
     suspend fun getTransactionById(transactionId: Int): Transaction
+    suspend fun deleteTransactionById(transactionId: Int)
 }

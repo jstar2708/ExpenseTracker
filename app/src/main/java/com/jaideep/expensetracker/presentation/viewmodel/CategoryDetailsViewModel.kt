@@ -10,6 +10,7 @@ import com.jaideep.expensetracker.data.local.entities.Transaction
 import com.jaideep.expensetracker.domain.usecase.GetAllAccountsUseCase
 import com.jaideep.expensetracker.domain.usecase.GetAllCategoryWiseTransactions
 import com.jaideep.expensetracker.domain.usecase.GetCategoryByNameUseCase
+import com.jaideep.expensetracker.exception.AccountNotFoundException
 import com.jaideep.expensetracker.model.DialogState
 import com.jaideep.expensetracker.model.dto.CategoryDto
 import com.jaideep.expensetracker.model.dto.TransactionDto
@@ -42,6 +43,7 @@ class CategoryDetailsViewModel @Inject constructor(
     var transactions: StateFlow<List<TransactionDto>> = _transactions.map {
         it.asFlow().map { transaction ->
             TransactionDto(
+                getAccountName(transaction.accountId),
                 transaction.id,
                 transaction.amount,
                 category.value ?: CategoryDto(
@@ -61,6 +63,7 @@ class CategoryDetailsViewModel @Inject constructor(
     }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
     val accountValue = mutableStateOf("All Accounts")
+    private val _hasAccountLoaded = MutableStateFlow(false)
     val category: MutableStateFlow<CategoryDto?> = MutableStateFlow(null)
     val isCategoryLoading = mutableStateOf(true)
     val categoryRetrievalError = mutableStateOf(false)
@@ -81,10 +84,9 @@ class CategoryDetailsViewModel @Inject constructor(
     private var transactionJob: Job? = null
 
     fun initData(categoryName: String) {
-        this.categoryName.value = categoryName
-        transactionJob = getCategoryWiseTransactions()
-        getCategory()
         getAllAccounts()
+        this.categoryName.value = categoryName
+        getCategory()
     }
 
     private fun getCategory() = viewModelScope.launch(EtDispatcher.io) {
@@ -108,6 +110,17 @@ class CategoryDetailsViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    @Throws(AccountNotFoundException::class)
+    private fun getAccountName(accountId: Int): String {
+        val account = _accounts.value.find { account ->
+            account.id == accountId
+        }
+        if (account == null) {
+            throw AccountNotFoundException("Account not found with Id : $accountId")
+        }
+        return account.accountName
     }
 
     fun onAccountSpinnerValueChanged(account: String) {
@@ -202,9 +215,15 @@ class CategoryDetailsViewModel @Inject constructor(
 
                     is Resource.Success -> {
                         _accounts.value = it.data
+                        _hasAccountLoaded.value = true
                         delay(500)
                         isAccountLoading.value = false
                         accountRetrievalError.value = false
+                        _hasAccountLoaded.collectLatest { hasAccountLoaded ->
+                            if (hasAccountLoaded && _transactions.value.isEmpty()) {
+                                transactionJob = getCategoryWiseTransactions()
+                            }
+                        }
                     }
                 }
             }

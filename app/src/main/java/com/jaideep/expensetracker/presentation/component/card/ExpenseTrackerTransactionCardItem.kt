@@ -18,6 +18,8 @@ import androidx.compose.material.icons.filled.ModeEdit
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -33,18 +35,36 @@ import com.jaideep.expensetracker.presentation.theme.greenColor
 
 @Preview
 @Composable
-private fun ExpenseTrackerTransactionCardItemPreview() {
+private fun ExpenseTrackerTransactionCardItemShowDetailsPreview() {
     AppTheme {
-        ExpenseTrackerTransactionCardItem(
-            iconId = R.drawable.fuel,
+        ExpenseTrackerTransactionCardItem(iconId = R.drawable.fuel,
             iconDescription = "Fuel icon",
             categoryName = "Fuel",
             transactionDescription = "Petrol in scooter",
             amount = "$49",
             transactionId = 0,
-            onClick = {},
-            showAllDetails = true
-        )
+            isCardExpanded = true,
+            onDeleteIconClicked = {},
+            onEditIconClicked = {},
+            accountName = "PNB",
+            transactionDate = "27 Aug 2002")
+    }
+}
+
+@Preview
+@Composable
+private fun ExpenseTrackerTransactionCardItemPreview() {
+    AppTheme {
+        ExpenseTrackerTransactionCardItem(iconId = R.drawable.fuel,
+            iconDescription = "Fuel icon",
+            categoryName = "Fuel",
+            transactionDescription = "Petrol in scooter",
+            amount = "$49",
+            transactionId = 0,
+            onDeleteIconClicked = {},
+            onEditIconClicked = {},
+            accountName = "PNB",
+            transactionDate = "27 Aug 2002")
     }
 }
 
@@ -57,16 +77,23 @@ fun ExpenseTrackerTransactionCardItem(
     amount: String,
     isCredit: Boolean = false,
     transactionId: Int,
-    showAllDetails: Boolean = false,
-    onClick: (id: Int) -> Unit
+    isCardExpanded: Boolean = false,
+    transactionDate: String,
+    accountName: String,
+    onDeleteIconClicked: (id: Int) -> Unit,
+    onEditIconClicked: (id: Int) -> Unit,
 ) {
-    Column(modifier = Modifier
-        .fillMaxWidth()
-        .padding(8.dp)
-        .background(MaterialTheme.colorScheme.background)
-        .clickable {
-            onClick(transactionId)
-        }) {
+
+    val expandCard = rememberSaveable {
+        mutableStateOf(isCardExpanded)
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp)
+            .background(MaterialTheme.colorScheme.background)
+    ) {
         Row(
             Modifier
                 .fillMaxWidth()
@@ -88,7 +115,7 @@ fun ExpenseTrackerTransactionCardItem(
                     overflow = TextOverflow.Ellipsis
                 )
 
-                if (!showAllDetails) {
+                if (!expandCard.value) {
                     SimpleText(
                         text = transactionDescription,
                         modifier = Modifier.padding(4.dp),
@@ -106,16 +133,19 @@ fun ExpenseTrackerTransactionCardItem(
             )
 
             Icon(
-                imageVector = if (showAllDetails) Icons.Filled.KeyboardArrowDown else Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                imageVector = if (expandCard.value) Icons.Filled.KeyboardArrowDown else Icons.AutoMirrored.Filled.KeyboardArrowRight,
                 contentDescription = "",
                 modifier = Modifier
                     .size(25.dp)
-                    .padding(4.dp),
-                tint = Color.LightGray
+                    .padding(4.dp)
+                    .clickable {
+                        expandCard.value = !expandCard.value
+                    },
+                tint = Color.Gray
             )
         }
 
-        if (showAllDetails) {
+        if (expandCard.value) {
             Row(
                 Modifier
                     .fillMaxWidth()
@@ -124,7 +154,7 @@ fun ExpenseTrackerTransactionCardItem(
             ) {
                 SimpleText(text = "Account name: ")
                 SimpleTextBold(
-                    text = "PNB", maxLines = 1
+                    text = accountName, maxLines = 1
                 )
             }
             Spacer(Modifier.height(4.dp))
@@ -135,7 +165,7 @@ fun ExpenseTrackerTransactionCardItem(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 SimpleText(text = "Transaction date: ")
-                SimpleTextBold(text = "27 Aug 2024", maxLines = 1)
+                SimpleTextBold(text = transactionDate, maxLines = 1)
             }
             Spacer(Modifier.height(4.dp))
             Row(
@@ -150,11 +180,21 @@ fun ExpenseTrackerTransactionCardItem(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(4.dp),
+                    .padding(8.dp),
                 horizontalArrangement = Arrangement.SpaceAround
             ) {
-                Icon(imageVector = Icons.Filled.ModeEdit, contentDescription = "")
-                Icon(imageVector = Icons.Filled.Delete, contentDescription = "")
+                Icon(
+                    modifier = Modifier.clickable {
+                        expandCard.value = false
+                        onEditIconClicked(transactionId)
+                    }, imageVector = Icons.Filled.ModeEdit, contentDescription = ""
+                )
+                Icon(
+                    modifier = Modifier.clickable {
+                        expandCard.value = false
+                        onDeleteIconClicked(transactionId)
+                    }, imageVector = Icons.Filled.Delete, contentDescription = ""
+                )
             }
         }
     }

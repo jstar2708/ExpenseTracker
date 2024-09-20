@@ -25,6 +25,7 @@ import com.jaideep.expensetracker.domain.usecase.GetAllAccountsUseCase
 import com.jaideep.expensetracker.domain.usecase.GetAllCategoriesUseCase
 import com.jaideep.expensetracker.domain.usecase.GetAllCategoryCardsDataUseCase
 import com.jaideep.expensetracker.domain.usecase.GetInitialTransactionsUseCase
+import com.jaideep.expensetracker.exception.AccountNotFoundException
 import com.jaideep.expensetracker.model.CategoryCardData
 import com.jaideep.expensetracker.model.CategoryCardPayload
 import com.jaideep.expensetracker.model.RunJobForData
@@ -82,6 +83,7 @@ class MainViewModel @Inject constructor(
     var transactions: StateFlow<List<TransactionDto>> = _transactions.map {
         it.asFlow().map { transaction ->
             TransactionDto(
+                getAccountName(transaction.accountId),
                 transaction.id,
                 transaction.amount,
                 getCategoryDto(transaction.categoryId),
@@ -110,6 +112,7 @@ class MainViewModel @Inject constructor(
         }).flow.mapLatest { pagingData ->
             pagingData.map { transaction ->
                 TransactionDto(
+                    getAccountName(transaction.accountId),
                     transaction.id,
                     transaction.amount,
                     getCategoryDto(transaction.categoryId),
@@ -126,6 +129,7 @@ class MainViewModel @Inject constructor(
     var isFirstAppInitialization = _isFirstAppInitialization
 
     private val _hasCategoriesLoaded = MutableStateFlow(false)
+    private val _hasAccountsLoaded = MutableStateFlow(false)
 
     private val initialTransactionsJobData: MutableStateFlow<RunJobForData<String>> =
         MutableStateFlow(
@@ -217,8 +221,16 @@ class MainViewModel @Inject constructor(
                 is Resource.Success -> {
                     _accounts.value = it.data
                     delay(Duration.ofMillis(500))
+                    _hasAccountsLoaded.value = true
                     isAccountLoading = false
                     accountRetrievalError = false
+                    _hasAccountsLoaded.collectLatest { hasAccountLoaded ->
+                        if (hasAccountLoaded && _transactions.value.isEmpty()) {
+                            getTransactionPagingSource()
+                            getInitialTransactions(TransactionMethod.GET_ALL_TRANSACTIONS)
+                            getAllCategoryCardsData()
+                        }
+                    }
                 }
 
                 is Resource.Error -> {
@@ -406,6 +418,7 @@ class MainViewModel @Inject constructor(
                 }).flow.mapLatest { pagingData ->
                     pagingData.map { transaction ->
                         TransactionDto(
+                            getAccountName(transaction.accountId),
                             transaction.id,
                             transaction.amount,
                             getCategoryDto(transaction.categoryId),
@@ -416,6 +429,17 @@ class MainViewModel @Inject constructor(
                     }
                 }.cachedIn(viewModelScope)
         }
+    }
+
+    @Throws(AccountNotFoundException::class)
+    private fun getAccountName(accountId: Int): String {
+        val account = _accounts.value.find { account ->
+            account.id == accountId
+        }
+        if (account == null) {
+            throw AccountNotFoundException("Account not found with Id : $accountId")
+        }
+        return account.accountName
     }
 
     private fun getCategoryDto(categoryId: Int): CategoryDto {

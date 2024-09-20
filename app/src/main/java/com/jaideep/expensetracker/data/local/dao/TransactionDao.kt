@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import com.jaideep.expensetracker.common.constant.sql.TransactionSql.DELETE_TRANSACTION_BY_ID
 import com.jaideep.expensetracker.common.constant.sql.TransactionSql.GET_ACCOUNT_CREDIT_TRANSACTIONS
 import com.jaideep.expensetracker.common.constant.sql.TransactionSql.GET_ACCOUNT_CREDIT_TRANSACTIONS_BETWEEN_DATES
 import com.jaideep.expensetracker.common.constant.sql.TransactionSql.GET_ACCOUNT_DEBIT_TRANSACTIONS
@@ -79,4 +80,6 @@ interface TransactionDao {
 
     @Query(GET_TRANSACTION_BY_ID)
     suspend fun getTransactionById(transactionId: Int): Transaction
+    @Query(DELETE_TRANSACTION_BY_ID)
+    fun deleteTransactionById(transactionId: Int)
 }

@@ -87,4 +87,8 @@ class TransactionRepositoryImpl @Inject constructor(
     override suspend fun getTransactionById(transactionId: Int): Transaction {
         return dao.getTransactionById(transactionId)
     }
+
+    override suspend fun deleteTransactionById(transactionId: Int) {
+        return dao.deleteTransactionById(transactionId)
+    }
 }
