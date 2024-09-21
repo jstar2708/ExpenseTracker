@@ -9,11 +9,11 @@ object MainScreen {
 
 object AddScreen {
     const val CREATE_UPDATE_TRANSACTION = "cu_transaction"
-    const val CREATE_UPDATE_TRANSACTION_ROUTE = "cu_transaction/{isEdit}"
+    const val CREATE_UPDATE_TRANSACTION_ROUTE = "cu_transaction/{id}"
     const val CREATE_UPDATE_ACCOUNT = "cu_account"
-    const val CREATE_UPDATE_ACCOUNT_ROUTE = "cu_account/{isEdit}"
+    const val CREATE_UPDATE_ACCOUNT_ROUTE = "cu_account/{id}"
     const val CREATE_UPDATE_CATEGORY = "cu_category"
-    const val CREATE_UPDATE_CATEGORY_ROUTE = "cu_category/{isEdit}"
+    const val CREATE_UPDATE_CATEGORY_ROUTE = "cu_category/{id}"
 }
 
 object DetailScreen {

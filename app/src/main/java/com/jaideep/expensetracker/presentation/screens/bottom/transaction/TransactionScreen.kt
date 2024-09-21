@@ -38,6 +38,7 @@ import androidx.navigation.NavHostController
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.jaideep.expensetracker.R
 import com.jaideep.expensetracker.common.AddScreen
+import com.jaideep.expensetracker.common.constant.AppConstants.CREATE_SCREEN
 import com.jaideep.expensetracker.model.DialogState
 import com.jaideep.expensetracker.model.dto.CategoryDto
 import com.jaideep.expensetracker.model.dto.TransactionDto
@@ -74,7 +75,7 @@ fun TransactionScreenPreview() {
                     createdTime = LocalDate.now(),
                     isCredit = true,
                     accountName = "PNB",
-                ),TransactionDto(
+                ), TransactionDto(
                     transactionId = 0,
                     amount = 200.0,
                     categoryDto = CategoryDto("Food", R.drawable.food),
@@ -82,7 +83,7 @@ fun TransactionScreenPreview() {
                     createdTime = LocalDate.now(),
                     isCredit = true,
                     accountName = "PNB",
-                ),TransactionDto(
+                ), TransactionDto(
                     transactionId = 0,
                     amount = 200.0,
                     categoryDto = CategoryDto("Food", R.drawable.food),
@@ -122,7 +123,6 @@ fun TransactionScreenPreview() {
             updateFromDate = {},
             updateToDate = {},
             clearDialogDate = {},
-            onTransactionEditClicked = {},
             onTransactionDeleteClicked = {},
             deleteTransaction = {},
             hideDeleteDialog = {})
@@ -186,9 +186,6 @@ fun TransactionScreenRoot(
             updateToDate = transactionViewModel::updateToDate,
             clearDialogDate = transactionViewModel::clearDialogDate,
             onTransactionDeleteClicked = transactionViewModel::onTransactionDeleteClicked,
-            onTransactionEditClicked = {
-                navHostControllerRoot.navigate("Edit Transaction Screen")
-            },
             deleteTransaction = transactionViewModel::deleteTransaction,
             hideDeleteDialog = transactionViewModel::hideDeleteDialog
         )
@@ -215,7 +212,6 @@ fun TransactionScreen(
     deleteTransaction: () -> Unit,
     hideDeleteDialog: () -> Unit,
     onTransactionDeleteClicked: (id: Int) -> Unit,
-    onTransactionEditClicked: (id: Int) -> Unit,
     updateCurrentTabValue: (selectedTab: Int) -> Unit,
     onAccountSpinnerValueChanged: (value: String, isCredit: Boolean, isDebit: Boolean) -> Unit
 ) {
@@ -240,7 +236,7 @@ fun TransactionScreen(
             actionIcon = Icons.Filled.Add,
             actionDescription = "Add transaction icon"
         ) {
-            navControllerRoot.navigate(AddScreen.CREATE_UPDATE_TRANSACTION)
+            navControllerRoot.navigate("${AddScreen.CREATE_UPDATE_TRANSACTION}/${CREATE_SCREEN}")
         }
     }) { it ->
         Column(
@@ -316,7 +312,7 @@ fun TransactionScreen(
                             isCredit = transactions[it].isCredit,
                             transactionId = transactions[it].transactionId,
                             onDeleteIconClicked = onTransactionDeleteClicked,
-                            onEditIconClicked = onTransactionEditClicked,
+                            onEditIconClicked = { navControllerRoot.navigate("${AddScreen.CREATE_UPDATE_TRANSACTION}/${transactions[it].transactionId}") },
                             accountName = transactions[it].accountName,
                             transactionDate = transactions[it].createdTime.toString()
                         )

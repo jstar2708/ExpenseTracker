@@ -207,6 +207,7 @@ class MainViewModel @Inject constructor(
                     Category(5, "Travel", "Travel")
                 )
             )
+            initData()
         }
     }
 

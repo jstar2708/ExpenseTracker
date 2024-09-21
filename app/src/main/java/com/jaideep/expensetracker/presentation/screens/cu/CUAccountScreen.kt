@@ -70,7 +70,7 @@ private fun AddAccountScreenPreview() {
 @Composable
 fun CUAccountScreenRoot(
     navController: NavHostController,
-    isAdd: Boolean,
+    isAdd: Int,
     addAccountViewModel: AddAccountViewModel = hiltViewModel()
 ) {
 

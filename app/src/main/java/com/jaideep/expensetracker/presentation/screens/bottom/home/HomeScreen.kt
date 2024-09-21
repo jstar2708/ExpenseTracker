@@ -33,6 +33,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.jaideep.expensetracker.common.AddScreen
+import com.jaideep.expensetracker.common.constant.AppConstants.CREATE_SCREEN
 import com.jaideep.expensetracker.model.CategoryCardData
 import com.jaideep.expensetracker.model.dto.TransactionDto
 import com.jaideep.expensetracker.presentation.component.SimpleText
@@ -62,7 +63,6 @@ private fun HomeScreenPreview() {
             accountBalance = 0.0,
             spentToday = 0.0,
             selectedAccount = "All Accounts",
-            getInitialAccountSpecificData = {},
             categoryCardData = CategoryCardData("Food", "Food", 0.0),
             amountSpentThisMonthFromAcc = 0.0,
         )
@@ -73,6 +73,10 @@ private fun HomeScreenPreview() {
 fun HomeScreenRoot(
     navControllerRoot: NavController, mainViewModel: MainViewModel, homeViewModel: HomeViewModel
 ) {
+    LaunchedEffect(key1 = true) {
+        homeViewModel.getInitialAccountData()
+    }
+
     if (mainViewModel.isAccountLoading || mainViewModel.isTransactionLoading || mainViewModel.isCategoryLoading) {
         ExpenseTrackerProgressBar(Modifier.size(50.dp))
     } else if (mainViewModel.transactionRetrievalError || mainViewModel.accountRetrievalError || mainViewModel.categoryRetrievalError) {
@@ -97,7 +101,6 @@ fun HomeScreenRoot(
             accountBalance = homeViewModel.selectedAccountBalance.collectAsState().value,
             spentToday = homeViewModel.spentToday.collectAsState().value,
             selectedAccount = homeViewModel.selectedAccount.collectAsState().value,
-            getInitialAccountSpecificData = homeViewModel::getInitialAccountData,
             categoryCardData = homeViewModel.getMaxSpentCategoryData.collectAsState().value,
             amountSpentThisMonthFromAcc = homeViewModel.amountSpentThisMonthFromAcc.collectAsState().value
         )
@@ -115,16 +118,11 @@ fun HomeScreen(
     categoryCardData: CategoryCardData?,
     amountSpentThisMonthFromAcc: Double,
     onAccountSpinnerValueChanged: (value: String) -> Unit,
-    getInitialAccountSpecificData: () -> Unit
 ) {
     val savedStateHandle = navControllerRoot.currentBackStackEntry?.savedStateHandle
     val resultAccount = savedStateHandle?.get<Boolean>("isAccountSaved")
 
     val resultTransaction = savedStateHandle?.get<Boolean>("isTransactionSaved")
-
-    LaunchedEffect(key1 = true) {
-        getInitialAccountSpecificData()
-    }
 
     val snackBarHostState = remember {
         SnackbarHostState()
@@ -162,16 +160,17 @@ fun HomeScreen(
 
                     ExpenseTrackerBlueButton(
                         name = "Add\nAccount",
-                        onClick = { navControllerRoot.navigate("${AddScreen.CREATE_UPDATE_ACCOUNT}/${false}") },
+                        onClick = { navControllerRoot.navigate("${AddScreen.CREATE_UPDATE_ACCOUNT}/${CREATE_SCREEN}") },
                         modifier = Modifier.weight(1f)
                     )
                     ExpenseTrackerBlueButton(
                         name = "Add\nTransaction",
-                        onClick = { navControllerRoot.navigate("${AddScreen.CREATE_UPDATE_TRANSACTION}/${false}") },
+                        onClick = { navControllerRoot.navigate("${AddScreen.CREATE_UPDATE_TRANSACTION}/${CREATE_SCREEN}") },
                         modifier = Modifier.weight(1f)
                     )
                 }
-                ExpenseTrackerSpinner(values = accounts,
+                ExpenseTrackerSpinner(
+                    values = accounts,
                     initialValue = selectedAccount,
                     onValueChanged = { value ->
                         onAccountSpinnerValueChanged(value)

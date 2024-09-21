@@ -57,7 +57,7 @@ private fun CategoryDetailsScreenPreview() {
         transactions = persistentListOf(),
         dialogState = DialogState(false, "", "", false, ""),
         selectedAccount = "All Accounts",
-        toggleDialogVisibility = {  },
+        toggleDialogVisibility = { },
         onBackPress = { },
         onAccountSpinnerValueChanged = {},
         updateTransactionList = {},
@@ -89,9 +89,8 @@ fun CategoryDetailsScreenRoot(navHostController: NavHostController, categoryName
                 )
             }
         } else {
-            CategoryDetailsScreen(
-                categoryIconId = categoryDetailViewModel.category.collectAsState().value?.iconId
-                    ?: 0,
+            val categoryId = categoryDetailViewModel.category.collectAsState().value?.iconId ?: 0
+            CategoryDetailsScreen(categoryIconId = categoryId,
                 categoryName = categoryName,
                 dialogState = categoryDetailViewModel.dialogState.value,
                 selectedAccount = categoryDetailViewModel.accountValue.value,
@@ -106,9 +105,8 @@ fun CategoryDetailsScreenRoot(navHostController: NavHostController, categoryName
                 updateFromDate = categoryDetailViewModel::updateFromDate,
                 checkValidDate = categoryDetailViewModel::checkValidDate,
                 onActionClicked = {
-                    navHostController.navigate("${AddScreen.CREATE_UPDATE_CATEGORY}/${false}")
-                }
-            )
+                    navHostController.navigate("${AddScreen.CREATE_UPDATE_CATEGORY}/${categoryId}")
+                })
         }
     } else {
         Row(
@@ -239,7 +237,7 @@ fun CategoryDetailsScreen(
                     }
                 }
             } else {
-                Row (
+                Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.fillMaxHeight()
                 ) {

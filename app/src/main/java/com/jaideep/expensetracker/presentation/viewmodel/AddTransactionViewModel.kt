@@ -1,5 +1,6 @@
 package com.jaideep.expensetracker.presentation.viewmodel
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -14,9 +15,11 @@ import com.jaideep.expensetracker.data.local.entities.Transaction
 import com.jaideep.expensetracker.domain.repository.TransactionPagingRepository
 import com.jaideep.expensetracker.domain.usecase.GetAllAccountsUseCase
 import com.jaideep.expensetracker.domain.usecase.GetAllCategoriesUseCase
+import com.jaideep.expensetracker.domain.usecase.GetTransactionByIdUseCase
 import com.jaideep.expensetracker.model.TextFieldWithIconAndErrorPopUpState
 import com.jaideep.expensetracker.presentation.utility.Utility.stringDateToMillis
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -29,7 +32,6 @@ import kotlinx.coroutines.time.delay
 import kotlinx.coroutines.withContext
 import java.time.Duration
 import java.time.LocalDate
-import java.time.ZoneId
 import java.time.format.DateTimeParseException
 import javax.inject.Inject
 
@@ -37,7 +39,8 @@ import javax.inject.Inject
 class AddTransactionViewModel @Inject constructor(
     private val transactionPagingRepository: TransactionPagingRepository,
     private val getAllAccountsUseCase: GetAllAccountsUseCase,
-    private val getAllCategoriesUseCase: GetAllCategoriesUseCase
+    private val getAllCategoriesUseCase: GetAllCategoriesUseCase,
+    private val getTransactionByIdUseCase: GetTransactionByIdUseCase
 ) : ViewModel() {
 
     private val _accounts: MutableStateFlow<List<Account>> = MutableStateFlow(ArrayList())
@@ -54,6 +57,9 @@ class AddTransactionViewModel @Inject constructor(
             category.categoryName
         }.toList()
     }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
+
+    var isTransactionLoading by mutableStateOf(false)
+    var transactionRetrievalError by mutableStateOf(false)
 
     val accountState = mutableStateOf(
         TextFieldWithIconAndErrorPopUpState(
@@ -140,10 +146,20 @@ class AddTransactionViewModel @Inject constructor(
     var isTransactionSaved by mutableStateOf(false)
         private set
 
-    init {
-
-        getAllAccounts()
-        getAllCategories()
+    fun loadInitData(transactionId: Int) = viewModelScope.launch(EtDispatcher.io) {
+        try {
+            val accounts = async { getAllAccounts() }
+            val categories = async { getAllCategories() }
+            if (transactionId != -1) {
+                screenTitle = "Edit Transaction"
+                screenDetail = "Please update and save the transaction"
+                accounts.await()
+                categories.await()
+                fetchTransaction(transactionId)
+            }
+        } catch (e: Exception) {
+            Log.e("ERROR", "Error while fetching data: ${e.message}")
+        }
     }
 
     private fun updateAccountTextState(value: String) {
@@ -256,58 +272,75 @@ class AddTransactionViewModel @Inject constructor(
         )
     }
 
-    private fun getAllCategories() = viewModelScope.launch(EtDispatcher.io) {
-        getAllCategoriesUseCase().collect {
+    private suspend fun fetchTransaction(transactionId: Int) =
+        getTransactionByIdUseCase(transactionId).collect {
+            when (it) {
+                is Resource.Error -> {
+                    transactionRetrievalError = true
+                    isTransactionLoading = false
+                }
+
+                is Resource.Loading -> {
+                    isTransactionLoading = true
+                    transactionRetrievalError = false
+                }
+
+                is Resource.Success -> {
+                    transactionRetrievalError = false
+                    isTransactionLoading = false
+                    it.data
+                }
+            }
+        }
+
+    private suspend fun getAllCategories() = getAllCategoriesUseCase().collect {
+        when (it) {
+            is Resource.Error -> {
+                withContext(EtDispatcher.main) {
+                    errorMessage = it.message
+                    categoryRetrievalError = true
+                    isCategoryLoading = false
+                }
+            }
+
+            is Resource.Success -> {
+                withContext(EtDispatcher.main) {
+                    _categories.value = it.data
+                    isCategoryLoading = false
+                }
+            }
+
+            is Resource.Loading -> {
+                withContext(EtDispatcher.main) {
+                    delay(Duration.ofMillis(500))
+                    isCategoryLoading = true
+                }
+            }
+        }
+    }
+
+    private suspend fun getAllAccounts() {
+        getAllAccountsUseCase().collect {
             when (it) {
                 is Resource.Error -> {
                     withContext(EtDispatcher.main) {
                         errorMessage = it.message
-                        categoryRetrievalError = true
-                        isCategoryLoading = false
+                        accountRetrievalError = true
+                        isAccountLoading = false
                     }
                 }
 
                 is Resource.Success -> {
                     withContext(EtDispatcher.main) {
-                        _categories.value = it.data
-                        isCategoryLoading = false
+                        _accounts.value = it.data
+                        isAccountLoading = false
                     }
                 }
 
                 is Resource.Loading -> {
                     withContext(EtDispatcher.main) {
                         delay(Duration.ofMillis(500))
-                        isCategoryLoading = true
-                    }
-                }
-            }
-        }
-    }
-
-    private fun getAllAccounts() {
-        viewModelScope.launch(EtDispatcher.io) {
-            getAllAccountsUseCase().collect {
-                when (it) {
-                    is Resource.Error -> {
-                        withContext(EtDispatcher.main) {
-                            errorMessage = it.message
-                            accountRetrievalError = true
-                            isAccountLoading = false
-                        }
-                    }
-
-                    is Resource.Success -> {
-                        withContext(EtDispatcher.main) {
-                            _accounts.value = it.data
-                            isAccountLoading = false
-                        }
-                    }
-
-                    is Resource.Loading -> {
-                        withContext(EtDispatcher.main) {
-                            delay(Duration.ofMillis(500))
-                            isAccountLoading = true
-                        }
+                        isAccountLoading = true
                     }
                 }
             }

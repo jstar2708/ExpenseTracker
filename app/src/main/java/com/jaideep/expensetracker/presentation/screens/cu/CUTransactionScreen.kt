@@ -110,13 +110,16 @@ fun AddTransactionPreview() {
 @Composable
 fun CUTransactionScreenRoot(
     navControllerRoot: NavHostController,
-    isAdd: Boolean,
+    transactionId: Int,
     viewModel: AddTransactionViewModel = hiltViewModel()
 ) {
+    LaunchedEffect(key1 = true) {
+        viewModel.loadInitData(transactionId)
+    }
 
-    if (viewModel.isCategoryLoading || viewModel.isAccountLoading) {
+    if (viewModel.isCategoryLoading || viewModel.isAccountLoading || viewModel.isTransactionLoading) {
         ExpenseTrackerProgressBar(Modifier.size(50.dp))
-    } else if (viewModel.categoryRetrievalError || viewModel.accountRetrievalError) {
+    } else if (viewModel.categoryRetrievalError || viewModel.accountRetrievalError || viewModel.transactionRetrievalError) {
         Row(
             modifier = Modifier.fillMaxSize(),
             verticalAlignment = Alignment.CenterVertically,

@@ -29,6 +29,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.jaideep.expensetracker.common.AddScreen
 import com.jaideep.expensetracker.common.DetailScreen
+import com.jaideep.expensetracker.common.constant.AppConstants.CREATE_SCREEN
 import com.jaideep.expensetracker.model.CategoryCardData
 import com.jaideep.expensetracker.model.CategoryCardPayload
 import com.jaideep.expensetracker.presentation.component.SimpleText
@@ -142,7 +143,7 @@ fun CategoryScreen(
             actionIcon = Icons.Filled.Add,
             actionDescription = "Add Category icon"
         ) {
-            navControllerRoot.navigate(AddScreen.CREATE_UPDATE_CATEGORY)
+            navControllerRoot.navigate("${AddScreen.CREATE_UPDATE_CATEGORY}/${CREATE_SCREEN}")
         }
     }) {
         Column(Modifier.padding(it)) {

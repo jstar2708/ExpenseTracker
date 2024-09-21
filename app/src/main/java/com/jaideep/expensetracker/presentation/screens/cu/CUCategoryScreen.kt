@@ -58,7 +58,7 @@ private fun AddCategoryScreenPreview() {
 @Composable
 fun CUCategoryScreenRoot(
     navControllerRoot: NavHostController,
-    isAdd: Boolean
+    isAdd: Comparable<*>
 ) {
     val addCategoryViewModel: AddCategoryViewModel = hiltViewModel()
     AppTheme {
