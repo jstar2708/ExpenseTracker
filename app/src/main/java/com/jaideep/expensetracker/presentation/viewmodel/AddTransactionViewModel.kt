@@ -9,17 +9,18 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jaideep.expensetracker.common.EtDispatcher
 import com.jaideep.expensetracker.common.Resource
-import com.jaideep.expensetracker.data.local.entities.Account
-import com.jaideep.expensetracker.data.local.entities.Category
 import com.jaideep.expensetracker.data.local.entities.Transaction
-import com.jaideep.expensetracker.domain.repository.TransactionPagingRepository
+import com.jaideep.expensetracker.domain.repository.CrudRepository
 import com.jaideep.expensetracker.domain.usecase.GetAllAccountsUseCase
 import com.jaideep.expensetracker.domain.usecase.GetAllCategoriesUseCase
 import com.jaideep.expensetracker.domain.usecase.GetTransactionByIdUseCase
 import com.jaideep.expensetracker.model.TextFieldWithIconAndErrorPopUpState
+import com.jaideep.expensetracker.model.dto.AccountDto
+import com.jaideep.expensetracker.model.dto.CategoryDto
+import com.jaideep.expensetracker.model.dto.TransactionDto
 import com.jaideep.expensetracker.presentation.utility.Utility.stringDateToMillis
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.async
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -37,29 +38,35 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AddTransactionViewModel @Inject constructor(
-    private val transactionPagingRepository: TransactionPagingRepository,
+    private val crudRepository: CrudRepository,
     private val getAllAccountsUseCase: GetAllAccountsUseCase,
     private val getAllCategoriesUseCase: GetAllCategoriesUseCase,
     private val getTransactionByIdUseCase: GetTransactionByIdUseCase
 ) : ViewModel() {
 
-    private val _accounts: MutableStateFlow<List<Account>> = MutableStateFlow(ArrayList())
+    private val _accounts: MutableStateFlow<List<AccountDto>> = MutableStateFlow(ArrayList())
     var accounts: StateFlow<List<String>> = _accounts.map {
         it.asFlow().map { account ->
             account.accountName
         }.toList()
     }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
-    private val _categories: MutableStateFlow<List<Category>> = MutableStateFlow(ArrayList())
+    private val _categories: MutableStateFlow<List<CategoryDto>> = MutableStateFlow(ArrayList())
 
     var categories: StateFlow<List<String>> = _categories.map {
         it.asFlow().map { category ->
-            category.categoryName
+            category.name
         }.toList()
     }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
     var isTransactionLoading by mutableStateOf(false)
     var transactionRetrievalError by mutableStateOf(false)
+
+    // Channels are used to implement synchronous data loading i.e. accounts and categories load before transaction
+    private val accountChannel: Channel<Unit> = Channel()
+    private val categoryChannel: Channel<Unit> = Channel()
+
+    private val transactionDto: MutableStateFlow<TransactionDto?> = MutableStateFlow(null)
 
     val accountState = mutableStateOf(
         TextFieldWithIconAndErrorPopUpState(
@@ -116,6 +123,9 @@ class AddTransactionViewModel @Inject constructor(
         )
     )
 
+    var buttonText by mutableStateOf("Save")
+        private set
+
     var screenTitle by mutableStateOf("Add Transaction")
         private set
 
@@ -146,16 +156,19 @@ class AddTransactionViewModel @Inject constructor(
     var isTransactionSaved by mutableStateOf(false)
         private set
 
-    fun loadInitData(transactionId: Int) = viewModelScope.launch(EtDispatcher.io) {
+    suspend fun loadInitData(transactionId: Int) {
         try {
-            val accounts = async { getAllAccounts() }
-            val categories = async { getAllCategories() }
-            if (transactionId != -1) {
-                screenTitle = "Edit Transaction"
-                screenDetail = "Please update and save the transaction"
-                accounts.await()
-                categories.await()
-                fetchTransaction(transactionId)
+            getAllAccounts()
+            getAllCategories()
+            viewModelScope.launch(EtDispatcher.io) {
+                accountChannel.receive()
+                categoryChannel.receive()
+                if (transactionId != -1) {
+                    isTransactionLoading = true
+                    screenTitle = "Edit Transaction"
+                    screenDetail = "Please update and save the transaction"
+                    fetchTransaction(transactionId)
+                }
             }
         } catch (e: Exception) {
             Log.e("ERROR", "Error while fetching data: ${e.message}")
@@ -286,32 +299,42 @@ class AddTransactionViewModel @Inject constructor(
                 }
 
                 is Resource.Success -> {
+                    transactionDto.value = it.data
+                    fillTransactionDetails(it.data)
                     transactionRetrievalError = false
                     isTransactionLoading = false
-                    it.data
                 }
             }
         }
 
-    private suspend fun getAllCategories() = getAllCategoriesUseCase().collect {
-        when (it) {
-            is Resource.Error -> {
-                withContext(EtDispatcher.main) {
-                    errorMessage = it.message
-                    categoryRetrievalError = true
-                    isCategoryLoading = false
-                }
-            }
+    private fun fillTransactionDetails(data: TransactionDto) {
+        updateAccountTextState(data.accountName)
+        updateDateTextState(data.createdOn.toString())
+        updateNoteTextState(data.message)
+        updateCategoryTextState(data.categoryName)
+        updateAmountTextState(data.amount.toString())
+        radioButtonValue.intValue = if (data.isCredit) 0 else 1
+        buttonText = "Update"
+    }
 
-            is Resource.Success -> {
-                withContext(EtDispatcher.main) {
+    private suspend fun getAllCategories() = viewModelScope.launch(EtDispatcher.io) {
+        getAllCategoriesUseCase().collect {
+            when (it) {
+                is Resource.Error -> {
+                    withContext(EtDispatcher.main) {
+                        errorMessage = it.message
+                        categoryRetrievalError = true
+                        isCategoryLoading = false
+                    }
+                }
+
+                is Resource.Success -> {
                     _categories.value = it.data
                     isCategoryLoading = false
+                    categoryChannel.send(Unit)
                 }
-            }
 
-            is Resource.Loading -> {
-                withContext(EtDispatcher.main) {
+                is Resource.Loading -> {
                     delay(Duration.ofMillis(500))
                     isCategoryLoading = true
                 }
@@ -319,29 +342,25 @@ class AddTransactionViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getAllAccounts() {
+    private suspend fun getAllAccounts() = viewModelScope.launch(EtDispatcher.io) {
         getAllAccountsUseCase().collect {
             when (it) {
                 is Resource.Error -> {
-                    withContext(EtDispatcher.main) {
-                        errorMessage = it.message
-                        accountRetrievalError = true
-                        isAccountLoading = false
-                    }
+                    errorMessage = it.message
+                    accountRetrievalError = true
+                    isAccountLoading = false
                 }
 
                 is Resource.Success -> {
-                    withContext(EtDispatcher.main) {
-                        _accounts.value = it.data
-                        isAccountLoading = false
-                    }
+                    _accounts.value = it.data
+                    isAccountLoading = false
+                    accountChannel.send(Unit)
+
                 }
 
                 is Resource.Loading -> {
-                    withContext(EtDispatcher.main) {
-                        delay(Duration.ofMillis(500))
-                        isAccountLoading = true
-                    }
+                    delay(Duration.ofMillis(500))
+                    isAccountLoading = true
                 }
             }
         }
@@ -357,7 +376,44 @@ class AddTransactionViewModel @Inject constructor(
         val isAmountValid = checkAmountError()
         val isDateValid = checkDateError()
         if (isAccValid && isCategoryValid && isAmountValid && isDateValid) {
-            saveTransaction()
+            if (screenTitle.startsWith("A")) saveTransaction() else updateTransaction()
+        }
+    }
+
+    private fun updateTransaction() {
+        val accountName = accountState.value.text
+        val categoryName = categoryState.value.text
+        val amount = amountState.value.text
+        val date = dateState.value.text
+        val note = noteState.value.text
+        val isCredit = radioButtonValue.intValue
+        val account = _accounts.value.stream().filter {
+            it.accountName == accountName
+        }.findAny()
+        val category = _categories.value.stream().filter {
+            it.name == categoryName
+        }.findAny()
+        transactionDto.value?.let { transaction ->
+            account.ifPresent {
+                category.ifPresent {
+                    viewModelScope.launch(EtDispatcher.io) {
+                        crudRepository.updateTransactionAndUpdateBalance(
+                            Transaction(
+                                transaction.transactionId,
+                                amount.toDouble(),
+                                account.get().id,
+                                category.get().id,
+                                note,
+                                stringDateToMillis(date),
+                                isCredit xor 1
+                            ),
+                            transaction.amount
+                        )
+                        isTransactionSaved = true
+                        exitScreen = true
+                    }
+                }
+            }
         }
     }
 
@@ -372,13 +428,13 @@ class AddTransactionViewModel @Inject constructor(
             it.accountName == accountName
         }.findAny()
         val category = _categories.value.stream().filter {
-            it.categoryName == categoryName
+            it.name == categoryName
         }.findAny()
 
         account.ifPresent {
             category.ifPresent {
-                viewModelScope.launch {
-                    transactionPagingRepository.saveTransaction(
+                viewModelScope.launch(EtDispatcher.io) {
+                    crudRepository.saveTransactionAndUpdateBalance(
                         Transaction(
                             0,
                             amount.toDouble(),

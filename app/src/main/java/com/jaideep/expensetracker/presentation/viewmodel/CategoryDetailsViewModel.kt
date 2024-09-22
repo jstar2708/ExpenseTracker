@@ -5,16 +5,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jaideep.expensetracker.common.EtDispatcher
 import com.jaideep.expensetracker.common.Resource
-import com.jaideep.expensetracker.data.local.entities.Account
-import com.jaideep.expensetracker.data.local.entities.Transaction
 import com.jaideep.expensetracker.domain.usecase.GetAllAccountsUseCase
 import com.jaideep.expensetracker.domain.usecase.GetAllCategoryWiseTransactions
 import com.jaideep.expensetracker.domain.usecase.GetCategoryByNameUseCase
 import com.jaideep.expensetracker.exception.AccountNotFoundException
 import com.jaideep.expensetracker.model.DialogState
+import com.jaideep.expensetracker.model.dto.AccountDto
 import com.jaideep.expensetracker.model.dto.CategoryDto
 import com.jaideep.expensetracker.model.dto.TransactionDto
-import com.jaideep.expensetracker.presentation.utility.Utility.getCategoryIconId
 import com.jaideep.expensetracker.presentation.utility.Utility.stringDateToMillis
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -23,6 +21,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
@@ -39,23 +38,10 @@ class CategoryDetailsViewModel @Inject constructor(
     private val getAllAccountsUseCase: GetAllAccountsUseCase
 ) : ViewModel() {
     val categoryName: MutableStateFlow<String> = MutableStateFlow(String())
-    private val _transactions: MutableStateFlow<List<Transaction>> = MutableStateFlow(ArrayList())
-    var transactions: StateFlow<List<TransactionDto>> = _transactions.map {
-        it.asFlow().map { transaction ->
-            TransactionDto(
-                getAccountName(transaction.accountId),
-                transaction.id,
-                transaction.amount,
-                category.value ?: CategoryDto(
-                    categoryName.value, getCategoryIconId(categoryName.value)
-                ),
-                transaction.message,
-                LocalDate.ofEpochDay(transaction.createdTime / 86_400_000L),
-                transaction.isCredit == 1
-            )
-        }.toList()
-    }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
-    private val _accounts: MutableStateFlow<List<Account>> = MutableStateFlow(ArrayList())
+    private val _transactions: MutableStateFlow<List<TransactionDto>> =
+        MutableStateFlow(ArrayList())
+    var transactions: StateFlow<List<TransactionDto>> = _transactions.asStateFlow()
+    private val _accounts: MutableStateFlow<List<AccountDto>> = MutableStateFlow(ArrayList())
     var accounts: StateFlow<List<String>> = _accounts.map { list ->
         list.asFlow().map { it.accountName }.toList().toMutableList().apply {
             this.add(0, "All Accounts")
@@ -238,9 +224,7 @@ class CategoryDetailsViewModel @Inject constructor(
         }
 
         getAllCategoryWiseTransactions(
-            categoryName.value,
-            accountValue.value,
-            fromDate, toDate
+            categoryName.value, accountValue.value, fromDate, toDate
         ).collectLatest {
             if (this.isActive) {
                 when (it) {

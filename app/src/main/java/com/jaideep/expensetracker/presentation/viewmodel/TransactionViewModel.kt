@@ -15,7 +15,8 @@ import java.time.LocalDate
 import javax.inject.Inject
 
 @HiltViewModel
-class TransactionViewModel @Inject constructor(
+class
+TransactionViewModel @Inject constructor(
     private val transactionRepository: TransactionRepository
 ) : ViewModel() {
     val tabItemsList: ImmutableList<String> = persistentListOf("All", "Income", "Expense")

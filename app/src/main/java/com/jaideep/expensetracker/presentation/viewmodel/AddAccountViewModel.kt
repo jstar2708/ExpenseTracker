@@ -11,10 +11,12 @@ import com.jaideep.expensetracker.data.local.entities.Account
 import com.jaideep.expensetracker.domain.repository.AccountRepository
 import com.jaideep.expensetracker.domain.usecase.GetAllAccountsUseCase
 import com.jaideep.expensetracker.model.TextFieldWithIconAndErrorPopUpState
+import com.jaideep.expensetracker.model.dto.AccountDto
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 import javax.inject.Inject
 
 @HiltViewModel
@@ -23,7 +25,7 @@ class AddAccountViewModel @Inject constructor(
     private val getAllAccountsUseCase: GetAllAccountsUseCase
 ) : ViewModel() {
 
-    private val _accounts: MutableStateFlow<List<Account>> = MutableStateFlow(ArrayList())
+    private val _accounts: MutableStateFlow<List<AccountDto>> = MutableStateFlow(ArrayList())
     val accountState = mutableStateOf(
         TextFieldWithIconAndErrorPopUpState(
             text = "",
@@ -176,7 +178,10 @@ class AddAccountViewModel @Inject constructor(
     ) = viewModelScope.launch(EtDispatcher.io) {
         accountRepository.saveAccount(
             Account(
-                0, accountName, balance.toDouble(), System.currentTimeMillis()
+                0,
+                accountName,
+                balance.toDouble(),
+                LocalDate.ofEpochDay(System.currentTimeMillis() / 86_400_000L)
             )
         )
         isAccountSaved.value = true

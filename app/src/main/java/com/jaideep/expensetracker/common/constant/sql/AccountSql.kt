@@ -1,6 +1,9 @@
 package com.jaideep.expensetracker.common.constant.sql
 
+import com.jaideep.expensetracker.common.constant.column.Account
+
 object AccountSql {
-    const val GET_ALL_ACCOUNTS: String = "Select * from Account"
-    const val GET_ACCOUNT_BY_ID: String = "Select * from account where id = :accountId"
+    const val GET_ALL_ACCOUNTS: String = "Select ${Account.ALL} from accounts"
+    const val GET_ACCOUNT_BY_ID: String = "Select ${Account.ALL} from accounts where ${Account.ID} = :accountId"
+    const val UPDATE_ACCOUNT_BALANCE: String = "Update accounts set balance = ${Account.BALANCE} + :amount where ${Account.ID} = :accountId"
 }

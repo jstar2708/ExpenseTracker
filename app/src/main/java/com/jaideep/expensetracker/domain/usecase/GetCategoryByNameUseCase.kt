@@ -14,7 +14,13 @@ class GetCategoryByNameUseCase @Inject constructor(
     suspend operator fun invoke(categoryName: String) = flow {
         emit(Resource.Loading())
         val category = categoryRepository.getCategoryByName(categoryName)
-        emit(Resource.Success(CategoryDto(category.categoryName, getCategoryIconId(category.iconName))))
+        emit(
+            Resource.Success(
+                CategoryDto(
+                    category.id, category.name, getCategoryIconId(category.iconName)
+                )
+            )
+        )
     }.catch {
         emit(Resource.Error("Error while fetching category"))
     }

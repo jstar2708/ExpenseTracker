@@ -3,6 +3,7 @@ package com.jaideep.expensetracker.data.local.repositoryimpl
 import com.jaideep.expensetracker.data.local.dao.CategoryDao
 import com.jaideep.expensetracker.data.local.entities.Category
 import com.jaideep.expensetracker.domain.repository.CategoryRepository
+import com.jaideep.expensetracker.model.dto.CategoryDto
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 

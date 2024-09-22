@@ -6,6 +6,7 @@ import androidx.room.ForeignKey.Companion.CASCADE
 import androidx.room.PrimaryKey
 
 @Entity(
+    tableName = "transactions",
     foreignKeys = [ForeignKey(
         entity = Account::class,
         parentColumns = ["id"],
@@ -26,6 +27,6 @@ data class Transaction(
     val accountId: Int,
     val categoryId: Int,
     val message: String,
-    val createdTime: Long,
+    val createdOn: Long,
     val isCredit: Int
 )

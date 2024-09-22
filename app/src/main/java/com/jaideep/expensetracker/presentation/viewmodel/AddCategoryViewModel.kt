@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.jaideep.expensetracker.data.local.entities.Category
 import com.jaideep.expensetracker.domain.repository.CategoryRepository
 import com.jaideep.expensetracker.model.TextFieldWithIconAndErrorPopUpState
+import com.jaideep.expensetracker.model.dto.CategoryDto
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
@@ -19,15 +20,17 @@ class AddCategoryViewModel @Inject constructor(
     private val categoryRepository: CategoryRepository
 ) : ViewModel() {
 
-    private val _categories: MutableStateFlow<List<Category>> = MutableStateFlow(ArrayList())
+    private val _categories: MutableStateFlow<List<CategoryDto>> = MutableStateFlow(ArrayList())
 
     val categoryState = mutableStateOf(
-        TextFieldWithIconAndErrorPopUpState(text = "",
+        TextFieldWithIconAndErrorPopUpState(
+            text = "",
             isError = false,
             showError = false,
             onValueChange = { updateCategoryTextState(it) },
             onErrorIconClick = { updateCategoryErrorState() },
-            errorMessage = "")
+            errorMessage = ""
+        )
     )
     var errorMessage = mutableStateOf("")
         private set
@@ -71,7 +74,7 @@ class AddCategoryViewModel @Inject constructor(
     private fun checkCategoryError(): Boolean {
         val isCategoryBlank = categoryState.value.text.isBlank()
         val duplicateCategory = _categories.value.stream().anyMatch {
-            it.categoryName.toLowerCase(Locale.current) == categoryState.value.text.toLowerCase(
+            it.name.toLowerCase(Locale.current) == categoryState.value.text.toLowerCase(
                 Locale.current
             )
         }
@@ -96,7 +99,7 @@ class AddCategoryViewModel @Inject constructor(
             } else {
                 categoryRepository.saveCategory(
                     Category(
-                        0, categoryName, iconName = "category_icon"
+                        0, categoryName, "Other"
                     )
                 )
                 isCategorySaved.value = true

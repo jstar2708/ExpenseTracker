@@ -3,12 +3,13 @@ package com.jaideep.expensetracker.data.local.entities
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import java.time.LocalDate
 
 
-@Entity(indices = [Index(value = ["accountName"], unique = true)])
+@Entity(tableName = "accounts", indices = [Index(value = ["name"], unique = true)])
 data class Account(
     @PrimaryKey(autoGenerate = true) var id: Int,
-    val accountName: String,
+    val name: String,
     val balance: Double,
-    val createdOn: Long
+    val createdOn: LocalDate
 )

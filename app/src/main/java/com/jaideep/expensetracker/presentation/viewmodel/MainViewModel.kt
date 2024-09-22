@@ -10,31 +10,25 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import androidx.paging.map
-import com.jaideep.expensetracker.R
-import com.jaideep.expensetracker.common.AppComponents.getCategoryIconId
 import com.jaideep.expensetracker.common.EtDispatcher
 import com.jaideep.expensetracker.common.Resource
 import com.jaideep.expensetracker.common.constant.TransactionMethod
-import com.jaideep.expensetracker.data.local.entities.Account
 import com.jaideep.expensetracker.data.local.entities.Category
-import com.jaideep.expensetracker.data.local.entities.Transaction
 import com.jaideep.expensetracker.domain.repository.CategoryRepository
 import com.jaideep.expensetracker.domain.repository.TransactionPagingRepository
 import com.jaideep.expensetracker.domain.usecase.GetAllAccountsUseCase
 import com.jaideep.expensetracker.domain.usecase.GetAllCategoriesUseCase
 import com.jaideep.expensetracker.domain.usecase.GetAllCategoryCardsDataUseCase
 import com.jaideep.expensetracker.domain.usecase.GetInitialTransactionsUseCase
-import com.jaideep.expensetracker.exception.AccountNotFoundException
 import com.jaideep.expensetracker.model.CategoryCardData
 import com.jaideep.expensetracker.model.CategoryCardPayload
 import com.jaideep.expensetracker.model.RunJobForData
 import com.jaideep.expensetracker.model.TransactionMethodData
 import com.jaideep.expensetracker.model.TransactionMethodDataForDates
+import com.jaideep.expensetracker.model.dto.AccountDto
 import com.jaideep.expensetracker.model.dto.CategoryDto
 import com.jaideep.expensetracker.model.dto.TransactionDto
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -43,7 +37,6 @@ import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.isActive
@@ -63,36 +56,19 @@ class MainViewModel @Inject constructor(
     private val getAllCategoryCardsDataUseCase: GetAllCategoryCardsDataUseCase,
     private val categoryRepository: CategoryRepository
 ) : ViewModel() {
-    private val _accounts: MutableStateFlow<List<Account>> = MutableStateFlow(ArrayList())
+    private val _accounts: MutableStateFlow<List<AccountDto>> = MutableStateFlow(ArrayList())
     var accounts: StateFlow<List<String>> = _accounts.map { list ->
         list.asFlow().map { it.accountName }.toList().toMutableList().apply {
             this.add(0, "All Accounts")
         }
     }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
-    private val _categories: MutableStateFlow<List<Category>> = MutableStateFlow(ArrayList())
-    var categories: StateFlow<List<CategoryDto>> = _categories.map {
-        it.asFlow().map { category ->
-            CategoryDto(
-                category.categoryName, getCategoryIconId(category.iconName)
-            )
-        }.toList()
-    }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
+    private val _categories: MutableStateFlow<List<CategoryDto>> = MutableStateFlow(ArrayList())
+    var categories: StateFlow<List<CategoryDto>> = _categories.asStateFlow()
 
-    private val _transactions: MutableStateFlow<List<Transaction>> = MutableStateFlow(ArrayList())
-    var transactions: StateFlow<List<TransactionDto>> = _transactions.map {
-        it.asFlow().map { transaction ->
-            TransactionDto(
-                getAccountName(transaction.accountId),
-                transaction.id,
-                transaction.amount,
-                getCategoryDto(transaction.categoryId),
-                transaction.message,
-                LocalDate.ofEpochDay(transaction.createdTime / 86_400_000L),
-                transaction.isCredit == 1
-            )
-        }.toList()
-    }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
+    private val _transactions: MutableStateFlow<List<TransactionDto>> =
+        MutableStateFlow(ArrayList())
+    var transactions: StateFlow<List<TransactionDto>> = _transactions.asStateFlow()
 
     private val _transactionMethodData: MutableStateFlow<TransactionMethodData> = MutableStateFlow(
         TransactionMethodData(
@@ -105,23 +81,10 @@ class MainViewModel @Inject constructor(
     var categoryCardsData: StateFlow<List<CategoryCardData>> =
         _categoryCardsData.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     private val _pagedTransactionItems: MutableStateFlow<Flow<PagingData<TransactionDto>>> =
         MutableStateFlow(Pager(config = PagingConfig(pageSize = 50), pagingSourceFactory = {
             transactionPagingRepository.getAllTransactions()
-        }).flow.mapLatest { pagingData ->
-            pagingData.map { transaction ->
-                TransactionDto(
-                    getAccountName(transaction.accountId),
-                    transaction.id,
-                    transaction.amount,
-                    getCategoryDto(transaction.categoryId),
-                    transaction.message,
-                    LocalDate.ofEpochDay(transaction.createdTime / 86_400_000L),
-                    transaction.isCredit == 1
-                )
-            }
-        }.cachedIn(viewModelScope))
+        }).flow.cachedIn(viewModelScope))
 
     val pagedTransactionItems = _pagedTransactionItems.asStateFlow()
 
@@ -200,19 +163,19 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch(EtDispatcher.io) {
             categoryRepository.saveAllCategories(
                 listOf(
-                    Category(1, "Food", "Food"),
-                    Category(2, "Fuel", "Fuel"),
-                    Category(3, "Entertainment", "Entertainment"),
-                    Category(4, "Shopping", "Shopping"),
-                    Category(5, "Travel", "Travel")
+                    Category(0, "Food", "Food"),
+                    Category(0, "Fuel", "Fuel"),
+                    Category(0, "Entertainment", "Entertainment"),
+                    Category(0, "Shopping", "Shopping"),
+                    Category(0, "Travel", "Travel")
                 )
             )
             initData()
         }
     }
 
-    private fun getAllAccounts() = viewModelScope.launch {
-        getAllAccountsUseCase().collect {
+    private fun getAllAccounts() = viewModelScope.launch(EtDispatcher.io) {
+        getAllAccountsUseCase().collectLatest {
             when (it) {
                 is Resource.Loading -> {
                     isAccountLoading = true
@@ -243,7 +206,7 @@ class MainViewModel @Inject constructor(
     }
 
     private fun getAllCategories() = viewModelScope.launch(EtDispatcher.io) {
-        getAllCategoriesUseCase().collect {
+        getAllCategoriesUseCase().collectLatest {
             when (it) {
                 is Resource.Loading -> {
                     isCategoryLoading = true
@@ -351,7 +314,6 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     private fun getTransactionPagingSource() = viewModelScope.launch {
         _transactionMethodData.collectLatest { transactionMethodData ->
             _pagedTransactionItems.value =
@@ -416,42 +378,8 @@ class MainViewModel @Inject constructor(
                         else -> transactionPagingRepository.getAllTransactions()
 
                     }
-                }).flow.mapLatest { pagingData ->
-                    pagingData.map { transaction ->
-                        TransactionDto(
-                            getAccountName(transaction.accountId),
-                            transaction.id,
-                            transaction.amount,
-                            getCategoryDto(transaction.categoryId),
-                            transaction.message,
-                            LocalDate.ofEpochDay(transaction.createdTime / 86_400_000L),
-                            transaction.isCredit == 1
-                        )
-                    }
-                }.cachedIn(viewModelScope)
+                }).flow.cachedIn(viewModelScope)
         }
-    }
-
-    @Throws(AccountNotFoundException::class)
-    private fun getAccountName(accountId: Int): String {
-        val account = _accounts.value.find { account ->
-            account.id == accountId
-        }
-        if (account == null) {
-            throw AccountNotFoundException("Account not found with Id : $accountId")
-        }
-        return account.accountName
-    }
-
-    private fun getCategoryDto(categoryId: Int): CategoryDto {
-        val category: Category? = _categories.value.find {
-            categoryId == it.id
-        }
-        var categoryDto = CategoryDto("Other", R.drawable.category)
-        category?.let {
-            categoryDto = CategoryDto(it.categoryName, getCategoryIconId(it.iconName))
-        }
-        return categoryDto
     }
 
     fun checkFirstAppInitialization() {

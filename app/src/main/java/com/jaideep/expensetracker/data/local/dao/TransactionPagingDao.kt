@@ -19,59 +19,63 @@ import com.jaideep.expensetracker.common.constant.sql.TransactionPagingSql.GET_D
 import com.jaideep.expensetracker.common.constant.sql.TransactionPagingSql.GET_TRANSACTIONS_BETWEEN_DATES
 import com.jaideep.expensetracker.common.constant.sql.TransactionPagingSql.GET_TRANSACTION_BY_ID
 import com.jaideep.expensetracker.data.local.entities.Transaction
+import com.jaideep.expensetracker.model.dto.TransactionDto
 
 @Dao
 interface TransactionPagingDao {
     @Query(GET_ACCOUNT_TRANSACTIONS)
-    fun getTransactionsForAccount(accountId: Int): PagingSource<Int, Transaction>
+    fun getTransactionsForAccount(accountId: Int): PagingSource<Int, TransactionDto>
 
     @Query(GET_ACCOUNT_DEBIT_TRANSACTIONS)
-    fun getDebitTransactionsForAccount(accountId: Int): PagingSource<Int, Transaction>
+    fun getDebitTransactionsForAccount(accountId: Int): PagingSource<Int, TransactionDto>
 
     @Query(GET_ACCOUNT_CREDIT_TRANSACTIONS)
-    fun getCreditTransactionsForAccount(accountId: Int): PagingSource<Int, Transaction>
+    fun getCreditTransactionsForAccount(accountId: Int): PagingSource<Int, TransactionDto>
 
     @Query(GET_ACCOUNT_CREDIT_TRANSACTIONS_BETWEEN_DATES)
     fun getCreditTransactionBetweenDatesForAccount(
         accountId: Int, startDate: Long, endDate: Long
-    ): PagingSource<Int, Transaction>
+    ): PagingSource<Int, TransactionDto>
 
     @Query(GET_ACCOUNT_DEBIT_TRANSACTIONS_BETWEEN_DATES)
     fun getDebitTransactionBetweenDatesForAccount(
         accountId: Int, startDate: Long, endDate: Long
-    ): PagingSource<Int, Transaction>
+    ): PagingSource<Int, TransactionDto>
 
     @Query(GET_ACCOUNT_TRANSACTIONS_BETWEEN_DATES)
     fun getTransactionBetweenDatesForAccount(
         accountId: Int, startDate: Long, endDate: Long
-    ): PagingSource<Int, Transaction>
+    ): PagingSource<Int, TransactionDto>
 
     @Query(GET_ALL_TRANSACTIONS)
-    fun getAllTransactions(): PagingSource<Int, Transaction>
+    fun getAllTransactions(): PagingSource<Int, TransactionDto>
 
     @Query(GET_ALL_DEBIT_TRANSACTIONS)
-    fun getDebitTransactions(): PagingSource<Int, Transaction>
+    fun getDebitTransactions(): PagingSource<Int, TransactionDto>
 
     @Query(GET_ALL_CREDIT_TRANSACTIONS)
-    fun getCreditTransactions(): PagingSource<Int, Transaction>
+    fun getCreditTransactions(): PagingSource<Int, TransactionDto>
 
     @Query(GET_CREDIT_TRANSACTIONS_BETWEEN_DATES)
     fun getCreditTransactionBetweenDates(
         startDate: Long, endDate: Long
-    ): PagingSource<Int, Transaction>
+    ): PagingSource<Int, TransactionDto>
 
     @Query(GET_DEBIT_TRANSACTIONS_BETWEEN_DATES)
     fun getDebitTransactionBetweenDates(
         startDate: Long,
         endDate: Long,
-    ): PagingSource<Int, Transaction>
+    ): PagingSource<Int, TransactionDto>
 
     @Query(GET_TRANSACTIONS_BETWEEN_DATES)
-    fun getTransactionBetweenDates(startDate: Long, endDate: Long): PagingSource<Int, Transaction>
+    fun getTransactionBetweenDates(
+        startDate: Long,
+        endDate: Long
+    ): PagingSource<Int, TransactionDto>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun saveTransaction(transaction: Transaction)
 
     @Query(GET_TRANSACTION_BY_ID)
-    suspend fun getTransactionById(transactionId: Int): Transaction
+    suspend fun getTransactionById(transactionId: Int): TransactionDto
 }

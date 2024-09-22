@@ -3,11 +3,16 @@ plugins {
     id("org.jetbrains.kotlin.android")
     kotlin("kapt")
     id("com.google.dagger.hilt.android")
+    id("androidx.room")
 }
 
 android {
     namespace = "com.jaideep.expensetracker"
     compileSdk = 34
+
+    room {
+        schemaDirectory("$rootDir/schemas")
+    }
 
     defaultConfig {
         applicationId = "com.jaideep.expensetracker"

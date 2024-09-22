@@ -40,7 +40,6 @@ import com.jaideep.expensetracker.R
 import com.jaideep.expensetracker.common.AddScreen
 import com.jaideep.expensetracker.common.constant.AppConstants.CREATE_SCREEN
 import com.jaideep.expensetracker.model.DialogState
-import com.jaideep.expensetracker.model.dto.CategoryDto
 import com.jaideep.expensetracker.model.dto.TransactionDto
 import com.jaideep.expensetracker.presentation.component.SimpleText
 import com.jaideep.expensetracker.presentation.component.card.ExpenseTrackerTransactionCardItem
@@ -51,6 +50,7 @@ import com.jaideep.expensetracker.presentation.component.other.ExpenseTrackerPro
 import com.jaideep.expensetracker.presentation.component.other.ExpenseTrackerSpinner
 import com.jaideep.expensetracker.presentation.component.other.ExpenseTrackerTabLayout
 import com.jaideep.expensetracker.presentation.theme.AppTheme
+import com.jaideep.expensetracker.presentation.utility.Utility.getCategoryIconId
 import com.jaideep.expensetracker.presentation.viewmodel.MainViewModel
 import com.jaideep.expensetracker.presentation.viewmodel.TransactionViewModel
 import kotlinx.collections.immutable.ImmutableList
@@ -70,41 +70,51 @@ fun TransactionScreenPreview() {
                 TransactionDto(
                     transactionId = 0,
                     amount = 200.0,
-                    categoryDto = CategoryDto("Food", R.drawable.food),
+                    categoryName = "Food",
+                    iconName = "Food",
+                    categoryId = 0,
                     message = "No Message",
-                    createdTime = LocalDate.now(),
+                    createdOn = LocalDate.now(),
                     isCredit = true,
                     accountName = "PNB",
                 ), TransactionDto(
                     transactionId = 0,
                     amount = 200.0,
-                    categoryDto = CategoryDto("Food", R.drawable.food),
+                    categoryName = "Food",
+                    iconName = "Food",
+                    categoryId = 0,
                     message = "No Message",
-                    createdTime = LocalDate.now(),
+                    createdOn = LocalDate.now(),
                     isCredit = true,
                     accountName = "PNB",
                 ), TransactionDto(
                     transactionId = 0,
                     amount = 200.0,
-                    categoryDto = CategoryDto("Food", R.drawable.food),
+                    categoryName = "Food",
+                    iconName = "Food",
+                    categoryId = 0,
                     message = "No Message",
-                    createdTime = LocalDate.now(),
+                    createdOn = LocalDate.now(),
                     isCredit = true,
                     accountName = "PNB",
                 ), TransactionDto(
                     transactionId = 0,
                     amount = 200.0,
-                    categoryDto = CategoryDto("Food", R.drawable.food),
+                    categoryName = "Food",
+                    iconName = "Food",
+                    categoryId = 0,
                     message = "No Message",
-                    createdTime = LocalDate.now(),
+                    createdOn = LocalDate.now(),
                     isCredit = true,
                     accountName = "PNB",
                 ), TransactionDto(
                     transactionId = 0,
                     amount = 200.0,
-                    categoryDto = CategoryDto("Food", R.drawable.food),
+                    categoryName = "Food",
+                    iconName = "Food",
+                    categoryId = 0,
                     message = "No Message",
-                    createdTime = LocalDate.now(),
+                    createdOn = LocalDate.now(),
                     isCredit = true,
                     accountName = "PNB",
                 )
@@ -304,17 +314,17 @@ fun TransactionScreen(
                 ) {
                     items(transactions.size) {
                         ExpenseTrackerTransactionCardItem(
-                            iconId = transactions[it].categoryDto.iconId,
+                            iconId = getCategoryIconId(transactions[it].iconName),
                             iconDescription = "Category icon",
-                            categoryName = transactions[it].categoryDto.name,
+                            categoryName = transactions[it].categoryName,
                             transactionDescription = transactions[it].message,
                             amount = transactions[it].amount.toString(),
                             isCredit = transactions[it].isCredit,
                             transactionId = transactions[it].transactionId,
                             onDeleteIconClicked = onTransactionDeleteClicked,
-                            onEditIconClicked = { navControllerRoot.navigate("${AddScreen.CREATE_UPDATE_TRANSACTION}/${transactions[it].transactionId}") },
+                            onEditIconClicked = { transactionId -> navControllerRoot.navigate("${AddScreen.CREATE_UPDATE_TRANSACTION}/${transactionId}") },
                             accountName = transactions[it].accountName,
-                            transactionDate = transactions[it].createdTime.toString()
+                            transactionDate = transactions[it].createdOn.toString()
                         )
                     }
                 }

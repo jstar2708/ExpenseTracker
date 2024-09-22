@@ -102,6 +102,7 @@ fun AddTransactionPreview() {
             toggleRadioButton = {},
             saveTransaction = {},
             backPress = {},
+            buttonText = "Save",
             exitScreen = false,
         )
     }
@@ -143,6 +144,7 @@ fun CUTransactionScreenRoot(
             amountState = viewModel.amountState.value,
             categoryState = viewModel.categoryState.value,
             dateState = viewModel.dateState.value,
+            buttonText = viewModel.buttonText,
             backPress = {
                 val savedStateHandle = navControllerRoot.previousBackStackEntry?.savedStateHandle
                 savedStateHandle?.set("isTransactionSaved", viewModel.isTransactionSaved)
@@ -157,6 +159,7 @@ fun CUTransactionScreen(
     detailsMessage: String,
     screenTitle: String,
     exitScreen: Boolean,
+    buttonText: String,
     accounts: ImmutableList<String>,
     categories: ImmutableList<String>,
     accountState: TextFieldWithIconAndErrorPopUpState,
@@ -300,7 +303,7 @@ fun CUTransactionScreen(
                         onClick = saveTransaction
                     ) {
                         Text(
-                            text = "Save", color = Color.Blue
+                            text = buttonText, color = Color.Blue
                         )
                     }
                 }

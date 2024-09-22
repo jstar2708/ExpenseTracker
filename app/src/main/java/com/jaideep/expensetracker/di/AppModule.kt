@@ -9,11 +9,13 @@ import com.jaideep.expensetracker.data.local.dao.TransactionPagingDao
 import com.jaideep.expensetracker.data.local.database.EtDatabase
 import com.jaideep.expensetracker.data.local.repositoryimpl.AccountRepositoryImpl
 import com.jaideep.expensetracker.data.local.repositoryimpl.CategoryRepositoryImpl
+import com.jaideep.expensetracker.data.local.repositoryimpl.CrudRepositoryImpl
 import com.jaideep.expensetracker.data.local.repositoryimpl.EtRepositoryImpl
 import com.jaideep.expensetracker.data.local.repositoryimpl.TransactionPagingRepositoryImpl
 import com.jaideep.expensetracker.data.local.repositoryimpl.TransactionRepositoryImpl
 import com.jaideep.expensetracker.domain.repository.AccountRepository
 import com.jaideep.expensetracker.domain.repository.CategoryRepository
+import com.jaideep.expensetracker.domain.repository.CrudRepository
 import com.jaideep.expensetracker.domain.repository.EtRepository
 import com.jaideep.expensetracker.domain.repository.TransactionPagingRepository
 import com.jaideep.expensetracker.domain.repository.TransactionRepository
@@ -91,5 +93,11 @@ object AppModule {
     @Singleton
     fun providesTransactionRepository(transactionDao: TransactionDao): TransactionRepository {
         return TransactionRepositoryImpl(transactionDao)
+    }
+
+    @Provides
+    @Singleton
+    fun providesCrudRepository(accountDao: AccountDao, transactionDao: TransactionDao, categoryDao: CategoryDao): CrudRepository{
+        return CrudRepositoryImpl(accountDao, transactionDao, categoryDao)
     }
 }

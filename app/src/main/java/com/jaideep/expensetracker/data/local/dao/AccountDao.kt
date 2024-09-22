@@ -7,6 +7,7 @@ import androidx.room.Query
 import androidx.room.Update
 import com.jaideep.expensetracker.common.constant.sql.AccountSql.GET_ACCOUNT_BY_ID
 import com.jaideep.expensetracker.common.constant.sql.AccountSql.GET_ALL_ACCOUNTS
+import com.jaideep.expensetracker.common.constant.sql.AccountSql.UPDATE_ACCOUNT_BALANCE
 import com.jaideep.expensetracker.data.local.entities.Account
 import kotlinx.coroutines.flow.Flow
 
@@ -23,4 +24,7 @@ interface AccountDao {
 
     @Update
     suspend fun updateAccount(account: Account)
+
+    @Query(UPDATE_ACCOUNT_BALANCE)
+    suspend fun updateAccountBalance(accountId: Int, amount: Double)
 }

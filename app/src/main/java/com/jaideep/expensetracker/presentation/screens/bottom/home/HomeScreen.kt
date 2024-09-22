@@ -45,6 +45,7 @@ import com.jaideep.expensetracker.presentation.component.other.ExpenseTrackerApp
 import com.jaideep.expensetracker.presentation.component.other.ExpenseTrackerProgressBar
 import com.jaideep.expensetracker.presentation.component.other.ExpenseTrackerSpinner
 import com.jaideep.expensetracker.presentation.theme.AppTheme
+import com.jaideep.expensetracker.presentation.utility.Utility.getCategoryIconId
 import com.jaideep.expensetracker.presentation.viewmodel.HomeViewModel
 import com.jaideep.expensetracker.presentation.viewmodel.MainViewModel
 import kotlinx.collections.immutable.ImmutableList
@@ -169,8 +170,7 @@ fun HomeScreen(
                         modifier = Modifier.weight(1f)
                     )
                 }
-                ExpenseTrackerSpinner(
-                    values = accounts,
+                ExpenseTrackerSpinner(values = accounts,
                     initialValue = selectedAccount,
                     onValueChanged = { value ->
                         onAccountSpinnerValueChanged(value)
@@ -216,9 +216,9 @@ fun TransactionSummary(transactions: List<TransactionDto>) {
         ) {
             items(transactions.size) {
                 ExpenseTrackerTransactionCardItem(
-                    iconId = transactions[it].categoryDto.iconId,
+                    iconId = getCategoryIconId(transactions[it].iconName),
                     iconDescription = "Category icon",
-                    categoryName = transactions[it].categoryDto.name,
+                    categoryName = transactions[it].categoryName,
                     transactionDescription = transactions[it].message,
                     amount = transactions[it].amount.toString(),
                     isCredit = transactions[it].isCredit,
@@ -226,7 +226,7 @@ fun TransactionSummary(transactions: List<TransactionDto>) {
                     onDeleteIconClicked = {},
                     onEditIconClicked = {},
                     accountName = "",
-                    transactionDate = transactions[it].createdTime.toString()
+                    transactionDate = transactions[it].createdOn.toString()
                 )
             }
         }

@@ -43,6 +43,7 @@ import com.jaideep.expensetracker.presentation.component.dialog.FilterDialog
 import com.jaideep.expensetracker.presentation.component.other.ExpenseTrackerAppBar
 import com.jaideep.expensetracker.presentation.component.other.ExpenseTrackerProgressBar
 import com.jaideep.expensetracker.presentation.component.other.ExpenseTrackerSpinner
+import com.jaideep.expensetracker.presentation.utility.Utility.getCategoryIconId
 import com.jaideep.expensetracker.presentation.viewmodel.CategoryDetailsViewModel
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
@@ -222,9 +223,9 @@ fun CategoryDetailsScreen(
                 ) {
                     items(transactions.size) { i ->
                         ExpenseTrackerTransactionCardItem(
-                            iconId = transactions[i].categoryDto.iconId,
+                            iconId = getCategoryIconId(transactions[i].iconName),
                             iconDescription = "Category icon",
-                            categoryName = transactions[i].categoryDto.name,
+                            categoryName = transactions[i].categoryName,
                             transactionDescription = transactions[i].message,
                             amount = transactions[i].amount.toString(),
                             isCredit = transactions[i].isCredit,
@@ -232,7 +233,7 @@ fun CategoryDetailsScreen(
                             onDeleteIconClicked = {},
                             onEditIconClicked = { },
                             accountName = transactions[i].accountName,
-                            transactionDate = transactions[i].createdTime.toString()
+                            transactionDate = transactions[i].createdOn.toString()
                         )
                     }
                 }

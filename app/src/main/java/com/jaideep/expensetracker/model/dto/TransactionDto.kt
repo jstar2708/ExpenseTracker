@@ -6,8 +6,10 @@ data class TransactionDto(
     val accountName: String,
     val transactionId: Int,
     val amount: Double,
-    val categoryDto: CategoryDto,
+    val categoryId: Int,
+    val categoryName: String,
+    val iconName: String,
     val message: String,
-    val createdTime: LocalDate,
+    val createdOn: LocalDate,
     val isCredit: Boolean
 )
