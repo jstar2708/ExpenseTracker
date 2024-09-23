@@ -6,7 +6,7 @@ import com.jaideep.expensetracker.common.constant.column.Transaction
 
 object TransactionSql {
     const val TRANSACTION_COLUMNS =
-        "${Transaction.ID} as transactionId, ${Transaction.MESSAGE}, ${Transaction.AMOUNT}," + " ${Account.NAME} as accountName, ${Transaction.CREATED_ON}, ${Transaction.IS_CREDIT}, ${Category.ID} as categoryId, ${Category.CATEGORY_NAME} as categoryName, ${Category.ICON_NAME} as iconName" + " FROM transactions inner join categories on ${Transaction.ID} = ${Category.ID} inner join accounts on " + "${Transaction.ACCOUNT_ID} = ${Account.ID}"
+        "${Transaction.ID} as transactionId, IFNULL(${Transaction.MESSAGE}, \"\") as message, ${Transaction.AMOUNT}," + " ${Account.NAME} as accountName, ${Transaction.CREATED_ON}, ${Transaction.IS_CREDIT}, ${Category.ID} as categoryId, ${Category.CATEGORY_NAME} as categoryName, ${Category.ICON_NAME} as iconName" + " FROM transactions inner join categories on ${Transaction.CATEGORY_ID} = ${Category.ID} inner join accounts on " + "${Transaction.ACCOUNT_ID} = ${Account.ID}"
     const val DELETE_TRANSACTION_BY_ID =
         "DELETE FROM transactions where ${Transaction.ID} = :transactionId"
     const val GET_TRANSACTION_BY_ID =
