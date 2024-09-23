@@ -223,6 +223,7 @@ fun TransactionSummary(transactions: List<TransactionDto>) {
                     amount = transactions[it].amount.toString(),
                     isCredit = transactions[it].isCredit,
                     transactionId = transactions[it].transactionId,
+                    hideDropDownIcon = true,
                     onDeleteIconClicked = {},
                     onEditIconClicked = {},
                     accountName = "",

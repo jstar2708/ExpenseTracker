@@ -80,6 +80,7 @@ fun ExpenseTrackerTransactionCardItem(
     isCardExpanded: Boolean = false,
     transactionDate: String,
     accountName: String,
+    hideDropDownIcon: Boolean = false,
     onDeleteIconClicked: (id: Int) -> Unit,
     onEditIconClicked: (id: Int) -> Unit,
 ) {
@@ -132,17 +133,19 @@ fun ExpenseTrackerTransactionCardItem(
                 color = if (isCredit) greenColor else Color.Black
             )
 
-            Icon(
-                imageVector = if (expandCard.value) Icons.Filled.KeyboardArrowDown else Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                contentDescription = "",
-                modifier = Modifier
-                    .size(25.dp)
-                    .padding(4.dp)
-                    .clickable {
-                        expandCard.value = !expandCard.value
-                    },
-                tint = Color.Gray
-            )
+            if (!hideDropDownIcon) {
+                Icon(
+                    imageVector = if (expandCard.value) Icons.Filled.KeyboardArrowDown else Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                    contentDescription = "",
+                    modifier = Modifier
+                        .size(25.dp)
+                        .padding(4.dp)
+                        .clickable {
+                            expandCard.value = !expandCard.value
+                        },
+                    tint = Color.Gray
+                )
+            }
         }
 
         if (expandCard.value) {

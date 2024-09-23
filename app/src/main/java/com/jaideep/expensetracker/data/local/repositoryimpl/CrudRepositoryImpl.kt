@@ -25,8 +25,7 @@ class CrudRepositoryImpl @Inject constructor(
 
     @androidx.room.Transaction
     override suspend fun updateTransactionAndUpdateBalance(
-        transaction: Transaction,
-        previousAmount: Double
+        transaction: Transaction, previousAmount: Double
     ) {
         transactionDao.updateTransaction(transaction)
         accountDao.updateAccountBalance(
