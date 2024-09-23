@@ -407,7 +407,7 @@ class AddTransactionViewModel @Inject constructor(
                                 stringDateToMillis(date),
                                 isCredit xor 1
                             ),
-                            transaction.amount
+                            if (transaction.isCredit) -transaction.amount else transaction.amount
                         )
                         isTransactionSaved = true
                         exitScreen = true

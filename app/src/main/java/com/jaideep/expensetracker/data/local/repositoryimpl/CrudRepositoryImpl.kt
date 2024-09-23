@@ -31,7 +31,8 @@ class CrudRepositoryImpl @Inject constructor(
         transactionDao.updateTransaction(transaction)
         accountDao.updateAccountBalance(
             transaction.accountId,
-            if (transaction.isCredit == 1) -previousAmount + transaction.amount else -previousAmount - transaction.amount
+            if (transaction.isCredit == 1) previousAmount + transaction.amount else previousAmount - transaction.amount
         )
     }
 }
+
