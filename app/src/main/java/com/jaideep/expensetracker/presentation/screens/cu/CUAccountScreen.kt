@@ -70,12 +70,12 @@ private fun AddAccountScreenPreview() {
 @Composable
 fun CUAccountScreenRoot(
     navController: NavHostController,
-    isAdd: Int,
+    accountId: Int,
     addAccountViewModel: AddAccountViewModel = hiltViewModel()
 ) {
 
     LaunchedEffect(key1 = true) {
-        addAccountViewModel.initData()
+        addAccountViewModel.initData(accountId)
     }
 
     if (addAccountViewModel.isAccountLoading) {

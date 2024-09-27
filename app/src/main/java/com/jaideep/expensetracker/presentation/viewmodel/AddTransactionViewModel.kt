@@ -30,7 +30,6 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.time.delay
-import kotlinx.coroutines.withContext
 import java.time.Duration
 import java.time.LocalDate
 import java.time.format.DateTimeParseException
@@ -321,11 +320,9 @@ class AddTransactionViewModel @Inject constructor(
         getAllCategoriesUseCase().collect {
             when (it) {
                 is Resource.Error -> {
-                    withContext(EtDispatcher.main) {
-                        errorMessage = it.message
-                        categoryRetrievalError = true
-                        isCategoryLoading = false
-                    }
+                    errorMessage = it.message
+                    categoryRetrievalError = true
+                    isCategoryLoading = false
                 }
 
                 is Resource.Success -> {
@@ -406,8 +403,7 @@ class AddTransactionViewModel @Inject constructor(
                                 note,
                                 stringDateToMillis(date),
                                 isCredit xor 1
-                            ),
-                            if (transaction.isCredit) -transaction.amount else transaction.amount
+                            ), if (transaction.isCredit) -transaction.amount else transaction.amount
                         )
                         isTransactionSaved = true
                         exitScreen = true

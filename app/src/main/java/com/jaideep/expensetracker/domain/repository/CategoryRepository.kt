@@ -10,4 +10,5 @@ interface CategoryRepository {
     suspend fun saveAllCategories(categories: List<Category>)
     suspend fun getAllCategoriesCount(): Int
     suspend fun getCategoryByName(categoryName: String): Category
+    fun updateCategory(category: Category)
 }

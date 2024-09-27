@@ -34,4 +34,8 @@ class CategoryRepositoryImpl @Inject constructor(
         return dao.getCategoryByName(categoryName)
     }
 
+    override fun updateCategory(category: Category) {
+        return dao.updateCategory(category)
+    }
+
 }

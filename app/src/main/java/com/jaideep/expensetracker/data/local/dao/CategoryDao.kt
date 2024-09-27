@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Update
 import com.jaideep.expensetracker.common.constant.sql.CategorySql.GET_ALL_CATEGORIES
 import com.jaideep.expensetracker.common.constant.sql.CategorySql.GET_ALL_CATEGORIES_COUNT
 import com.jaideep.expensetracker.common.constant.sql.CategorySql.GET_CATEGORY_BY_ID
@@ -30,4 +31,7 @@ interface CategoryDao {
 
     @Query(GET_CATEGORY_BY_NAME)
     suspend fun getCategoryByName(categoryName: String): Category
+
+    @Update(onConflict = OnConflictStrategy.REPLACE)
+    fun updateCategory(category: Category)
 }

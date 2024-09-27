@@ -49,7 +49,7 @@ fun RootNavigationGraph(mainViewModel: MainViewModel) {
                 this.type = NavType.IntType
             })
         ) { navBackStackEntry ->
-            val categoryId = navBackStackEntry.arguments?.getBoolean("id") ?: CREATE_SCREEN
+            val categoryId = navBackStackEntry.arguments?.getInt("id") ?: CREATE_SCREEN
             CUCategoryScreenRoot(navHostControllerRoot, categoryId)
         }
         composable(

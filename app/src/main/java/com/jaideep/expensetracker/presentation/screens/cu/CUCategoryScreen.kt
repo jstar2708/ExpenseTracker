@@ -3,12 +3,14 @@ package com.jaideep.expensetracker.presentation.screens.cu
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBalanceWallet
@@ -31,6 +33,7 @@ import com.jaideep.expensetracker.model.TextFieldWithIconAndErrorPopUpState
 import com.jaideep.expensetracker.presentation.component.HeadingTextBold
 import com.jaideep.expensetracker.presentation.component.SimpleText
 import com.jaideep.expensetracker.presentation.component.SimpleTextBold
+import com.jaideep.expensetracker.presentation.component.other.ExpenseTrackerProgressBar
 import com.jaideep.expensetracker.presentation.component.textfield.TextFieldWithIconAndErrorPopUp
 import com.jaideep.expensetracker.presentation.theme.AppTheme
 import com.jaideep.expensetracker.presentation.viewmodel.AddCategoryViewModel
@@ -49,6 +52,9 @@ private fun AddCategoryScreenPreview() {
             ),
             exitScreen = false,
             saveCategory = {},
+            screenTitle = "Add Category",
+            screenDetails = "Please provide category details",
+            buttonText = "Save"
         ) {
 
         }
@@ -57,15 +63,32 @@ private fun AddCategoryScreenPreview() {
 
 @Composable
 fun CUCategoryScreenRoot(
-    navControllerRoot: NavHostController,
-    isAdd: Comparable<*>
+    navControllerRoot: NavHostController, categoryId: Int
 ) {
     val addCategoryViewModel: AddCategoryViewModel = hiltViewModel()
-    AppTheme {
+    LaunchedEffect(key1 = true) {
+        addCategoryViewModel.initData(categoryId)
+    }
+    if (addCategoryViewModel.isCategoryLoading.value) {
+        ExpenseTrackerProgressBar(Modifier.size(50.dp))
+    } else if (addCategoryViewModel.categoryRetrievalError.value) {
+        Row(
+            modifier = Modifier.fillMaxSize(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Absolute.Center
+        ) {
+            SimpleText(
+                text = "Error loading category data", color = Color.Red
+            )
+        }
+    } else {
         CUCategoryScreen(
             categoryState = addCategoryViewModel.categoryState.value,
             saveCategory = addCategoryViewModel::validateAndSaveCategory,
             exitScreen = addCategoryViewModel.exitScreen.value,
+            screenTitle = addCategoryViewModel.screenTitle.value,
+            screenDetails = addCategoryViewModel.screenDetails.value,
+            buttonText = addCategoryViewModel.buttonText.value
         ) {
             val savedStateHandle = navControllerRoot.previousBackStackEntry?.savedStateHandle
             savedStateHandle?.set("isCategorySaved", addCategoryViewModel.isCategorySaved.value)
@@ -78,6 +101,9 @@ fun CUCategoryScreenRoot(
 fun CUCategoryScreen(
     categoryState: TextFieldWithIconAndErrorPopUpState,
     exitScreen: Boolean,
+    screenTitle: String,
+    screenDetails: String,
+    buttonText: String,
     saveCategory: () -> Unit,
     backPress: () -> Unit
 ) {
@@ -115,12 +141,11 @@ fun CUCategoryScreen(
                 ) {
                     Spacer(modifier = Modifier.height(10.dp))
                     HeadingTextBold(
-                        text = "Add Category", color = MaterialTheme.colorScheme.onPrimary
+                        text = screenTitle, color = MaterialTheme.colorScheme.onPrimary
                     )
                     Spacer(modifier = Modifier.height(20.dp))
                     SimpleText(
-                        text = "Please provide Category details",
-                        color = MaterialTheme.colorScheme.onPrimary
+                        text = screenDetails, color = MaterialTheme.colorScheme.onPrimary
                     )
                     Spacer(modifier = Modifier.height(20.dp))
                     TextFieldWithIconAndErrorPopUp(
@@ -146,7 +171,7 @@ fun CUCategoryScreen(
                             saveCategory()
                         }) {
                         SimpleTextBold(
-                            text = "Save", color = Color.Blue
+                            text = buttonText, color = Color.Blue
                         )
                     }
                 }

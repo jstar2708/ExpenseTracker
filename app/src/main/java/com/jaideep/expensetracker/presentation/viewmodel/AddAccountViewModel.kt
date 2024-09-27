@@ -14,7 +14,9 @@ import com.jaideep.expensetracker.model.TextFieldWithIconAndErrorPopUpState
 import com.jaideep.expensetracker.model.dto.AccountDto
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import javax.inject.Inject
@@ -26,6 +28,9 @@ class AddAccountViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _accounts: MutableStateFlow<List<AccountDto>> = MutableStateFlow(ArrayList())
+    private val _accountDto: MutableStateFlow<AccountDto?> = MutableStateFlow(null)
+    private val _accountId: MutableStateFlow<Int> = MutableStateFlow(-1)
+
     val accountState = mutableStateOf(
         TextFieldWithIconAndErrorPopUpState(
             text = "",
@@ -59,7 +64,8 @@ class AddAccountViewModel @Inject constructor(
         private set
     var isAccountSaved = mutableStateOf(false)
 
-    fun initData() {
+    fun initData(accountId: Int) {
+        _accountId.value = accountId
         getAllAccounts()
     }
 
@@ -72,9 +78,14 @@ class AddAccountViewModel @Inject constructor(
                 }
 
                 is Resource.Success -> {
+                    _accounts.value = it.data
+                    if (_accountId.value != -1) {
+                        _accountDto.value = _accounts.value.asFlow()
+                            .first { accountDto -> accountDto.id == _accountId.value }
+                        fillAccountData()
+                    }
                     isAccountLoading = false
                     accountRetrievalError = false
-                    _accounts.value = it.data
                 }
 
                 is Resource.Error -> {
@@ -82,6 +93,27 @@ class AddAccountViewModel @Inject constructor(
                     accountRetrievalError = true
                 }
             }
+        }
+    }
+
+    private fun fillAccountData() {
+        _accountDto.value?.let { accountDto ->
+            accountState.value = TextFieldWithIconAndErrorPopUpState(
+                text = accountDto.accountName,
+                isError = false,
+                showError = false,
+                onValueChange = accountState.value.onValueChange,
+                onErrorIconClick = accountState.value.onErrorIconClick,
+                errorMessage = ""
+            )
+            amountState.value = TextFieldWithIconAndErrorPopUpState(
+                text = accountDto.balance.toString(),
+                isError = false,
+                showError = false,
+                onValueChange = amountState.value.onValueChange,
+                onErrorIconClick = amountState.value.onErrorIconClick,
+                errorMessage = ""
+            )
         }
     }
 
@@ -176,14 +208,22 @@ class AddAccountViewModel @Inject constructor(
     private fun saveAccount(
         accountName: String, balance: String
     ) = viewModelScope.launch(EtDispatcher.io) {
-        accountRepository.saveAccount(
-            Account(
-                0,
-                accountName,
-                balance.toDouble(),
-                LocalDate.ofEpochDay(System.currentTimeMillis() / 86_400_000L)
+        if (_accountId.value != -1) {
+            _accountDto.value?.let { accountDto ->
+                accountRepository.updateAccount(
+                    Account(accountDto.id, accountName, accountDto.balance, accountDto.createdOn)
+                )
+            }
+        } else {
+            accountRepository.saveAccount(
+                Account(
+                    0,
+                    accountName,
+                    balance.toDouble(),
+                    LocalDate.ofEpochDay(System.currentTimeMillis() / 86_400_000L)
+                )
             )
-        )
+        }
         isAccountSaved.value = true
         exitScreen.value = true
     }
