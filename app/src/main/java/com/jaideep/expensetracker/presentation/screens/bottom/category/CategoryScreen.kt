@@ -32,6 +32,7 @@ import com.jaideep.expensetracker.common.DetailScreen
 import com.jaideep.expensetracker.common.constant.AppConstants.CREATE_SCREEN
 import com.jaideep.expensetracker.model.CategoryCardData
 import com.jaideep.expensetracker.model.CategoryCardPayload
+import com.jaideep.expensetracker.presentation.component.MediumText
 import com.jaideep.expensetracker.presentation.component.SimpleText
 import com.jaideep.expensetracker.presentation.component.card.ExpenseTrackerCategoryCard
 import com.jaideep.expensetracker.presentation.component.other.ExpenseTrackerAppBar

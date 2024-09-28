@@ -3,9 +3,7 @@ package com.jaideep.expensetracker.presentation.component.dialog
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Card
@@ -18,8 +16,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import com.jaideep.expensetracker.presentation.component.MediumBoldText
 import com.jaideep.expensetracker.presentation.component.SimpleText
-import com.jaideep.expensetracker.presentation.component.SimpleTextBold
 import com.jaideep.expensetracker.presentation.component.button.SmallPrimaryColorButton
 import com.jaideep.expensetracker.presentation.theme.AppTheme
 
@@ -31,7 +29,7 @@ private fun ExpenseTrackerDialogPreview() {
             message = "Do you want to exit?",
             okButtonText = "Yes",
             cancelButtonText = "No",
-            onOkClick = { /*TODO*/ }) {
+            onOkClick = { }) {
 
         }
     }
@@ -53,10 +51,10 @@ fun ExpenseTrackerDialog(
         )
     ) {
         Card(
-            modifier = Modifier.fillMaxWidth(.9f),
+            modifier = modifier.fillMaxWidth(.9f),
             colors = CardDefaults.cardColors(containerColor = Color.White)
         ) {
-            SimpleTextBold(
+            MediumBoldText(
                 modifier = Modifier.padding(16.dp, 8.dp), text = title
             )
             Spacer(modifier = Modifier.size(8.dp))

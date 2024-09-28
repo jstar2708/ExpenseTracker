@@ -36,8 +36,9 @@ import com.jaideep.expensetracker.common.AddScreen
 import com.jaideep.expensetracker.common.constant.AppConstants.CREATE_SCREEN
 import com.jaideep.expensetracker.model.CategoryCardData
 import com.jaideep.expensetracker.model.dto.TransactionDto
+import com.jaideep.expensetracker.presentation.component.MediumBoldText
+import com.jaideep.expensetracker.presentation.component.MediumText
 import com.jaideep.expensetracker.presentation.component.SimpleText
-import com.jaideep.expensetracker.presentation.component.SimpleTextBold
 import com.jaideep.expensetracker.presentation.component.button.ExpenseTrackerBlueButton
 import com.jaideep.expensetracker.presentation.component.card.ExpenseTrackerTransactionCardItem
 import com.jaideep.expensetracker.presentation.component.card.SummaryCard
@@ -204,7 +205,7 @@ fun HomeScreen(
 
 @Composable
 fun TransactionSummary(transactions: List<TransactionDto>) {
-    SimpleTextBold(
+    MediumBoldText(
         modifier = Modifier.padding(8.dp), text = "Last Transactions"
     )
 

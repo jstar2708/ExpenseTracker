@@ -15,7 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.jaideep.expensetracker.presentation.component.SimpleText
+import com.jaideep.expensetracker.presentation.component.SimpleSmallText
 import com.jaideep.expensetracker.presentation.theme.AppTheme
 
 @Preview
@@ -43,11 +43,11 @@ fun ExpenseTrackerBlueButton(
             MaterialTheme.colorScheme.onPrimary
         )
     ) {
-        SimpleText(
+        SimpleSmallText(
             text = name,
             textAlignment = TextAlign.Center,
-            modifier = Modifier.padding(8.dp),
-            color = MaterialTheme.colorScheme.onPrimary
+            color = MaterialTheme.colorScheme.onPrimary,
+            modifier = Modifier.padding(top = 8.dp, bottom = 8.dp)
         )
         Spacer(
             modifier = Modifier.size(5.dp)
@@ -56,7 +56,7 @@ fun ExpenseTrackerBlueButton(
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
                 contentDescription = "Arrow icon",
-                modifier = Modifier.padding(8.dp)
+                modifier = Modifier.padding(top = 8.dp, bottom = 8.dp)
             )
         }
     }

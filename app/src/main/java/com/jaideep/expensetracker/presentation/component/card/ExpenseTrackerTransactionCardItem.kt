@@ -156,7 +156,7 @@ fun ExpenseTrackerTransactionCardItem(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 SimpleText(text = "Account name: ")
-                SimpleTextBold(
+                SimpleText(
                     text = accountName, maxLines = 1
                 )
             }
@@ -168,7 +168,7 @@ fun ExpenseTrackerTransactionCardItem(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 SimpleText(text = "Transaction date: ")
-                SimpleTextBold(text = transactionDate, maxLines = 1)
+                SimpleText(text = transactionDate, maxLines = 1)
             }
             Spacer(Modifier.height(4.dp))
             Row(

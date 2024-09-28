@@ -3,14 +3,15 @@ package com.jaideep.expensetracker.presentation.component.textfield
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarMonth
-import androidx.compose.material3.Button
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -20,6 +21,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.DialogProperties
+import com.jaideep.expensetracker.presentation.component.SimpleTextBold
+import com.jaideep.expensetracker.presentation.component.button.SmallPrimaryColorButton
 import com.jaideep.expensetracker.presentation.theme.AppTheme
 import java.time.LocalDate
 
@@ -65,24 +70,31 @@ fun TextFieldDatePicker(
     val dateState = rememberDatePickerState()
 
     if (showDatePicker.value) {
-        DatePickerDialog(onDismissRequest = { showDatePicker.value = false }, confirmButton = {
-            Button(onClick = {
-                dateState.selectedDateMillis?.let { date ->
-                    val dateString = LocalDate.ofEpochDay(date / 86_400_000L).toString()
-                    onValueChanged(dateString)
+        DatePickerDialog(properties = DialogProperties(usePlatformDefaultWidth = true),
+            onDismissRequest = { showDatePicker.value = false },
+            confirmButton = {
+                Spacer(modifier = Modifier.width(4.dp))
+                SmallPrimaryColorButton(text = "Ok") {
+                    dateState.selectedDateMillis?.let { date ->
+                        val dateString = LocalDate.ofEpochDay(date / 86_400_000L).toString()
+                        onValueChanged(dateString)
+                    }
+                    showDatePicker.value = false
                 }
-                showDatePicker.value = false
+                Spacer(modifier = Modifier.width(4.dp))
+            },
+            dismissButton = {
+                SmallPrimaryColorButton(text = "Cancel") {
+                    showDatePicker.value = false
+                }
+                Spacer(modifier = Modifier.width(4.dp))
             }) {
-                Text(text = "Ok")
-            }
-        }, dismissButton = {
-            Button(onClick = {
-                showDatePicker.value = false
-            }) {
-                Text(text = "Cancel")
-            }
-        }) {
-            DatePicker(state = dateState)
+            DatePicker(state = dateState, title = {
+                SimpleTextBold(
+                    modifier = Modifier.padding(start = 24.dp, end = 12.dp, top = 16.dp),
+                    text = "Select Transaction Date"
+                )
+            })
         }
     }
 

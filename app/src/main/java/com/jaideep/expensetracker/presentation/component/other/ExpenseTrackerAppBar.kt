@@ -14,7 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.jaideep.expensetracker.presentation.component.SimpleTextBold
+import com.jaideep.expensetracker.presentation.component.MediumBoldText
 import com.jaideep.expensetracker.presentation.theme.AppTheme
 
 @Preview
@@ -41,12 +41,12 @@ fun ExpenseTrackerAppBar(
     navigationIcon: ImageVector,
     navigationDescription: String,
     onNavigationIconClick: () -> Unit,
-    actionIcon: ImageVector,
+    actionIcon: ImageVector?,
     actionDescription: String,
     onActionIconClick: () -> Unit,
 ) {
     TopAppBar(title = {
-        SimpleTextBold(
+        MediumBoldText(
             modifier = Modifier.padding(start = 4.dp, end = 4.dp), text = title
         )
     }, navigationIcon = {
@@ -54,16 +54,20 @@ fun ExpenseTrackerAppBar(
             Icon(
                 imageVector = navigationIcon,
                 contentDescription = navigationDescription,
-                modifier = Modifier.size(40.dp),
+                modifier = if (navigationIcon == Icons.AutoMirrored.Filled.ArrowBack) Modifier.size(
+                    30.dp
+                ) else Modifier.size(40.dp),
             )
         }
     }, actions = {
-        IconButton(onClick = { onActionIconClick() }) {
-            Icon(
-                imageVector = actionIcon,
-                contentDescription = actionDescription,
-                modifier = Modifier.size(30.dp)
-            )
+        actionIcon?.let {
+            IconButton(onClick = { onActionIconClick() }) {
+                Icon(
+                    imageVector = actionIcon,
+                    contentDescription = actionDescription,
+                    modifier = Modifier.size(30.dp)
+                )
+            }
         }
     })
 }

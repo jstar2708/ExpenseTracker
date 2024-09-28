@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -64,11 +65,12 @@ fun SummaryCard(
                     HeadingTextBold(
                         text = "Balance", modifier = Modifier
                             .wrapContentWidth()
-                            .padding(8.dp)
+                            .padding(start = 8.dp)
                     )
+                    Spacer(modifier = Modifier.size(4.dp))
                     SimpleText(
                         text = "Spent Today \$$spentToday",
-                        modifier = Modifier.padding(start = 8.dp, end = 8.dp, bottom = 8.dp)
+                        modifier = Modifier.padding(start = 8.dp, end = 8.dp)
                     )
                 }
                 HeadingTextBold(

@@ -13,11 +13,12 @@ import com.jaideep.expensetracker.common.Graph
 import com.jaideep.expensetracker.common.MainScreen
 import com.jaideep.expensetracker.presentation.screens.bottom.category.CategoryScreenRoot
 import com.jaideep.expensetracker.presentation.screens.bottom.home.HomeScreenRoot
-import com.jaideep.expensetracker.presentation.screens.bottom.settings.SettingsScreen
+import com.jaideep.expensetracker.presentation.screens.bottom.settings.SettingsScreenRoot
 import com.jaideep.expensetracker.presentation.screens.bottom.transaction.TransactionScreenRoot
 import com.jaideep.expensetracker.presentation.viewmodel.CategoryViewModel
 import com.jaideep.expensetracker.presentation.viewmodel.HomeViewModel
 import com.jaideep.expensetracker.presentation.viewmodel.MainViewModel
+import com.jaideep.expensetracker.presentation.viewmodel.SettingsViewModel
 import com.jaideep.expensetracker.presentation.viewmodel.TransactionViewModel
 
 @Composable
@@ -65,8 +66,13 @@ fun BottomNavigationGraph(
                 bottomNavController.popBackStack()
             }
         }
-        composable(MainScreen.SETTINGS) {
-            SettingsScreen(bottomNavController)
+        composable(MainScreen.SETTINGS) { backStackEntry ->
+            val startEntry = remember(backStackEntry) {
+                navHostControllerRoot.getBackStackEntry(Graph.MAIN)
+            }
+            SettingsScreenRoot(bottomNavController, hiltViewModel<SettingsViewModel>(startEntry)) {
+                bottomNavController.popBackStack()
+            }
         }
     }
 }
