@@ -1,10 +1,9 @@
 package com.jaideep.expensetracker.common
 
 object MainScreen {
-    const val HOME = "HOME"
-    const val TRANSACTION = "TRANSACTIONS"
-    const val CATEGORY = "CATEGORY"
-    const val SETTINGS = "SETTINGS"
+    const val HOME = "home"
+    const val TRANSACTION = "transaction"
+    const val CATEGORY = "category"
 }
 
 object AddScreen {
@@ -19,6 +18,7 @@ object AddScreen {
 object DetailScreen {
     const val CATEGORY_DETAILS = "category_details"
     const val CATEGORY_DETAILS_ROUTE = "category_details/{categoryName}"
+    const val PROFILE = "profile"
 }
 
 object Graph {

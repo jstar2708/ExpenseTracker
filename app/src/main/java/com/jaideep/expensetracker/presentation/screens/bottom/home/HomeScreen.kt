@@ -33,11 +33,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.jaideep.expensetracker.common.AddScreen
+import com.jaideep.expensetracker.common.DetailScreen
 import com.jaideep.expensetracker.common.constant.AppConstants.CREATE_SCREEN
 import com.jaideep.expensetracker.model.CategoryCardData
 import com.jaideep.expensetracker.model.dto.TransactionDto
 import com.jaideep.expensetracker.presentation.component.MediumBoldText
-import com.jaideep.expensetracker.presentation.component.MediumText
 import com.jaideep.expensetracker.presentation.component.SimpleText
 import com.jaideep.expensetracker.presentation.component.button.ExpenseTrackerBlueButton
 import com.jaideep.expensetracker.presentation.component.card.ExpenseTrackerTransactionCardItem
@@ -145,7 +145,7 @@ fun HomeScreen(
             ExpenseTrackerAppBar(title = "Hello Jaideep",
                 navigationIcon = Icons.Outlined.AccountCircle,
                 navigationDescription = "User icon",
-                onNavigationIconClick = { },
+                onNavigationIconClick = { navControllerRoot.navigate(DetailScreen.PROFILE) },
                 actionIcon = Icons.Filled.Notifications,
                 actionDescription = "Notification icon",
                 onActionIconClick = { })
@@ -171,7 +171,8 @@ fun HomeScreen(
                         modifier = Modifier.weight(1f)
                     )
                 }
-                ExpenseTrackerSpinner(values = accounts,
+                ExpenseTrackerSpinner(
+                    values = accounts,
                     initialValue = selectedAccount,
                     onValueChanged = { value ->
                         onAccountSpinnerValueChanged(value)
@@ -206,7 +207,7 @@ fun HomeScreen(
 @Composable
 fun TransactionSummary(transactions: List<TransactionDto>) {
     MediumBoldText(
-        modifier = Modifier.padding(8.dp), text = "Last Transactions"
+        modifier = Modifier.padding(8.dp), text = "Recent Transactions"
     )
 
     if (transactions.isNotEmpty()) {

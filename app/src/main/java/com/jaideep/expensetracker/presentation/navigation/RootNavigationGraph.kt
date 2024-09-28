@@ -15,6 +15,7 @@ import com.jaideep.expensetracker.presentation.screens.cu.CUCategoryScreenRoot
 import com.jaideep.expensetracker.presentation.screens.cu.CUTransactionScreenRoot
 import com.jaideep.expensetracker.presentation.screens.bottom.BottomNavigationScreen
 import com.jaideep.expensetracker.presentation.screens.details.CategoryDetailsScreenRoot
+import com.jaideep.expensetracker.presentation.screens.details.ProfileScreenRoot
 import com.jaideep.expensetracker.presentation.viewmodel.MainViewModel
 
 @Composable
@@ -60,6 +61,9 @@ fun RootNavigationGraph(mainViewModel: MainViewModel) {
         ) { navBackStackEntry ->
             val categoryName = navBackStackEntry.arguments?.getString("categoryName")
             CategoryDetailsScreenRoot(navHostControllerRoot, categoryName)
+        }
+        composable(DetailScreen.PROFILE) {
+            ProfileScreenRoot(navHostControllerRoot)
         }
     }
 }

@@ -4,11 +4,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Category
 import androidx.compose.material.icons.filled.CurrencyRupee
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.Category
 import androidx.compose.material.icons.outlined.CurrencyRupee
 import androidx.compose.material.icons.outlined.Home
-import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.jaideep.expensetracker.R
 
@@ -24,8 +22,6 @@ object AppComponents {
             MainScreen.TRANSACTION
         ), BottomNavigationItem(
             "Category", Icons.Filled.Category, Icons.Outlined.Category, MainScreen.CATEGORY
-        ), BottomNavigationItem(
-            "Settings", Icons.Filled.Settings, Icons.Outlined.Settings, MainScreen.SETTINGS
         )
     )
 
