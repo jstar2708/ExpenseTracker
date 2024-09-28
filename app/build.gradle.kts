@@ -1,19 +1,24 @@
 plugins {
-    id("com.android.application")
-    id("org.jetbrains.kotlin.android")
+    alias(libs.plugins.android.app)
+    alias(libs.plugins.kotlin)
+    alias(libs.plugins.dagger.hilt)
+    alias(libs.plugins.room)
     kotlin("kapt")
-    id("com.google.dagger.hilt.android")
-    id("androidx.room")
 }
 
 android {
     namespace = "com.jaideep.expensetracker"
     compileSdk = 34
 
+//    ksp {
+//        room {
+//            schemaDirectory("$rootDir/schemas")
+//        }
+//    }         This throws error as using KSP we cannot give spaces in schema name (i.e. root directory)
+
     room {
         schemaDirectory("$rootDir/schemas")
     }
-
     defaultConfig {
         applicationId = "com.jaideep.expensetracker"
         minSdk = 26
@@ -31,8 +36,7 @@ android {
         release {
             isMinifyEnabled = false
             proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
             )
         }
     }
@@ -59,44 +63,44 @@ android {
 
 dependencies {
 
-    implementation(Dependencies.coreKtx)
-    implementation(Dependencies.lifecycleKtx)
-    implementation(Dependencies.activityCompose)
-    implementation(platform(Dependencies.composeBom))
-    implementation(Dependencies.composeUi)
-    implementation(Dependencies.composeUiGraphics)
-    implementation(Dependencies.composeUiToolingPreview)
-    implementation(Dependencies.composeMaterial3)
-    testImplementation(Dependencies.junit)
-    androidTestImplementation(Dependencies.extJunit)
-    androidTestImplementation(Dependencies.espresso)
-    androidTestImplementation(platform(Dependencies.composeBom))
-    androidTestImplementation(Dependencies.composeUiTestJunit)
-    debugImplementation(Dependencies.composeUiTooling)
-    debugImplementation(Dependencies.composeUiTestManifest)
-    implementation(Dependencies.appCompat)
-    implementation(Dependencies.material)
+    implementation(libs.core.ktx)
+    implementation(libs.lifecycle.ktx)
+    implementation(libs.activity.compose)
+    implementation(platform(libs.compose.bom))
+    implementation(libs.compose.ui)
+    implementation(libs.compose.ui.graphics)
+    implementation(libs.compose.ui.tooling.preview)
+    implementation(libs.compose.material3)
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.ext.junit)
+    androidTestImplementation(libs.espresso)
+    androidTestImplementation(platform(libs.compose.bom))
+    androidTestImplementation(libs.compose.ui.test.junit)
+    debugImplementation(libs.compose.ui.tooling)
+    debugImplementation(libs.compose.ui.test.manifest)
+    implementation(libs.app.compat)
+    implementation(libs.material)
 
-    kapt(Dependencies.hiltCompiler)
-    kapt(Dependencies.hiltAndroidCompiler)
-    implementation(Dependencies.hiltAndroid)
-    implementation(Dependencies.hiltNavigationCompose)
+    kapt(libs.hilt.compiler)
+    kapt(libs.hilt.android.compiler)
+    implementation(libs.hilt.android)
+    implementation(libs.hilt.navigation.compose)
 
-    implementation(Dependencies.coroutineCore)
-    implementation(Dependencies.coroutinesAndroid)
+    implementation(libs.coroutine.core)
+    implementation(libs.coroutines.android)
 
-    implementation(Dependencies.splashScreen)
+    implementation(libs.splash.screen)
 
-    implementation(Dependencies.room)
-    kapt(Dependencies.annotationProcessorRoom)
+    implementation(libs.room)
+    kapt(libs.annotation.processor.room)
+    implementation(libs.datastore)
 
-    implementation(Dependencies.ktx)
+    implementation(libs.ktx)
 
-    implementation(Dependencies.icons)
-    implementation(Dependencies.paging)
-    implementation(Dependencies.pagingCompose)
-    implementation(Dependencies.pagingWithRoom)
+    implementation(libs.icons)
+    implementation(libs.paging)
+    implementation(libs.paging.compose)
+    implementation(libs.paging.with.room)
 
-    implementation(Dependencies.kotlinImmutableLists)
-
+    implementation(libs.kotlin.immutable.lists)
 }

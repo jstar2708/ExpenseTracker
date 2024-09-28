@@ -59,12 +59,12 @@ fun ProfileScreenRoot(
 ) {
     val profileViewModel = hiltViewModel<ProfileViewModel>()
     ProfileScreen(
-        userName = "Jaideep Kumar Singh",
-        mostFrequentlyUsedAcc = "PNB",
-        avgMonthlyExpenditure = "434",
-        totalExpenditure = "7896",
-        totalTransactions = "123",
-        onBackPress = {}
+        userName = profileViewModel.userName,
+        mostFrequentlyUsedAcc = profileViewModel.mostFrequentlyUsedAccount,
+        avgMonthlyExpenditure = profileViewModel.avgMonthlyExpenditure,
+        totalExpenditure = profileViewModel.totalExpenditure,
+        totalTransactions = profileViewModel.totalTransactions,
+        onBackPress = { navController.popBackStack() }
     )
 }
 
