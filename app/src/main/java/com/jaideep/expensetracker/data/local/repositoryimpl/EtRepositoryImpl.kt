@@ -5,6 +5,7 @@ import com.jaideep.expensetracker.domain.repository.EtRepository
 import com.jaideep.expensetracker.model.CategoryCardData
 import com.jaideep.expensetracker.model.dto.TransactionDto
 import kotlinx.coroutines.flow.Flow
+import java.time.LocalDate
 import javax.inject.Inject
 
 class EtRepositoryImpl @Inject constructor(
@@ -71,6 +72,26 @@ class EtRepositoryImpl @Inject constructor(
             fromDate,
             toDate
         )
+    }
+
+    override fun getTotalExpenditure(): Double {
+        return etDao.getTotalExpenditure()
+    }
+
+    override fun getTotalTransactions(): Int {
+        return etDao.getTotalTransactions()
+    }
+
+    override fun getLastTransactionDate(): LocalDate {
+        return etDao.getLastTransactionDate()
+    }
+
+    override fun getFirstTransactionDate(): LocalDate {
+        return etDao.getFirstTransactionDate()
+    }
+
+    override fun getMostFrequentlyUsedAccount(): String {
+        return etDao.getMostFrequentlyUsedAccount()
     }
 
 }

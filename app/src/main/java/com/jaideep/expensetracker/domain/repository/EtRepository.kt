@@ -3,6 +3,7 @@ package com.jaideep.expensetracker.domain.repository
 import com.jaideep.expensetracker.model.CategoryCardData
 import com.jaideep.expensetracker.model.dto.TransactionDto
 import kotlinx.coroutines.flow.Flow
+import java.time.LocalDate
 
 interface EtRepository {
     fun getAmountSpentTodayForAccount(accountName: String, date: Long): Flow<Double>
@@ -18,8 +19,7 @@ interface EtRepository {
     fun getAmountSpentFromAllAccountThisMonth(date: Long): Flow<Double>
     fun getCategoryCardsDataFromAllAccountsWithinDuration(date: Long): Flow<List<CategoryCardData>>
     fun getCategoryCardsDataFromAccountWithinDuration(
-        accountName: String,
-        date: Long
+        accountName: String, date: Long
     ): Flow<List<CategoryCardData>>
 
     fun getCategoryWiseAllAccountTransactionsWithDate(
@@ -30,4 +30,9 @@ interface EtRepository {
         categoryName: String, accountName: String, fromDate: Long, toDate: Long
     ): Flow<List<TransactionDto>>
 
+    fun getTotalExpenditure(): Double
+    fun getTotalTransactions(): Int
+    fun getLastTransactionDate(): LocalDate
+    fun getFirstTransactionDate(): LocalDate
+    fun getMostFrequentlyUsedAccount(): String
 }

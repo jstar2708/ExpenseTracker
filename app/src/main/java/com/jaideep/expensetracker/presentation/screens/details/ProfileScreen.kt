@@ -34,6 +34,7 @@ import com.jaideep.expensetracker.presentation.component.MediumBoldText
 import com.jaideep.expensetracker.presentation.component.SimpleSmallText
 import com.jaideep.expensetracker.presentation.component.SimpleText
 import com.jaideep.expensetracker.presentation.component.other.ExpenseTrackerAppBar
+import com.jaideep.expensetracker.presentation.component.other.ExpenseTrackerProgressBar
 import com.jaideep.expensetracker.presentation.theme.AppTheme
 import com.jaideep.expensetracker.presentation.viewmodel.ProfileViewModel
 
@@ -58,14 +59,30 @@ fun ProfileScreenRoot(
     navController: NavController
 ) {
     val profileViewModel = hiltViewModel<ProfileViewModel>()
-    ProfileScreen(
-        userName = profileViewModel.userName,
-        mostFrequentlyUsedAcc = profileViewModel.mostFrequentlyUsedAccount,
-        avgMonthlyExpenditure = profileViewModel.avgMonthlyExpenditure,
-        totalExpenditure = profileViewModel.totalExpenditure,
-        totalTransactions = profileViewModel.totalTransactions,
-        onBackPress = { navController.popBackStack() }
-    )
+    if (profileViewModel.isUsernameLoading) {
+        ExpenseTrackerProgressBar(Modifier.size(50.dp))
+    }
+    else if (profileViewModel.usernameRetrievalError) {
+        Row(
+            modifier = Modifier.fillMaxSize(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Absolute.Center
+        ) {
+            SimpleText(
+                text = "Error loading user data", color = Color.Red
+            )
+        }
+    }
+    else {
+        ProfileScreen(
+            userName = profileViewModel.userName,
+            mostFrequentlyUsedAcc = profileViewModel.mostFrequentlyUsedAccount,
+            avgMonthlyExpenditure = profileViewModel.avgMonthlyExpenditure,
+            totalExpenditure = profileViewModel.totalExpenditure,
+            totalTransactions = profileViewModel.totalTransactions,
+            onBackPress = { navController.popBackStack() }
+        )
+    }
 }
 
 @Composable

@@ -1,12 +1,23 @@
 package com.jaideep.expensetracker.di
 
 import android.app.Application
+import android.content.Context
+import androidx.datastore.core.DataStore
+import androidx.datastore.core.handlers.ReplaceFileCorruptionHandler
+import androidx.datastore.preferences.core.PreferenceDataStoreFactory
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.emptyPreferences
+import androidx.datastore.preferences.preferencesDataStoreFile
+import com.jaideep.expensetracker.common.EtDispatcher
+import com.jaideep.expensetracker.common.constant.AppConstants.ET_PREFERENCES
 import com.jaideep.expensetracker.data.local.dao.AccountDao
 import com.jaideep.expensetracker.data.local.dao.CategoryDao
 import com.jaideep.expensetracker.data.local.dao.EtDao
 import com.jaideep.expensetracker.data.local.dao.TransactionDao
 import com.jaideep.expensetracker.data.local.dao.TransactionPagingDao
 import com.jaideep.expensetracker.data.local.database.EtDatabase
+import com.jaideep.expensetracker.data.local.preferences.DatastoreRepository
+import com.jaideep.expensetracker.data.local.preferences.DatastoreRepositoryImpl
 import com.jaideep.expensetracker.data.local.repositoryimpl.AccountRepositoryImpl
 import com.jaideep.expensetracker.data.local.repositoryimpl.CategoryRepositoryImpl
 import com.jaideep.expensetracker.data.local.repositoryimpl.CrudRepositoryImpl
@@ -22,7 +33,10 @@ import com.jaideep.expensetracker.domain.repository.TransactionRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
 import javax.inject.Singleton
 
 @Module
@@ -33,6 +47,22 @@ object AppModule {
     @Singleton
     fun providesDatabase(app: Application): EtDatabase {
         return EtDatabase.getDatabase(app)
+    }
+
+    @Provides
+    @Singleton
+    fun providesDatastore(@ApplicationContext appContext: Context) : DataStore<Preferences>{
+        return PreferenceDataStoreFactory.create(corruptionHandler = ReplaceFileCorruptionHandler {
+            emptyPreferences()
+        },
+            scope = CoroutineScope(EtDispatcher.io + SupervisorJob()),
+            produceFile = { appContext.preferencesDataStoreFile(ET_PREFERENCES) })
+    }
+
+    @Provides
+    @Singleton
+    fun providesDatastoreRepository(datastore: DataStore<Preferences>): DatastoreRepository {
+        return DatastoreRepositoryImpl(datastore)
     }
 
     @Provides
@@ -97,7 +127,11 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun providesCrudRepository(accountDao: AccountDao, transactionDao: TransactionDao, categoryDao: CategoryDao): CrudRepository{
+    fun providesCrudRepository(
+        accountDao: AccountDao,
+        transactionDao: TransactionDao,
+        categoryDao: CategoryDao
+    ): CrudRepository {
         return CrudRepositoryImpl(accountDao, transactionDao, categoryDao)
     }
 }
