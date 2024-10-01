@@ -57,19 +57,84 @@ class ProfileViewModel @Inject constructor(
 
     fun initData() {
         getUserName()
+        getAverageMonthlyExpenditure()
+        getMostFrequentlyUsedAccount()
+        getTotalExpenditure()
+        getTotalTransactionCount()
     }
 
+    private fun getTotalTransactionCount() = viewModelScope.launch (EtDispatcher.io) {
+        getTotalTransactionCountUseCase().collect {
+            when (it) {
+                is Resource.Error -> {
+                    totalTransactionsRetrievalError = true
+                    isTotalTransactionsLoading = false
+                }
+                is Resource.Loading -> {
+                    isTotalTransactionsLoading = true
+                    totalTransactionsRetrievalError = false
+                }
+                is Resource.Success -> {
+                    totalTransactionsRetrievalError = false
+                    isTotalTransactionsLoading = false
+                    totalTransactions = it.data.toString()
+                }
+            }
+        }
+    }
+    private fun getTotalExpenditure() = viewModelScope.launch (EtDispatcher.io) {
+        getTotalExpenditureUseCase().collect {
+            when (it) {
+                is Resource.Error -> {
+                    totalExpenditureRetrievalError = true
+                    isTotalExpenditureLoading = false
+                }
+                is Resource.Loading -> {
+                    totalExpenditureRetrievalError = false
+                    isTotalExpenditureLoading = true
+                }
+                is Resource.Success -> {
+                    totalExpenditure = it.data.toString()
+                    totalExpenditureRetrievalError = false
+                    isTotalExpenditureLoading = false
+                }
+            }
+        }
+    }
+    private fun getMostFrequentlyUsedAccount() = viewModelScope.launch (EtDispatcher.io) {
+        getMostUsedAccUseCase().collect {
+            when (it) {
+                is Resource.Error -> {
+                    mostFrequentlyUsedAccRetrievalError = true
+                    isMostFrequentlyUsedAccLoading = false
+                }
+                is Resource.Loading -> {
+                    mostFrequentlyUsedAccRetrievalError = false
+                    isMostFrequentlyUsedAccLoading = true
+                }
+                is Resource.Success -> {
+                    mostFrequentlyUsedAccRetrievalError = false
+                    isMostFrequentlyUsedAccLoading = false
+                    mostFrequentlyUsedAccount = it.data
+                }
+            }
+        }
+    }
     private fun getAverageMonthlyExpenditure() = viewModelScope.launch(EtDispatcher.io) {
         getAvgMonthlyExpUseCase().collect {
             when (it) {
                 is Resource.Error -> {
-
+                    avgMonthlyExpRetrievalError = true
+                    isAvgMonthlyExpLoading = false
                 }
                 is Resource.Loading -> {
-
+                    avgMonthlyExpRetrievalError = false
+                    isAvgMonthlyExpLoading = true
                 }
                 is Resource.Success -> {
-
+                    avgMonthlyExpenditure = it.data.toString()
+                    avgMonthlyExpRetrievalError = false
+                    isAvgMonthlyExpLoading = false
                 }
             }
         }
