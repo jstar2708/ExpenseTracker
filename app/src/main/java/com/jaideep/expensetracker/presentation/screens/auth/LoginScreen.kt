@@ -1,6 +1,5 @@
 package com.jaideep.expensetracker.presentation.screens.auth
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -10,9 +9,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Password
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -24,66 +23,79 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.navigation.navOptions
 import com.jaideep.expensetracker.R
-import com.jaideep.expensetracker.common.AddScreen
-import com.jaideep.expensetracker.common.constant.AppConstants.CREATE_SCREEN
+import com.jaideep.expensetracker.common.AuthScreen
+import com.jaideep.expensetracker.common.Graph
 import com.jaideep.expensetracker.model.TextFieldWithIconAndErrorPopUpState
+import com.jaideep.expensetracker.presentation.component.HeadingTextBold
 import com.jaideep.expensetracker.presentation.component.MediumText
 import com.jaideep.expensetracker.presentation.component.button.SmallPrimaryColorButton
+import com.jaideep.expensetracker.presentation.component.other.ExpenseTrackerProgressBar
 import com.jaideep.expensetracker.presentation.component.textfield.TextFieldWithIconAndErrorPopUp
 import com.jaideep.expensetracker.presentation.theme.AppTheme
 import com.jaideep.expensetracker.presentation.viewmodel.AuthViewModel
 
-@Preview()
+@Preview
 @Composable
-private fun RegisterScreenPreview() {
+private fun LoginScreenPreview() {
     AppTheme {
-        RegisterScreen(nameState = TextFieldWithIconAndErrorPopUpState("",
+        LoginScreen(passwordState = TextFieldWithIconAndErrorPopUpState(
+            "",
             isError = false,
             showError = false,
             onValueChange = { _ -> },
             onErrorIconClick = {},
-            errorMessage = ""
-        ), passwordState = TextFieldWithIconAndErrorPopUpState("",
-            isError = false,
-            showError = false,
-            onValueChange = { _ -> },
-            onErrorIconClick = {},
-            errorMessage = ""
-        ), confirmPasswordState = TextFieldWithIconAndErrorPopUpState("",
-            isError = false,
-            showError = false,
-            onValueChange = { _ -> },
-            onErrorIconClick = {},
-            errorMessage = ""
-        ), onRegister = {}, isRegistrationCompleted = false, navigateToCUAccount = {})
+            errorMessage = "",
+        ), isLoginCompleted = false, username = "Jaideep Kumar Singh", onLogin = {
+
+        }, userNotPresent = false, navigateToMainScreen = {
+
+        }) {
+
+        }
     }
 }
 
 @Composable
-fun RegisterScreenRoot(navController: NavController, authViewModel: AuthViewModel) {
-    RegisterScreen(nameState = authViewModel.nameState,
-        passwordState = authViewModel.passwordState,
-        confirmPasswordState = authViewModel.confirmPasswordState,
-        onRegister = authViewModel::onRegister,
-        isRegistrationCompleted = authViewModel.registrationComplete,
-        navigateToCUAccount = {
-            navController.navigate("${AddScreen.CREATE_UPDATE_ACCOUNT}/$CREATE_SCREEN")
-        })
+fun LoginScreenRoot(navController: NavController, authViewModel: AuthViewModel) {
+    if (authViewModel.isUsernameLoading) {
+        ExpenseTrackerProgressBar(Modifier.size(50.dp))
+    }
+    else {
+        LoginScreen(passwordState = authViewModel.passwordState,
+            isLoginCompleted = authViewModel.loginComplete,
+            onLogin = authViewModel::onLogin,
+            username = authViewModel.username,
+            userNotPresent = authViewModel.userNotPresent,
+            navigateToMainScreen = {
+                navController.navigate(Graph.MAIN)
+            },
+            navigateToRegisterScreen = {
+                navController.navigate(AuthScreen.REGISTER) {
+                    navOptions {
+                        this.launchSingleTop = true
+                        popUpTo(navController.graph.startDestinationId)
+                    }
+                }
+            })
+    }
 }
 
-@SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
-fun RegisterScreen(
-    nameState: TextFieldWithIconAndErrorPopUpState,
+fun LoginScreen(
     passwordState: TextFieldWithIconAndErrorPopUpState,
-    confirmPasswordState: TextFieldWithIconAndErrorPopUpState,
-    isRegistrationCompleted: Boolean,
-    navigateToCUAccount: () -> Unit,
-    onRegister: () -> Unit
+    isLoginCompleted: Boolean,
+    username: String,
+    userNotPresent: Boolean,
+    onLogin: () -> Unit,
+    navigateToMainScreen: () -> Unit,
+    navigateToRegisterScreen: () -> Unit
 ) {
-    if (isRegistrationCompleted) {
-        navigateToCUAccount()
+    if (isLoginCompleted) {
+        navigateToMainScreen()
+    } else if (userNotPresent) {
+        navigateToRegisterScreen()
     }
     Surface(
         Modifier
@@ -104,12 +116,13 @@ fun RegisterScreen(
                 contentDescription = "App icon"
             )
 
-            MediumText(
+            MediumText(text = "Welcome back")
+            HeadingTextBold(
                 modifier = Modifier
                     .weight(.05f)
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp),
-                text = "Hello There!\nEnter your details to get started",
+                text = username,
                 textAlignment = TextAlign.Center
             )
 
@@ -118,21 +131,8 @@ fun RegisterScreen(
             Column(
                 Modifier
                     .fillMaxWidth()
-                    .weight(.3f)
+                    .weight(.2f)
             ) {
-                TextFieldWithIconAndErrorPopUp(
-                    modifier = Modifier.padding(horizontal = 16.dp),
-                    label = "Name",
-                    icon = Icons.Filled.Person,
-                    iconColor = Color.LightGray,
-                    borderColor = Color.Gray,
-                    text = nameState.text,
-                    isError = nameState.isError,
-                    errorMessage = nameState.errorMessage,
-                    showErrorText = nameState.showError,
-                    onValueChange = nameState.onValueChange,
-                    onErrorIconClick = nameState.onErrorIconClick
-                )
 
                 Spacer(modifier = Modifier.height(16.dp))
 
@@ -150,30 +150,14 @@ fun RegisterScreen(
                     onErrorIconClick = passwordState.onErrorIconClick
                 )
 
-                Spacer(modifier = Modifier.height(16.dp))
-
-                TextFieldWithIconAndErrorPopUp(
-                    modifier = Modifier.padding(horizontal = 16.dp),
-                    label = "Re-enter Password ",
-                    icon = Icons.Filled.Password,
-                    iconColor = Color.LightGray,
-                    borderColor = Color.Gray,
-                    text = confirmPasswordState.text,
-                    isError = confirmPasswordState.isError,
-                    errorMessage = confirmPasswordState.errorMessage,
-                    showErrorText = confirmPasswordState.showError,
-                    onValueChange = confirmPasswordState.onValueChange,
-                    onErrorIconClick = confirmPasswordState.onErrorIconClick
-                )
-
                 Spacer(modifier = Modifier.height(40.dp))
 
                 SmallPrimaryColorButton(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp),
-                    text = "Register",
-                    onClick = onRegister
+                    text = "Login",
+                    onClick = onLogin
                 )
             }
         }

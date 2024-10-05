@@ -21,15 +21,15 @@ object DetailScreen {
     const val PROFILE = "profile"
 }
 
+object AuthScreen {
+    const val LOGIN = "login"
+    const val REGISTER = "register"
+    const val SPLASH = "splash"
+}
+
 object Graph {
     const val ROOT = "root_graph"
     const val AUTH = "auth_graph"
     const val MAIN = "main_graph"
     const val DETAIL = "detail_graph"
-}
-
-sealed class AuthGraph(val route: String) {
-    data object LOGIN : AuthGraph("login")
-    data object REGISTER : AuthGraph("register")
-    data object SPLASH : AuthGraph("splash")
 }

@@ -1,7 +1,6 @@
 package com.jaideep.expensetracker.presentation.component
 
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -10,7 +9,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jaideep.expensetracker.presentation.theme.OpenSansFont
@@ -20,6 +18,7 @@ import com.jaideep.expensetracker.presentation.theme.OpenSansFont
 private fun MediumBoldTextPreview() {
     MediumText(text = "This is a line.", modifier = Modifier.padding(0.dp))
 }
+
 @Composable
 fun MediumBoldText(
     modifier: Modifier = Modifier,
@@ -47,6 +46,7 @@ fun MediumBoldText(
 private fun MediumTextPreview() {
     MediumText(text = "This is a line.", modifier = Modifier.padding(0.dp))
 }
+
 @Composable
 fun MediumText(
     modifier: Modifier = Modifier,
@@ -102,10 +102,18 @@ private fun HeadingTextPreview() {
 }
 
 @Composable
-fun HeadingText(text: String, color: Color = Color.Black, maxLines: Int = Int.MAX_VALUE) {
+fun HeadingText(
+    modifier: Modifier = Modifier,
+    textAlignment: TextAlign = TextAlign.Start,
+    text: String,
+    color: Color = Color.Black,
+    maxLines: Int = Int.MAX_VALUE
+) {
     Text(
+        modifier = modifier,
         text = text,
         fontSize = 24.sp,
+        textAlign = textAlignment,
         fontFamily = OpenSansFont.openSans,
         color = color,
         maxLines = maxLines
