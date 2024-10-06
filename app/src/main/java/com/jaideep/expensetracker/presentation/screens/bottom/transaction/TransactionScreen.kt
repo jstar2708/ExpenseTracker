@@ -264,7 +264,7 @@ fun TransactionScreen(
                     onCancelClicked = hideDeleteDialog
                 )
             }
-            if (dialogState.showDialog) {
+            else if (dialogState.showDialog) {
                 FilterDialog(
                     dialogState = dialogState,
                     updateTransactionList = updateTransactionList,

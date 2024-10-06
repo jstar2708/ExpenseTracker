@@ -18,7 +18,13 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -33,6 +39,7 @@ import com.jaideep.expensetracker.presentation.component.HeadingTextBold
 import com.jaideep.expensetracker.presentation.component.MediumBoldText
 import com.jaideep.expensetracker.presentation.component.SimpleSmallText
 import com.jaideep.expensetracker.presentation.component.SimpleText
+import com.jaideep.expensetracker.presentation.component.dialog.ExpenseTrackerDialog
 import com.jaideep.expensetracker.presentation.component.other.ExpenseTrackerAppBar
 import com.jaideep.expensetracker.presentation.component.other.ExpenseTrackerProgressBar
 import com.jaideep.expensetracker.presentation.theme.AppTheme
@@ -42,14 +49,16 @@ import com.jaideep.expensetracker.presentation.viewmodel.ProfileViewModel
 @Composable
 fun ProfileScreenPreview() {
     AppTheme {
-        ProfileScreen(
-            userName = "Jaideep Kumar Singh",
+        ProfileScreen(userName = "Jaideep Kumar Singh",
             mostFrequentlyUsedAcc = "PNB",
             avgMonthlyExpenditure = "434",
             totalExpenditure = "7896",
             totalTransactions = "123",
-            onBackPress = {}
-        )
+            onBackPress = {},
+            toggleDialog = {},
+            showDialog = false,
+            hideDialog = {},
+            clearAllData = {})
     }
 }
 
@@ -59,21 +68,9 @@ fun ProfileScreenRoot(
     navController: NavController
 ) {
     val profileViewModel = hiltViewModel<ProfileViewModel>()
-    if (profileViewModel.isUsernameLoading
-        || profileViewModel.isAvgMonthlyExpLoading
-        || profileViewModel.isTotalTransactionsLoading
-        || profileViewModel.isTotalExpenditureLoading
-        || profileViewModel.isMostFrequentlyUsedAccLoading
-        ) {
+    if (profileViewModel.isUsernameLoading || profileViewModel.isAvgMonthlyExpLoading || profileViewModel.isTotalTransactionsLoading || profileViewModel.isTotalExpenditureLoading || profileViewModel.isMostFrequentlyUsedAccLoading) {
         ExpenseTrackerProgressBar(Modifier.size(50.dp))
-    }
-    else if (
-        profileViewModel.usernameRetrievalError
-        || profileViewModel.avgMonthlyExpRetrievalError
-        || profileViewModel.totalExpenditureRetrievalError
-        || profileViewModel.mostFrequentlyUsedAccRetrievalError
-        || profileViewModel.totalTransactionsRetrievalError
-        ) {
+    } else if (profileViewModel.usernameRetrievalError || profileViewModel.avgMonthlyExpRetrievalError || profileViewModel.totalExpenditureRetrievalError || profileViewModel.mostFrequentlyUsedAccRetrievalError || profileViewModel.totalTransactionsRetrievalError) {
         Row(
             modifier = Modifier.fillMaxSize(),
             verticalAlignment = Alignment.CenterVertically,
@@ -83,16 +80,17 @@ fun ProfileScreenRoot(
                 text = "Error loading user data", color = Color.Red
             )
         }
-    }
-    else {
-        ProfileScreen(
-            userName = profileViewModel.userName,
+    } else {
+        ProfileScreen(userName = profileViewModel.userName,
             mostFrequentlyUsedAcc = profileViewModel.mostFrequentlyUsedAccount,
             avgMonthlyExpenditure = profileViewModel.avgMonthlyExpenditure,
             totalExpenditure = profileViewModel.totalExpenditure,
             totalTransactions = profileViewModel.totalTransactions,
-            onBackPress = { navController.popBackStack() }
-        )
+            showDialog = profileViewModel.showDialog,
+            onBackPress = { navController.popBackStack() },
+            toggleDialog = profileViewModel::toggleDialog,
+            hideDialog = profileViewModel::hideDialog,
+            clearAllData = profileViewModel::clearAllData)
     }
 }
 
@@ -103,8 +101,27 @@ fun ProfileScreen(
     totalTransactions: String,
     avgMonthlyExpenditure: String,
     mostFrequentlyUsedAcc: String,
+    showDialog: Boolean,
+    toggleDialog: () -> Unit,
+    hideDialog: () -> Unit,
+    clearAllData: () -> Unit,
     onBackPress: () -> Unit
 ) {
+
+    val snackBarHostState = remember {
+        SnackbarHostState()
+    }
+
+    val showSnackBar = remember {
+        mutableStateOf(false)
+    }
+
+    LaunchedEffect(key1 = showSnackBar) {
+        if (showSnackBar.value) {
+            snackBarHostState.showSnackbar("Coming soon")
+        }
+    }
+
     Scaffold(topBar = {
         ExpenseTrackerAppBar(
             title = "Profile",
@@ -116,7 +133,20 @@ fun ProfileScreen(
         ) {
             // Nothing to do
         }
+    }, snackbarHost = {
+        SnackbarHost(hostState = snackBarHostState) {
+            Snackbar(snackbarData = it, containerColor = Color.DarkGray)
+        }
     }) {
+        if (showDialog) {
+            ExpenseTrackerDialog(title = "Clear data",
+                message = "Are you sure you want to clear all data ?",
+                okButtonText = "Yes",
+                cancelButtonText = "No",
+                onOkClick = clearAllData,
+                onCancelClicked = hideDialog
+            )
+        }
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -139,8 +169,7 @@ fun ProfileScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     HeadingTextBold(
-                        text = "$$totalExpenditure",
-                        color = MaterialTheme.colorScheme.primary
+                        text = "$$totalExpenditure", color = MaterialTheme.colorScheme.primary
                     )
                     SimpleSmallText(text = "Total Expenditure", textAlignment = TextAlign.Center)
                 }
@@ -150,8 +179,7 @@ fun ProfileScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     HeadingTextBold(
-                        text = totalTransactions,
-                        color = MaterialTheme.colorScheme.primary
+                        text = totalTransactions, color = MaterialTheme.colorScheme.primary
                     )
                     SimpleSmallText(text = "Total Transactions", textAlignment = TextAlign.Center)
                 }
@@ -165,8 +193,7 @@ fun ProfileScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     HeadingTextBold(
-                        text = "$$avgMonthlyExpenditure",
-                        color = MaterialTheme.colorScheme.primary
+                        text = "$$avgMonthlyExpenditure", color = MaterialTheme.colorScheme.primary
                     )
                     SimpleSmallText(
                         text = "Average Monthly Expenditure", textAlignment = TextAlign.Center
@@ -178,8 +205,7 @@ fun ProfileScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     HeadingTextBold(
-                        text = mostFrequentlyUsedAcc,
-                        color = MaterialTheme.colorScheme.primary
+                        text = mostFrequentlyUsedAcc, color = MaterialTheme.colorScheme.primary
                     )
                     SimpleSmallText(
                         text = "Most Frequently use account", textAlignment = TextAlign.Center
@@ -194,8 +220,9 @@ fun ProfileScreen(
                     .height(70.dp)
                     .padding(start = .5.dp, end = .5.dp)
                     .border(width = 1.dp, color = Color.Gray)
-                    .clickable { },
-                contentAlignment = Alignment.CenterStart
+                    .clickable {
+                        showSnackBar.value = true
+                    }, contentAlignment = Alignment.CenterStart
             ) {
                 SimpleText(
                     text = "Upload your data", modifier = Modifier.padding(start = 8.dp)
@@ -207,7 +234,9 @@ fun ProfileScreen(
                     .height(70.dp)
                     .padding(start = .5.dp, end = .5.dp)
                     .border(width = 1.dp, color = Color.Gray)
-                    .clickable { },
+                    .clickable {
+                        toggleDialog()
+                    },
                 contentAlignment = Alignment.CenterStart
             ) {
                 SimpleText(

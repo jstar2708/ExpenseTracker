@@ -7,6 +7,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jaideep.expensetracker.common.EtDispatcher
 import com.jaideep.expensetracker.common.Resource
+import com.jaideep.expensetracker.data.local.preferences.DatastoreRepository
+import com.jaideep.expensetracker.domain.repository.CrudRepository
 import com.jaideep.expensetracker.domain.usecase.calculation.GetAvgMonthlyExpUseCase
 import com.jaideep.expensetracker.domain.usecase.calculation.GetMostUsedAccUseCase
 import com.jaideep.expensetracker.domain.usecase.calculation.GetTotalExpenditureUseCase
@@ -18,12 +20,16 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
+    private val crudRepository: CrudRepository,
+    private val datastoreRepository: DatastoreRepository,
     private val getUsernameFromDatastoreUseCase: GetUsernameFromDatastoreUseCase,
     private val getAvgMonthlyExpUseCase: GetAvgMonthlyExpUseCase,
     private val getTotalTransactionCountUseCase: GetTotalTransactionCountUseCase,
     private val getTotalExpenditureUseCase: GetTotalExpenditureUseCase,
     private val getMostUsedAccUseCase: GetMostUsedAccUseCase
 ) : ViewModel() {
+    var showDialog by mutableStateOf(false)
+        private set
     var userName by mutableStateOf("")
         private set
     var isUsernameLoading by mutableStateOf(true)
@@ -63,17 +69,19 @@ class ProfileViewModel @Inject constructor(
         getTotalTransactionCount()
     }
 
-    private fun getTotalTransactionCount() = viewModelScope.launch (EtDispatcher.io) {
+    private fun getTotalTransactionCount() = viewModelScope.launch(EtDispatcher.io) {
         getTotalTransactionCountUseCase().collect {
             when (it) {
                 is Resource.Error -> {
                     totalTransactionsRetrievalError = true
                     isTotalTransactionsLoading = false
                 }
+
                 is Resource.Loading -> {
                     isTotalTransactionsLoading = true
                     totalTransactionsRetrievalError = false
                 }
+
                 is Resource.Success -> {
                     totalTransactionsRetrievalError = false
                     isTotalTransactionsLoading = false
@@ -82,17 +90,20 @@ class ProfileViewModel @Inject constructor(
             }
         }
     }
-    private fun getTotalExpenditure() = viewModelScope.launch (EtDispatcher.io) {
+
+    private fun getTotalExpenditure() = viewModelScope.launch(EtDispatcher.io) {
         getTotalExpenditureUseCase().collect {
             when (it) {
                 is Resource.Error -> {
                     totalExpenditureRetrievalError = true
                     isTotalExpenditureLoading = false
                 }
+
                 is Resource.Loading -> {
                     totalExpenditureRetrievalError = false
                     isTotalExpenditureLoading = true
                 }
+
                 is Resource.Success -> {
                     totalExpenditure = it.data.toString()
                     totalExpenditureRetrievalError = false
@@ -101,17 +112,20 @@ class ProfileViewModel @Inject constructor(
             }
         }
     }
-    private fun getMostFrequentlyUsedAccount() = viewModelScope.launch (EtDispatcher.io) {
+
+    private fun getMostFrequentlyUsedAccount() = viewModelScope.launch(EtDispatcher.io) {
         getMostUsedAccUseCase().collect {
             when (it) {
                 is Resource.Error -> {
                     mostFrequentlyUsedAccRetrievalError = true
                     isMostFrequentlyUsedAccLoading = false
                 }
+
                 is Resource.Loading -> {
                     mostFrequentlyUsedAccRetrievalError = false
                     isMostFrequentlyUsedAccLoading = true
                 }
+
                 is Resource.Success -> {
                     mostFrequentlyUsedAccRetrievalError = false
                     isMostFrequentlyUsedAccLoading = false
@@ -120,6 +134,7 @@ class ProfileViewModel @Inject constructor(
             }
         }
     }
+
     private fun getAverageMonthlyExpenditure() = viewModelScope.launch(EtDispatcher.io) {
         getAvgMonthlyExpUseCase().collect {
             when (it) {
@@ -127,10 +142,12 @@ class ProfileViewModel @Inject constructor(
                     avgMonthlyExpRetrievalError = true
                     isAvgMonthlyExpLoading = false
                 }
+
                 is Resource.Loading -> {
                     avgMonthlyExpRetrievalError = false
                     isAvgMonthlyExpLoading = true
                 }
+
                 is Resource.Success -> {
                     avgMonthlyExpenditure = it.data.toString()
                     avgMonthlyExpRetrievalError = false
@@ -139,6 +156,7 @@ class ProfileViewModel @Inject constructor(
             }
         }
     }
+
     private fun getUserName() = viewModelScope.launch(EtDispatcher.io) {
         getUsernameFromDatastoreUseCase().collect {
             when (it) {
@@ -159,5 +177,26 @@ class ProfileViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun toggleDialog() {
+        showDialog = !showDialog
+    }
+
+    fun hideDialog() {
+        showDialog = false
+    }
+
+    fun clearAllData() {
+        clearDatabase()
+        clearDatastore()
+    }
+
+    private fun clearDatabase() = viewModelScope.launch(EtDispatcher.io) {
+        crudRepository.clearAllData()
+    }
+
+    private fun clearDatastore() = viewModelScope.launch(EtDispatcher.io) {
+        datastoreRepository.clearDatastore()
     }
 }

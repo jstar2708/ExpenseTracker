@@ -36,4 +36,10 @@ class DatastoreRepositoryImpl @Inject constructor(
         val preferences = datastore.data.first()
         return preferences[datastoreKey]
     }
+
+    override suspend fun clearDatastore() {
+        datastore.edit { mutablePreferences ->
+            mutablePreferences.clear()
+        }
+    }
 }

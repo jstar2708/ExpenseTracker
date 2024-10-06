@@ -128,8 +128,8 @@ fun HomeScreen(
 
     val snackBarHostState = remember {
         SnackbarHostState()
-
     }
+
     Surface(
         modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background
     ) {

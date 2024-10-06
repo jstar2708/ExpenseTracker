@@ -12,6 +12,8 @@ import com.jaideep.expensetracker.common.EtDispatcher
 import com.jaideep.expensetracker.common.constant.AppConstants.ET_PREFERENCES
 import com.jaideep.expensetracker.data.local.dao.AccountDao
 import com.jaideep.expensetracker.data.local.dao.CategoryDao
+import com.jaideep.expensetracker.data.local.dao.CrudDao
+import com.jaideep.expensetracker.data.local.dao.DatabaseDao
 import com.jaideep.expensetracker.data.local.dao.EtDao
 import com.jaideep.expensetracker.data.local.dao.TransactionDao
 import com.jaideep.expensetracker.data.local.dao.TransactionPagingDao
@@ -97,6 +99,18 @@ object AppModule {
 
     @Provides
     @Singleton
+    fun providesCrudDao(etDatabase: EtDatabase): CrudDao {
+        return etDatabase.getCrudDao()
+    }
+
+    @Provides
+    @Singleton
+    fun providesDatabaseDao(etDatabase: EtDatabase): DatabaseDao {
+        return etDatabase.getDatabaseDao()
+    }
+
+    @Provides
+    @Singleton
     fun providesAccountRepository(accountDao: AccountDao): AccountRepository {
         return AccountRepositoryImpl(accountDao)
     }
@@ -128,10 +142,9 @@ object AppModule {
     @Provides
     @Singleton
     fun providesCrudRepository(
-        accountDao: AccountDao,
-        transactionDao: TransactionDao,
-        categoryDao: CategoryDao
+        crudDao: CrudDao,
+        databaseDao: DatabaseDao
     ): CrudRepository {
-        return CrudRepositoryImpl(accountDao, transactionDao, categoryDao)
+        return CrudRepositoryImpl(crudDao, databaseDao)
     }
 }
