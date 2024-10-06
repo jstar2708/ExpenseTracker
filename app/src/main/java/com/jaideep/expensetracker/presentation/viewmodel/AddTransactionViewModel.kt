@@ -455,7 +455,7 @@ class AddTransactionViewModel @Inject constructor(
             dateState.value = TextFieldWithIconAndErrorPopUpState(
                 text = dateState.value.text,
                 isError = true,
-                showError = !dateState.value.showError,
+                showError = true,
                 onValueChange = dateState.value.onValueChange,
                 onErrorIconClick = dateState.value.onErrorIconClick,
                 errorMessage = "Enter a valid date"
@@ -472,7 +472,7 @@ class AddTransactionViewModel @Inject constructor(
             amountState.value = TextFieldWithIconAndErrorPopUpState(
                 text = amountState.value.text,
                 isError = true,
-                showError = amountState.value.showError,
+                showError = true,
                 onValueChange = amountState.value.onValueChange,
                 onErrorIconClick = amountState.value.onErrorIconClick,
                 errorMessage = "Enter a valid number"
@@ -487,7 +487,7 @@ class AddTransactionViewModel @Inject constructor(
             categoryState.value = TextFieldWithIconAndErrorPopUpState(
                 text = categoryState.value.text,
                 isError = true,
-                showError = categoryState.value.showError,
+                showError = true,
                 onValueChange = categoryState.value.onValueChange,
                 onErrorIconClick = categoryState.value.onErrorIconClick,
                 errorMessage = "Category cannot be empty"
@@ -502,7 +502,7 @@ class AddTransactionViewModel @Inject constructor(
             accountState.value = TextFieldWithIconAndErrorPopUpState(
                 text = accountState.value.text,
                 isError = true,
-                showError = accountState.value.showError,
+                showError = true,
                 onValueChange = accountState.value.onValueChange,
                 onErrorIconClick = accountState.value.onErrorIconClick,
                 errorMessage = "Account cannot be empty"

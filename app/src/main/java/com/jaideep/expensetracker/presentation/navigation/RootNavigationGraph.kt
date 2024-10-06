@@ -1,14 +1,12 @@
 package com.jaideep.expensetracker.presentation.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.jaideep.expensetracker.common.AddScreen
-import com.jaideep.expensetracker.common.AuthScreen
 import com.jaideep.expensetracker.common.DetailScreen
 import com.jaideep.expensetracker.common.Graph
 import com.jaideep.expensetracker.common.constant.AppConstants.CREATE_SCREEN
@@ -18,7 +16,6 @@ import com.jaideep.expensetracker.presentation.screens.cu.CUTransactionScreenRoo
 import com.jaideep.expensetracker.presentation.screens.bottom.BottomNavigationScreen
 import com.jaideep.expensetracker.presentation.screens.details.CategoryDetailsScreenRoot
 import com.jaideep.expensetracker.presentation.screens.details.ProfileScreenRoot
-import com.jaideep.expensetracker.presentation.viewmodel.AuthViewModel
 import com.jaideep.expensetracker.presentation.viewmodel.MainViewModel
 
 @Composable
@@ -27,9 +24,6 @@ fun RootNavigationGraph(mainViewModel: MainViewModel) {
     NavHost(
         navController = navHostControllerRoot, startDestination = Graph.AUTH, route = Graph.ROOT
     ) {
-        composable(AuthScreen.SPLASH) {
-//            SplashScreen(navController)
-        }
 
         authNavGraph(navController = navHostControllerRoot)
 

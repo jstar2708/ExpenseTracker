@@ -13,8 +13,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Note
 import androidx.compose.material.icons.filled.AccountBalanceWallet
@@ -193,7 +195,8 @@ fun CUTransactionScreen(
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(8.dp),
+                        .padding(8.dp)
+                        .verticalScroll(rememberScrollState()),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.SpaceEvenly
                 ) {
@@ -241,6 +244,7 @@ fun CUTransactionScreen(
                         onTextFieldValueChange = accountState.onValueChange,
                         onErrorIconClick = accountState.onErrorIconClick
                     )
+                    Spacer(modifier = Modifier.height(4.dp))
                     TextFieldWithDropDown(
                         values = categories,
                         label = "Choose Category",
@@ -254,6 +258,7 @@ fun CUTransactionScreen(
                         onTextFieldValueChange = categoryState.onValueChange,
                         onErrorIconClick = categoryState.onErrorIconClick
                     )
+                    Spacer(modifier = Modifier.height(4.dp))
                     TextFieldWithIconAndErrorPopUp(
                         label = "Amount",
                         icon = Icons.Filled.CurrencyRupee,
@@ -267,6 +272,7 @@ fun CUTransactionScreen(
                         onValueChange = amountState.onValueChange,
                         onErrorIconClick = amountState.onErrorIconClick
                     )
+                    Spacer(modifier = Modifier.height(4.dp))
                     TextFieldDatePicker(
                         label = "Date",
                         icon = Icons.Filled.CalendarMonth,
@@ -279,6 +285,7 @@ fun CUTransactionScreen(
                         onValueChanged = dateState.onValueChange,
                         onErrorIconClick = dateState.onErrorIconClick
                     )
+                    Spacer(modifier = Modifier.height(4.dp))
                     TextFieldWithIconAndErrorPopUp(
                         label = "Note",
                         icon = Icons.AutoMirrored.Filled.Note,
@@ -291,7 +298,7 @@ fun CUTransactionScreen(
                         onValueChange = noteState.onValueChange,
                         onErrorIconClick = noteState.onErrorIconClick
                     )
-
+                    Spacer(modifier = Modifier.height(4.dp))
                     Button(
                         modifier = Modifier
                             .fillMaxWidth()

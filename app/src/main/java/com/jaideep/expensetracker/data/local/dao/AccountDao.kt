@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
+import com.jaideep.expensetracker.common.constant.sql.AccountSql.GET_ACCOUNTS_COUNT
 import com.jaideep.expensetracker.common.constant.sql.AccountSql.GET_ACCOUNT_BY_ID
 import com.jaideep.expensetracker.common.constant.sql.AccountSql.GET_ALL_ACCOUNTS
 import com.jaideep.expensetracker.common.constant.sql.AccountSql.UPDATE_ACCOUNT_BALANCE
@@ -27,4 +28,7 @@ interface AccountDao {
 
     @Query(UPDATE_ACCOUNT_BALANCE)
     suspend fun updateAccountBalance(accountId: Int, amount: Double)
+
+    @Query(GET_ACCOUNTS_COUNT)
+    fun getTotalAccountsCount(): Int
 }

@@ -150,6 +150,7 @@ fun HomeScreen(
                 actionDescription = "Notification icon",
                 onActionIconClick = { })
         }) {
+
             Column(
                 Modifier
                     .fillMaxSize()
@@ -171,8 +172,7 @@ fun HomeScreen(
                         modifier = Modifier.weight(1f)
                     )
                 }
-                ExpenseTrackerSpinner(
-                    values = accounts,
+                ExpenseTrackerSpinner(values = accounts,
                     initialValue = selectedAccount,
                     onValueChanged = { value ->
                         onAccountSpinnerValueChanged(value)

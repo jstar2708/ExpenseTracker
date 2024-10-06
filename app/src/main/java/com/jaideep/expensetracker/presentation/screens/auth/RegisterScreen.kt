@@ -16,6 +16,7 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -23,6 +24,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.jaideep.expensetracker.R
 import com.jaideep.expensetracker.common.AddScreen
@@ -30,9 +32,10 @@ import com.jaideep.expensetracker.common.constant.AppConstants.CREATE_SCREEN
 import com.jaideep.expensetracker.model.TextFieldWithIconAndErrorPopUpState
 import com.jaideep.expensetracker.presentation.component.MediumText
 import com.jaideep.expensetracker.presentation.component.button.SmallPrimaryColorButton
+import com.jaideep.expensetracker.presentation.component.textfield.PasswordTextFieldWithIconAndErrorPopUp
 import com.jaideep.expensetracker.presentation.component.textfield.TextFieldWithIconAndErrorPopUp
 import com.jaideep.expensetracker.presentation.theme.AppTheme
-import com.jaideep.expensetracker.presentation.viewmodel.AuthViewModel
+import com.jaideep.expensetracker.presentation.viewmodel.RegisterViewModel
 
 @Preview()
 @Composable
@@ -61,12 +64,13 @@ private fun RegisterScreenPreview() {
 }
 
 @Composable
-fun RegisterScreenRoot(navController: NavController, authViewModel: AuthViewModel) {
-    RegisterScreen(nameState = authViewModel.nameState,
-        passwordState = authViewModel.passwordState,
-        confirmPasswordState = authViewModel.confirmPasswordState,
-        onRegister = authViewModel::onRegister,
-        isRegistrationCompleted = authViewModel.registrationComplete,
+fun RegisterScreenRoot(navController: NavController) {
+    val registerViewModel = hiltViewModel<RegisterViewModel>()
+    RegisterScreen(nameState = registerViewModel.nameState,
+        passwordState = registerViewModel.passwordState,
+        confirmPasswordState = registerViewModel.confirmPasswordState,
+        onRegister = registerViewModel::onRegister,
+        isRegistrationCompleted = registerViewModel.registrationComplete,
         navigateToCUAccount = {
             navController.navigate("${AddScreen.CREATE_UPDATE_ACCOUNT}/$CREATE_SCREEN")
         })
@@ -82,8 +86,10 @@ fun RegisterScreen(
     navigateToCUAccount: () -> Unit,
     onRegister: () -> Unit
 ) {
-    if (isRegistrationCompleted) {
-        navigateToCUAccount()
+    LaunchedEffect(key1 = isRegistrationCompleted) {
+        if (isRegistrationCompleted) {
+            navigateToCUAccount()
+        }
     }
     Surface(
         Modifier
@@ -93,32 +99,39 @@ fun RegisterScreen(
         Column(
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+            verticalArrangement = Arrangement.Bottom
         ) {
 
-            Spacer(modifier = Modifier.height(40.dp))
+            Column(
+                modifier = Modifier.weight(.3f),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Bottom
+            ) {
 
-            Image(
-                modifier = Modifier.weight(.15f),
-                painter = painterResource(id = R.drawable.app_icon),
-                contentDescription = "App icon"
-            )
+                Spacer(modifier = Modifier.height(40.dp))
 
-            MediumText(
-                modifier = Modifier
-                    .weight(.05f)
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
-                text = "Hello There!\nEnter your details to get started",
-                textAlignment = TextAlign.Center
-            )
+                Image(
+                    painter = painterResource(id = R.drawable.app_icon),
+                    contentDescription = "App icon"
+                )
 
-            Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(40.dp))
+
+                MediumText(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
+                    text = "Hello There!\nEnter your details to get started",
+                    textAlignment = TextAlign.Center
+                )
+
+                Spacer(modifier = Modifier.height(40.dp))
+            }
 
             Column(
                 Modifier
                     .fillMaxWidth()
-                    .weight(.3f)
+                    .weight(.2f), verticalArrangement = Arrangement.SpaceEvenly
             ) {
                 TextFieldWithIconAndErrorPopUp(
                     modifier = Modifier.padding(horizontal = 16.dp),
@@ -134,9 +147,7 @@ fun RegisterScreen(
                     onErrorIconClick = nameState.onErrorIconClick
                 )
 
-                Spacer(modifier = Modifier.height(16.dp))
-
-                TextFieldWithIconAndErrorPopUp(
+                PasswordTextFieldWithIconAndErrorPopUp(
                     modifier = Modifier.padding(horizontal = 16.dp),
                     label = "Password",
                     icon = Icons.Filled.Password,
@@ -150,9 +161,7 @@ fun RegisterScreen(
                     onErrorIconClick = passwordState.onErrorIconClick
                 )
 
-                Spacer(modifier = Modifier.height(16.dp))
-
-                TextFieldWithIconAndErrorPopUp(
+                PasswordTextFieldWithIconAndErrorPopUp(
                     modifier = Modifier.padding(horizontal = 16.dp),
                     label = "Re-enter Password ",
                     icon = Icons.Filled.Password,
@@ -165,8 +174,6 @@ fun RegisterScreen(
                     onValueChange = confirmPasswordState.onValueChange,
                     onErrorIconClick = confirmPasswordState.onErrorIconClick
                 )
-
-                Spacer(modifier = Modifier.height(40.dp))
 
                 SmallPrimaryColorButton(
                     modifier = Modifier

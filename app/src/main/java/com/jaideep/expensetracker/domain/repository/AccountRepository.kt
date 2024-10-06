@@ -8,4 +8,5 @@ interface AccountRepository {
     suspend fun saveAccount(account: Account)
     suspend fun getAccountById(accountId: Int): Account
     suspend fun updateAccount(account: Account)
+    suspend fun getTotalAccountsCount(): Int
 }

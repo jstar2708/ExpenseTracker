@@ -76,14 +76,12 @@ fun TextFieldWithDropDown(
             showErrorText = showErrorText,
             onValueChange = {},
             onErrorIconClick = onErrorIconClick
-
         )
 
         AnimatedVisibility(
             visible = isExpanded && !showErrorText, enter = fadeIn(), exit = fadeOut()
         ) {
-            ExposedDropdownMenu(
-                expanded = isExpanded && !showErrorText,
+            ExposedDropdownMenu(expanded = isExpanded && !showErrorText,
                 onDismissRequest = { isExpanded = false }) {
                 values.forEach {
                     DropdownMenuItem(text = {
