@@ -7,23 +7,33 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavHostController
+import androidx.navigation.navOptions
 import com.jaideep.expensetracker.R
+import com.jaideep.expensetracker.common.Graph
 import com.jaideep.expensetracker.presentation.viewmodel.LoginViewModel
 import kotlinx.coroutines.delay
 
 
 @Composable
 fun SplashScreen(
-    navController: NavHostController,
-    loginViewModel: LoginViewModel
+    navController: NavHostController, loginViewModel: LoginViewModel
 ) {
     Surface {
         Column {
-            Image(painter = painterResource(id = R.drawable.app_icon), contentDescription = "App icon")
+            Image(
+                painter = painterResource(id = R.drawable.app_icon), contentDescription = "App icon"
+            )
         }
         LaunchedEffect(key1 = true) {
             loginViewModel.isUserPresent()
             delay(3000)
+            navController.navigate(Graph.AUTH).apply {
+                navOptions {
+                    popUpTo(navController.graph.startDestinationId) {
+                        inclusive = true
+                    }
+                }
+            }
         }
     }
 }

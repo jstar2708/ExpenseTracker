@@ -2,6 +2,7 @@ package com.jaideep.expensetracker.presentation.screens.bottom.home
 
 
 import android.app.Application
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -67,13 +68,14 @@ private fun HomeScreenPreview() {
             selectedAccount = "All Accounts",
             categoryCardData = CategoryCardData("Food", "Food", 0.0),
             amountSpentThisMonthFromAcc = 0.0,
+            onBackPress = {}
         )
     }
 }
 
 @Composable
 fun HomeScreenRoot(
-    navControllerRoot: NavController, mainViewModel: MainViewModel, homeViewModel: HomeViewModel
+    navControllerRoot: NavController, mainViewModel: MainViewModel, homeViewModel: HomeViewModel, onBackPress: () -> Unit
 ) {
     LaunchedEffect(key1 = true) {
         homeViewModel.getInitialAccountData()
@@ -104,7 +106,8 @@ fun HomeScreenRoot(
             spentToday = homeViewModel.spentToday.collectAsState().value,
             selectedAccount = homeViewModel.selectedAccount.collectAsState().value,
             categoryCardData = homeViewModel.getMaxSpentCategoryData.collectAsState().value,
-            amountSpentThisMonthFromAcc = homeViewModel.amountSpentThisMonthFromAcc.collectAsState().value
+            amountSpentThisMonthFromAcc = homeViewModel.amountSpentThisMonthFromAcc.collectAsState().value,
+            onBackPress = onBackPress
         )
     }
 }
@@ -119,6 +122,7 @@ fun HomeScreen(
     selectedAccount: String,
     categoryCardData: CategoryCardData?,
     amountSpentThisMonthFromAcc: Double,
+    onBackPress: () -> Unit,
     onAccountSpinnerValueChanged: (value: String) -> Unit,
 ) {
     val savedStateHandle = navControllerRoot.currentBackStackEntry?.savedStateHandle
@@ -128,6 +132,10 @@ fun HomeScreen(
 
     val snackBarHostState = remember {
         SnackbarHostState()
+    }
+
+    BackHandler {
+        onBackPress()
     }
 
     Surface(

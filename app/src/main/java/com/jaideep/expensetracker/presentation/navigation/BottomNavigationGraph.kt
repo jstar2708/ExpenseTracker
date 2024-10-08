@@ -40,7 +40,9 @@ fun BottomNavigationGraph(
                 navControllerRoot = navHostControllerRoot,
                 mainViewModel = mainViewModel,
                 homeViewModel = hiltViewModel<HomeViewModel>(startEntry)
-            )
+            ) {
+                bottomNavController.popBackStack()
+            }
         }
         composable(MainScreen.TRANSACTION) { backStackEntry ->
             val startEntry = remember(backStackEntry) {

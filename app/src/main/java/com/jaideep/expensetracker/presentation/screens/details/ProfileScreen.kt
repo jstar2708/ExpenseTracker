@@ -68,6 +68,9 @@ fun ProfileScreenRoot(
     navController: NavController
 ) {
     val profileViewModel = hiltViewModel<ProfileViewModel>()
+    LaunchedEffect(key1 = true) {
+        profileViewModel.initData()
+    }
     if (profileViewModel.isUsernameLoading || profileViewModel.isAvgMonthlyExpLoading || profileViewModel.isTotalTransactionsLoading || profileViewModel.isTotalExpenditureLoading || profileViewModel.isMostFrequentlyUsedAccLoading) {
         ExpenseTrackerProgressBar(Modifier.size(50.dp))
     } else if (profileViewModel.usernameRetrievalError || profileViewModel.avgMonthlyExpRetrievalError || profileViewModel.totalExpenditureRetrievalError || profileViewModel.mostFrequentlyUsedAccRetrievalError || profileViewModel.totalTransactionsRetrievalError) {

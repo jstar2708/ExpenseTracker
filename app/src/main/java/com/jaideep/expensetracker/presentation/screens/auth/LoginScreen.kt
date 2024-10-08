@@ -25,6 +25,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.navigation.navOptions
 import com.jaideep.expensetracker.R
 import com.jaideep.expensetracker.common.AddScreen
 import com.jaideep.expensetracker.common.AuthScreen
@@ -75,12 +76,30 @@ fun LoginScreenRoot(navController: NavController) {
             userNotPresent = loginViewModel.userNotPresent,
             createAccount = loginViewModel.createAccount,
             navigateToMainScreen = {
-                navController.navigate(Graph.MAIN)
+                navController.navigate(Graph.MAIN).apply {
+                    navOptions {
+                        popUpTo(navController.graph.startDestinationId) {
+                            inclusive = true
+                        }
+                    }
+                }
             },
             navigateToRegisterScreen = {
-                navController.navigate(AuthScreen.REGISTER)
+                navController.navigate(AuthScreen.REGISTER).apply {
+                    navOptions {
+                        popUpTo(navController.graph.startDestinationId) {
+                            inclusive = true
+                        }
+                    }
+                }
             },
-            navigateToCUAccount = { navController.navigate("${AddScreen.CREATE_UPDATE_ACCOUNT}/$CREATE_SCREEN") })
+            navigateToCUAccount = { navController.navigate("${AddScreen.CREATE_UPDATE_ACCOUNT}/$CREATE_SCREEN") }).apply {
+            navOptions {
+                popUpTo(navController.graph.startDestinationId) {
+                    inclusive = true
+                }
+            }
+        }
     }
 }
 

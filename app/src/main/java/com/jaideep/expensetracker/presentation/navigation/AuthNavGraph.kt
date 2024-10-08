@@ -18,13 +18,6 @@ fun NavGraphBuilder.authNavGraph(navController: NavHostController) {
     navigation(
         startDestination = AuthScreen.LOGIN, route = Graph.AUTH
     ) {
-        composable(AuthScreen.SPLASH) { navBackStackEntry ->
-            val startEntry = remember(navBackStackEntry) {
-                navController.getBackStackEntry(Graph.AUTH)
-            }
-            val loginViewModel: LoginViewModel = hiltViewModel(startEntry)
-            SplashScreen(navController, loginViewModel)
-        }
         composable(AuthScreen.LOGIN) {
             LoginScreenRoot(navController)
         }
