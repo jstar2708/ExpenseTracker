@@ -1,6 +1,8 @@
 package com.jaideep.expensetracker.presentation.utility
 
+import android.content.Context
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.animation.core.rememberTransition
 import com.jaideep.expensetracker.R
 import java.time.LocalDate
@@ -52,6 +54,8 @@ object Utility {
         }
         return 0
     }
+}
 
-
+fun Context.showToast(msg: String) {
+    Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
 }

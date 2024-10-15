@@ -103,4 +103,5 @@ dependencies {
     implementation(libs.paging.with.room)
 
     implementation(libs.kotlin.immutable.lists)
+    implementation(libs.biometric)
 }

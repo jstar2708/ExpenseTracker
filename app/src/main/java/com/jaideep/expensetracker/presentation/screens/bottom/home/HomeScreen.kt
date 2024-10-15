@@ -134,9 +134,9 @@ fun HomeScreen(
         SnackbarHostState()
     }
 
-    BackHandler {
-        onBackPress()
-    }
+//    BackHandler {
+//        onBackPress()
+//    }
 
     Surface(
         modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background

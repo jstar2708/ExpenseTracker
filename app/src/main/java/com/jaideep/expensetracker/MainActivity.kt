@@ -3,16 +3,18 @@ package com.jaideep.expensetracker
 import android.annotation.SuppressLint
 import android.content.pm.ActivityInfo
 import android.os.Bundle
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.FragmentActivity
 import com.jaideep.expensetracker.presentation.navigation.RootNavigationGraph
 import com.jaideep.expensetracker.presentation.theme.AppTheme
 import com.jaideep.expensetracker.presentation.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
+
 @AndroidEntryPoint
-class MainActivity : ComponentActivity() {
+class MainActivity : FragmentActivity() {
     private val mainViewModel: MainViewModel by viewModels()
 
     @SuppressLint("SourceLockedOrientationActivity")

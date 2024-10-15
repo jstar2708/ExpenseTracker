@@ -41,7 +41,9 @@ fun BottomNavigationGraph(
                 mainViewModel = mainViewModel,
                 homeViewModel = hiltViewModel<HomeViewModel>(startEntry)
             ) {
-                bottomNavController.popBackStack()
+                navHostControllerRoot.popBackStack(
+                    navHostControllerRoot.graph.startDestinationId, true
+                )
             }
         }
         composable(MainScreen.TRANSACTION) { backStackEntry ->

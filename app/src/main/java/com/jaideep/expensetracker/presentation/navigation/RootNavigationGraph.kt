@@ -25,15 +25,11 @@ import com.jaideep.expensetracker.presentation.viewmodel.MainViewModel
 @Composable
 fun RootNavigationGraph(mainViewModel: MainViewModel) {
     val navHostControllerRoot = rememberNavController()
-    NavHost(
+    NavHost (
         navController = navHostControllerRoot,
-        startDestination = AuthScreen.SPLASH,
+        startDestination = Graph.AUTH,
         route = Graph.ROOT
     ) {
-        composable(AuthScreen.SPLASH) {
-            val loginViewModel: LoginViewModel = hiltViewModel()
-            SplashScreen(navHostControllerRoot, loginViewModel)
-        }
 
         authNavGraph(navController = navHostControllerRoot)
 

@@ -23,7 +23,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.navOptions
 import com.jaideep.expensetracker.R
@@ -37,6 +36,7 @@ import com.jaideep.expensetracker.presentation.component.SimpleText
 import com.jaideep.expensetracker.presentation.component.button.SmallPrimaryColorButton
 import com.jaideep.expensetracker.presentation.component.other.ExpenseTrackerProgressBar
 import com.jaideep.expensetracker.presentation.component.textfield.PasswordTextFieldWithIconAndErrorPopUp
+import com.jaideep.expensetracker.presentation.screens.BiometricDialog
 import com.jaideep.expensetracker.presentation.theme.AppTheme
 import com.jaideep.expensetracker.presentation.viewmodel.LoginViewModel
 
@@ -60,8 +60,7 @@ private fun LoginScreenPreview() {
 }
 
 @Composable
-fun LoginScreenRoot(navController: NavController) {
-    val loginViewModel = hiltViewModel<LoginViewModel>()
+fun LoginScreenRoot(navController: NavController, loginViewModel: LoginViewModel) {
     LaunchedEffect(key1 = true) {
         loginViewModel.isUserPresent()
         loginViewModel.checkAccountCreated()
@@ -76,30 +75,31 @@ fun LoginScreenRoot(navController: NavController) {
             userNotPresent = loginViewModel.userNotPresent,
             createAccount = loginViewModel.createAccount,
             navigateToMainScreen = {
-                navController.navigate(Graph.MAIN).apply {
-                    navOptions {
-                        popUpTo(navController.graph.startDestinationId) {
-                            inclusive = true
-                        }
+                navController.navigate(Graph.MAIN, navOptions = navOptions {
+                    popUpTo(navController.graph.startDestinationId) {
+                        inclusive = true
                     }
-                }
+                    launchSingleTop = true
+                })
             },
             navigateToRegisterScreen = {
-                navController.navigate(AuthScreen.REGISTER).apply {
-                    navOptions {
+                navController.navigate(AuthScreen.REGISTER, navOptions = navOptions {
+                    popUpTo(navController.graph.startDestinationId) {
+                        inclusive = true
+                    }
+                    launchSingleTop = true
+                })
+            },
+            navigateToCUAccount = {
+                navController.navigate(
+                    "${AddScreen.CREATE_UPDATE_ACCOUNT}/$CREATE_SCREEN",
+                    navOptions = navOptions {
                         popUpTo(navController.graph.startDestinationId) {
                             inclusive = true
                         }
-                    }
-                }
-            },
-            navigateToCUAccount = { navController.navigate("${AddScreen.CREATE_UPDATE_ACCOUNT}/$CREATE_SCREEN") }).apply {
-            navOptions {
-                popUpTo(navController.graph.startDestinationId) {
-                    inclusive = true
-                }
-            }
-        }
+                        launchSingleTop = true
+                    })
+            })
     }
 }
 
@@ -115,6 +115,8 @@ fun LoginScreen(
     navigateToRegisterScreen: () -> Unit,
     navigateToCUAccount: () -> Unit
 ) {
+
+    BiometricDialog()
 
     LaunchedEffect(key1 = isLoginCompleted && createAccount) {
         if (isLoginCompleted && createAccount) {

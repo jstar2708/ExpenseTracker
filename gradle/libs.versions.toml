@@ -23,6 +23,7 @@ lifecycleKtx = "2.7.0"
 android-application = "8.5.2"
 kotlin = "1.9.0"
 ksp = "1.9.0-1.0.13"
+biometric = "1.1.0"
 
 [libraries]
 core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "ktx" }
@@ -57,6 +58,7 @@ paging-compose = { group = "androidx.paging", name = "paging-compose", version.r
 paging-with-room = { group = "androidx.room", name = "room-paging", version.ref = "roomPaging" }
 kotlin-immutable-lists = { group = "org.jetbrains.kotlinx", name = "kotlinx-collections-immutable", version.ref = "kotlinImmutableLists" }
 datastore = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore" }
+biometric = { group = "androidx.biometric", name = "biometric", version.ref = "biometric" }
 
 
 

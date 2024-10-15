@@ -26,7 +26,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import androidx.navigation.NavOptions
 import androidx.navigation.navOptions
 import com.jaideep.expensetracker.R
 import com.jaideep.expensetracker.common.AddScreen
@@ -37,6 +36,7 @@ import com.jaideep.expensetracker.presentation.component.button.SmallPrimaryColo
 import com.jaideep.expensetracker.presentation.component.textfield.PasswordTextFieldWithIconAndErrorPopUp
 import com.jaideep.expensetracker.presentation.component.textfield.TextFieldWithIconAndErrorPopUp
 import com.jaideep.expensetracker.presentation.theme.AppTheme
+import com.jaideep.expensetracker.presentation.viewmodel.LoginViewModel
 import com.jaideep.expensetracker.presentation.viewmodel.RegisterViewModel
 
 @Preview()
