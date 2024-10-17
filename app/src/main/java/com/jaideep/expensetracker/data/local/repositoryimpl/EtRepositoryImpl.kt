@@ -36,7 +36,7 @@ class EtRepositoryImpl @Inject constructor(
     override fun getTotalAmountSpentFromAccountThisMonth(
         accountName: String, date: Long
     ): Flow<Double> {
-        return etDao.getTotalAmountSpentFromAccountThisMonth(accountName, date)
+        return etDao.getTotalAmountSpentFromAccountFromDuration(accountName, date)
     }
 
     override fun getCategoryOnWhichMaximumAmountSpentFromAllAccountsThisMonth(date: Long): Flow<CategoryCardData> {
@@ -44,7 +44,7 @@ class EtRepositoryImpl @Inject constructor(
     }
 
     override fun getAmountSpentFromAllAccountThisMonth(date: Long): Flow<Double> {
-        return etDao.getTotalAmountSpentFromAllAccountsThisMonth(date)
+        return etDao.getTotalAmountSpentFromAllAccountsFromDuration(date)
     }
 
     override fun getCategoryCardsDataFromAllAccountsWithinDuration(date: Long): Flow<List<CategoryCardData>> {
@@ -67,10 +67,7 @@ class EtRepositoryImpl @Inject constructor(
         categoryName: String, accountName: String, fromDate: Long, toDate: Long
     ): Flow<List<TransactionDto>> {
         return etDao.getCategoryWiseAccountTransactionWithDate(
-            categoryName,
-            accountName,
-            fromDate,
-            toDate
+            categoryName, accountName, fromDate, toDate
         )
     }
 
@@ -92,6 +89,16 @@ class EtRepositoryImpl @Inject constructor(
 
     override fun getMostFrequentlyUsedAccount(): String {
         return etDao.getMostFrequentlyUsedAccount()
+    }
+
+    override fun getAmountSpentFromAllAccountThisYear(startOfYear: Long): Flow<Double> {
+        return etDao.getTotalAmountSpentFromAllAccountsFromDuration(startOfYear)
+    }
+
+    override fun getTotalAmountSpentFromAccountThisYear(
+        accountName: String, startDateOfYearInMillis: Long
+    ): Flow<Double> {
+        return etDao.getTotalAmountSpentFromAccountFromDuration(accountName, startDateOfYearInMillis)
     }
 
 }

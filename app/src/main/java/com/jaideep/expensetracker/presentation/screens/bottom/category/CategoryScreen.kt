@@ -32,7 +32,6 @@ import com.jaideep.expensetracker.common.DetailScreen
 import com.jaideep.expensetracker.common.constant.AppConstants.CREATE_SCREEN
 import com.jaideep.expensetracker.model.CategoryCardData
 import com.jaideep.expensetracker.model.CategoryCardPayload
-import com.jaideep.expensetracker.presentation.component.MediumText
 import com.jaideep.expensetracker.presentation.component.SimpleText
 import com.jaideep.expensetracker.presentation.component.card.ExpenseTrackerCategoryCard
 import com.jaideep.expensetracker.presentation.component.other.ExpenseTrackerAppBar
@@ -48,16 +47,25 @@ import kotlinx.collections.immutable.toImmutableList
 @Preview
 @Composable
 private fun CategoryScreenPreview() {
-    CategoryScreen(navControllerRoot = NavController(Application()),
+    CategoryScreen(
+        navControllerRoot = NavController(Application()),
         accounts = persistentListOf(),
-        categoryCards = persistentListOf(),
+        categoryCards = persistentListOf(
+            CategoryCardData("Food", "Food", 0.0),
+            CategoryCardData("Food", "Food", 0.0),
+            CategoryCardData("Food", "Food", 0.0),
+            CategoryCardData("Food", "Food", 0.0),
+            CategoryCardData("Food", "Food", 0.0),
+        ),
         durations = persistentListOf(),
         accountSpinnerValue = "All Accounts",
         durationSpinnerValue = "This Month",
         onAccountSpinnerValueChange = {},
         onDurationSpinnerValueChange = {},
         onCategoryCardClick = {},
-        backPress = {})
+        backPress = {},
+        amountSpentFromAccount = 1000.0
+    )
 }
 
 @Composable
@@ -67,9 +75,12 @@ fun CategoryScreenRoot(
     categoryViewModel: CategoryViewModel,
     backPress: () -> Unit
 ) {
-    if (mainViewModel.isAccountLoading || mainViewModel.isTransactionLoading || mainViewModel.isCategoryLoading || mainViewModel.isCategoryCardDataLoading) {
+    LaunchedEffect(key1 = true) {
+        categoryViewModel.initData()
+    }
+    if (mainViewModel.isAccountLoading || mainViewModel.isTransactionLoading || mainViewModel.isCategoryLoading || mainViewModel.isCategoryCardDataLoading || categoryViewModel.isAmountSpentThisYearFromAccLoading || categoryViewModel.isAmountSpentThisMonthFromAccLoading) {
         ExpenseTrackerProgressBar(Modifier.size(50.dp))
-    } else if (mainViewModel.transactionRetrievalError || mainViewModel.accountRetrievalError || mainViewModel.categoryRetrievalError || mainViewModel.categoryCardDataRetrievalError) {
+    } else if (mainViewModel.transactionRetrievalError || mainViewModel.accountRetrievalError || mainViewModel.categoryRetrievalError || mainViewModel.categoryCardDataRetrievalError || categoryViewModel.amountSpentThisYearFromAccError || categoryViewModel.amountSpentThisMonthFromAccError) {
         Row(
             modifier = Modifier.fillMaxSize(),
             verticalAlignment = Alignment.CenterVertically,
@@ -105,7 +116,8 @@ fun CategoryScreenRoot(
             },
             onCategoryCardClick = { categoryName -> navHostControllerRoot.navigate("${DetailScreen.CATEGORY_DETAILS}/$categoryName") },
 
-            backPress = backPress
+            backPress = backPress,
+            amountSpentFromAccount = (if (categoryViewModel.durationValue.value.endsWith("h")) categoryViewModel.amountSpentThisMonthFromAcc else categoryViewModel.amountSpentThisYearFromAcc).collectAsState().value
         )
     }
 }
@@ -118,6 +130,7 @@ fun CategoryScreen(
     durations: ImmutableList<String>,
     accountSpinnerValue: String,
     durationSpinnerValue: String,
+    amountSpentFromAccount: Double,
     onAccountSpinnerValueChange: (value: String) -> Unit,
     onDurationSpinnerValueChange: (value: String) -> Unit,
     onCategoryCardClick: (categoryName: String) -> Unit,
@@ -172,8 +185,8 @@ fun CategoryScreen(
                         iconId = Utility.getCategoryIconId(categoryCardData.iconName),
                         iconDescription = categoryCardData.iconName,
                         categoryName = categoryCardData.categoryName,
-                        spendValue = "$${categoryCardData.amountSpent} / ${1000}",
-                        progressValue = 0.8f,
+                        spendValue = "$${categoryCardData.amountSpent} / $amountSpentFromAccount",
+                        progressValue = if (amountSpentFromAccount == 0.0) 0f else ("${categoryCardData.amountSpent} / $amountSpentFromAccount").toFloat(),
                         trackColor = Color.Yellow,
                         onClick = onCategoryCardClick
                     )

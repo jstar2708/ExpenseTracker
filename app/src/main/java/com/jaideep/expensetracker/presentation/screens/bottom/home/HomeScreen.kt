@@ -2,7 +2,6 @@ package com.jaideep.expensetracker.presentation.screens.bottom.home
 
 
 import android.app.Application
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -58,8 +57,7 @@ import kotlinx.collections.immutable.toImmutableList
 @Composable
 private fun HomeScreenPreview() {
     AppTheme {
-        HomeScreen(
-            navControllerRoot = NavController(Application()),
+        HomeScreen(navControllerRoot = NavController(Application()),
             accounts = persistentListOf("All accounts", "Cash"),
             transactions = persistentListOf(),
             onAccountSpinnerValueChanged = {},
@@ -68,22 +66,39 @@ private fun HomeScreenPreview() {
             selectedAccount = "All Accounts",
             categoryCardData = CategoryCardData("Food", "Food", 0.0),
             amountSpentThisMonthFromAcc = 0.0,
-            onBackPress = {}
-        )
+            onBackPress = {})
     }
 }
 
 @Composable
 fun HomeScreenRoot(
-    navControllerRoot: NavController, mainViewModel: MainViewModel, homeViewModel: HomeViewModel, onBackPress: () -> Unit
+    navControllerRoot: NavController,
+    mainViewModel: MainViewModel,
+    homeViewModel: HomeViewModel,
+    onBackPress: () -> Unit
 ) {
     LaunchedEffect(key1 = true) {
         homeViewModel.getInitialAccountData()
     }
 
-    if (mainViewModel.isAccountLoading || mainViewModel.isTransactionLoading || mainViewModel.isCategoryLoading) {
+    if (
+        mainViewModel.isAccountLoading
+        || mainViewModel.isTransactionLoading
+        || mainViewModel.isCategoryLoading
+        || homeViewModel.isSpendTodayLoading
+        || homeViewModel.isAmountSpentThisMonthFromAccLoading
+        || homeViewModel.isSelectedAccountBalanceLoading
+        || homeViewModel.isGetMaxSpentCategoryDataLoading
+        ) {
         ExpenseTrackerProgressBar(Modifier.size(50.dp))
-    } else if (mainViewModel.transactionRetrievalError || mainViewModel.accountRetrievalError || mainViewModel.categoryRetrievalError) {
+    } else if (mainViewModel.transactionRetrievalError
+        || mainViewModel.accountRetrievalError
+        || mainViewModel.categoryRetrievalError
+        || homeViewModel.spendTodayError
+        || homeViewModel.amountSpentThisMonthFromAccError
+        || homeViewModel.selectedAccountBalanceError
+        || homeViewModel.getMaxSpentCategoryDataError
+        ) {
         Row(
             modifier = Modifier.fillMaxSize(),
             verticalAlignment = Alignment.CenterVertically,
@@ -180,7 +195,8 @@ fun HomeScreen(
                         modifier = Modifier.weight(1f)
                     )
                 }
-                ExpenseTrackerSpinner(values = accounts,
+                ExpenseTrackerSpinner(
+                    values = accounts,
                     initialValue = selectedAccount,
                     onValueChanged = { value ->
                         onAccountSpinnerValueChanged(value)

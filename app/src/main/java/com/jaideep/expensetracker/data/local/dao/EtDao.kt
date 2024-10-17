@@ -46,13 +46,13 @@ interface EtDao {
     ): Flow<CategoryCardData>
 
     @Query(GET_AMOUNT_SPENT_FROM_ACCOUNT_THIS_MONTH)
-    fun getTotalAmountSpentFromAccountThisMonth(accountName: String, date: Long): Flow<Double>
+    fun getTotalAmountSpentFromAccountFromDuration(accountName: String, date: Long): Flow<Double>
 
     @Query(GET_CATEGORY_ON_WHICH_MAX_AMOUNT_SPENT_FROM_ALL_ACCOUNTS_THIS_MONTH)
     fun getCategoryOnWhichMaximumAmountSpentFromAllAccountsThisMonth(date: Long): Flow<CategoryCardData>
 
     @Query(GET_AMOUNT_SPENT_FROM_ALL_ACCOUNTS_THIS_MONTH)
-    fun getTotalAmountSpentFromAllAccountsThisMonth(date: Long): Flow<Double>
+    fun getTotalAmountSpentFromAllAccountsFromDuration(date: Long): Flow<Double>
 
     @Query(GET_CATEGORY_CARDS_DATA_FROM_ALL_ACCOUNTS_WITHIN_DURATION)
     fun getCategoryCardsDataFromAllAccountsWithinDuration(date: Long) : Flow<List<CategoryCardData>>

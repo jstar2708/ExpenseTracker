@@ -1,5 +1,8 @@
 package com.jaideep.expensetracker.presentation.viewmodel
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jaideep.expensetracker.common.EtDispatcher
@@ -33,17 +36,42 @@ class HomeViewModel @Inject constructor(
     val amountSpentThisMonthFromAcc: StateFlow<Double> = _amountSpentThisMonthFromAcc
     private val _getMaxSpentCategoryData = MutableStateFlow<CategoryCardData?>(null)
     val getMaxSpentCategoryData: StateFlow<CategoryCardData?> = _getMaxSpentCategoryData
+    var isSelectedAccountBalanceLoading by mutableStateOf(true)
+        private set
+    var isSpendTodayLoading by mutableStateOf(true)
+        private set
+    var isAmountSpentThisMonthFromAccLoading by mutableStateOf(true)
+        private set
+    var isGetMaxSpentCategoryDataLoading by mutableStateOf(true)
+        private set
+    var selectedAccountBalanceError by mutableStateOf(false)
+        private set
+    var spendTodayError by mutableStateOf(false)
+        private set
+    var amountSpentThisMonthFromAccError by mutableStateOf(false)
+        private set
+    var getMaxSpentCategoryDataError by mutableStateOf(false)
+        private set
+
 
     private fun getAccountBalance() = viewModelScope.launch(EtDispatcher.io) {
         getAccountBalanceUseCase(selectedAccount.value).collect {
             when (it) {
-                is Resource.Loading -> {}
-                is Resource.Error -> {/*
-                 Show error message, implement when you create error state variable
-                 */
+                is Resource.Loading -> {
+                    isSelectedAccountBalanceLoading = true
+                    selectedAccountBalanceError = false
                 }
 
-                is Resource.Success -> _selectedAccountBalance.value = it.data
+                is Resource.Error -> {
+                    isSelectedAccountBalanceLoading = false
+                    selectedAccountBalanceError = true
+                }
+
+                is Resource.Success -> {
+                    _selectedAccountBalance.value = it.data
+                    isSelectedAccountBalanceLoading = false
+                    selectedAccountBalanceError = false
+                }
             }
         }
     }
@@ -51,12 +79,21 @@ class HomeViewModel @Inject constructor(
     private fun getAmountSpentTodayForSelectedAccount() = viewModelScope.launch(EtDispatcher.io) {
         getAmountSpentTodayForAccountUseCase(selectedAccount.value).collectLatest {
             when (it) {
-                is Resource.Loading -> {}
-                is Resource.Error -> {/*
-                 Show error message, implement when you create error state variable */
+                is Resource.Loading -> {
+                    isSpendTodayLoading = true
+                    spendTodayError = false
                 }
 
-                is Resource.Success -> _spentToday.value = it.data
+                is Resource.Error -> {
+                    isSpendTodayLoading = false
+                    spendTodayError = true
+                }
+
+                is Resource.Success -> {
+                    _spentToday.value = it.data
+                    isSpendTodayLoading = false
+                    spendTodayError = false
+                }
             }
         }
     }
@@ -64,10 +101,20 @@ class HomeViewModel @Inject constructor(
     private fun getAmountSpentFromAccountThisMonth() = viewModelScope.launch(EtDispatcher.io) {
         getAmountSpentFromAccountThisMonth(selectedAccount.value).collect {
             when (it) {
-                is Resource.Error -> {}
-                is Resource.Loading -> {}
+                is Resource.Error -> {
+                    isAmountSpentThisMonthFromAccLoading = false
+                    amountSpentThisMonthFromAccError = true
+                }
+
+                is Resource.Loading -> {
+                    isAmountSpentThisMonthFromAccLoading = true
+                    amountSpentThisMonthFromAccError = false
+                }
+
                 is Resource.Success -> {
                     _amountSpentThisMonthFromAcc.value = it.data
+                    isAmountSpentThisMonthFromAccLoading = false
+                    amountSpentThisMonthFromAccError = false
                 }
             }
         }
@@ -77,10 +124,20 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch(EtDispatcher.io) {
             getCategoryAmountForWhichMaxAmountWasSpentFromAccountUseCase(selectedAccount.value).collect {
                 when (it) {
-                    is Resource.Error -> {}
-                    is Resource.Loading -> {}
+                    is Resource.Error -> {
+                        getMaxSpentCategoryDataError = true
+                        isGetMaxSpentCategoryDataLoading = false
+                    }
+
+                    is Resource.Loading -> {
+                        isGetMaxSpentCategoryDataLoading = true
+                        getMaxSpentCategoryDataError = false
+                    }
+
                     is Resource.Success -> {
                         _getMaxSpentCategoryData.value = it.data
+                        isGetMaxSpentCategoryDataLoading = false
+                        getMaxSpentCategoryDataError = false
                     }
                 }
             }

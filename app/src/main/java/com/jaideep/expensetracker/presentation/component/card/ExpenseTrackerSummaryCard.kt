@@ -86,7 +86,7 @@ fun SummaryCard(
                     iconDescription = "${categoryCardData.categoryName} icon",
                     categoryName = categoryCardData.categoryName,
                     spendValue = "${categoryCardData.amountSpent} / $amountSpentThisMonthFromAcc",
-                    progressValue = (categoryCardData.amountSpent / amountSpentThisMonthFromAcc).toFloat(),
+                    progressValue = if(amountSpentThisMonthFromAcc == 0.0) 0f else (categoryCardData.amountSpent / amountSpentThisMonthFromAcc).toFloat(),
                     trackColor = Color.Yellow
                 )
                 Spacer(modifier = Modifier.height(20.dp))
