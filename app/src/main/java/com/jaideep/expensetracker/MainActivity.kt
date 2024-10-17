@@ -5,10 +5,10 @@ import android.content.pm.ActivityInfo
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentActivity
 import com.jaideep.expensetracker.presentation.navigation.RootNavigationGraph
 import com.jaideep.expensetracker.presentation.theme.AppTheme
+import com.jaideep.expensetracker.presentation.viewmodel.LoginViewModel
 import com.jaideep.expensetracker.presentation.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -16,6 +16,7 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class MainActivity : FragmentActivity() {
     private val mainViewModel: MainViewModel by viewModels()
+    private val loginViewModel: LoginViewModel by viewModels()
 
     @SuppressLint("SourceLockedOrientationActivity")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -27,11 +28,13 @@ class MainActivity : FragmentActivity() {
                 mainViewModel.initData()
             }
         }
+        loginViewModel.isUserPresent()
+        loginViewModel.checkAccountCreated()
         mainViewModel.checkFirstAppInitialization()
         setContent {
             this.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
             AppTheme {
-                RootNavigationGraph(mainViewModel)
+                RootNavigationGraph(mainViewModel, loginViewModel)
             }
         }
     }

@@ -15,11 +15,11 @@ import com.jaideep.expensetracker.presentation.viewmodel.LoginViewModel
 
 fun NavGraphBuilder.authNavGraph(navController: NavHostController, loginViewModel: LoginViewModel) {
     navigation(
-        startDestination = AuthScreen.SPLASH, route = Graph.AUTH
+        startDestination = AuthScreen.LOGIN, route = Graph.AUTH
     ) {
-        composable(AuthScreen.SPLASH) {
-            SplashScreenRoot(navController, loginViewModel)
-        }
+//        composable(AuthScreen.SPLASH) {
+//            SplashScreenRoot(navController, loginViewModel)
+//        }
         composable(AuthScreen.LOGIN) {
             LoginScreenRoot(navController, loginViewModel)
         }

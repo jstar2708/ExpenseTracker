@@ -20,6 +20,7 @@ object Utility {
             R.drawable.mobile_recharge -> "Mobile Recharge"
             R.drawable.salary -> "Salary"
             R.drawable.medicine -> "Medicine"
+            R.drawable.electricity -> "Electricity Bill"
             else -> "Other"
         }
     }
@@ -35,6 +36,7 @@ object Utility {
             "Mobile Recharge" -> R.drawable.mobile_recharge
             "Salary" -> R.drawable.salary
             "Medicine" -> R.drawable.medicine
+            "Electricity Bill" -> R.drawable.electricity
             else -> R.drawable.category
         }
     }

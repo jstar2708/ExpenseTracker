@@ -28,6 +28,7 @@ import androidx.navigation.NavController
 import androidx.navigation.navOptions
 import com.jaideep.expensetracker.R
 import com.jaideep.expensetracker.common.AddScreen
+import com.jaideep.expensetracker.common.AuthScreen
 import com.jaideep.expensetracker.common.Graph
 import com.jaideep.expensetracker.common.constant.AppConstants.CREATE_SCREEN
 import com.jaideep.expensetracker.model.TextFieldWithIconAndErrorPopUpState
@@ -61,6 +62,17 @@ private fun LoginScreenPreview() {
 
 @Composable
 fun LoginScreenRoot(navController: NavController, loginViewModel: LoginViewModel) {
+    LaunchedEffect(key1 = loginViewModel.isUsernameLoading, key2 = loginViewModel.userNotPresent) {
+        if (!loginViewModel.isUsernameLoading && loginViewModel.userNotPresent) {
+            navController.navigate(AuthScreen.REGISTER, navOptions = navOptions {
+                popUpTo(navController.graph.startDestinationId) {
+                    inclusive = true
+                }
+                launchSingleTop = true
+            })
+        }
+    }
+
     if (loginViewModel.isUsernameLoading || loginViewModel.isAccountCountLoading) {
         ExpenseTrackerProgressBar(Modifier.size(50.dp))
     } else if (loginViewModel.accountCountRetrievalError) {
@@ -89,8 +101,7 @@ fun LoginScreenRoot(navController: NavController, loginViewModel: LoginViewModel
                 })
             },
             navigateToCUAccount = {
-                navController.navigate(
-                    "${AddScreen.CREATE_UPDATE_ACCOUNT}/$CREATE_SCREEN",
+                navController.navigate("${AddScreen.CREATE_UPDATE_ACCOUNT}/$CREATE_SCREEN",
                     navOptions = navOptions {
                         popUpTo(navController.graph.startDestinationId) {
                             inclusive = true
@@ -123,7 +134,10 @@ fun LoginScreen(
             navigateToMainScreen()
         }
     }
-    BiometricDialog(onBiometricAuthSuccess)
+
+    if (username.isNotBlank()) {
+        BiometricDialog(onBiometricAuthSuccess)
+    }
     Surface(
         Modifier
             .fillMaxSize()

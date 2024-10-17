@@ -1,7 +1,6 @@
 package com.jaideep.expensetracker.presentation.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -21,13 +20,10 @@ import com.jaideep.expensetracker.presentation.viewmodel.LoginViewModel
 import com.jaideep.expensetracker.presentation.viewmodel.MainViewModel
 
 @Composable
-fun RootNavigationGraph(mainViewModel: MainViewModel) {
+fun RootNavigationGraph(mainViewModel: MainViewModel, loginViewModel: LoginViewModel) {
     val navHostControllerRoot = rememberNavController()
-    val loginViewModel: LoginViewModel = hiltViewModel()
-    NavHost (
-        navController = navHostControllerRoot,
-        startDestination = Graph.AUTH,
-        route = Graph.ROOT
+    NavHost(
+        navController = navHostControllerRoot, startDestination = Graph.AUTH, route = Graph.ROOT
     ) {
 
         authNavGraph(navController = navHostControllerRoot, loginViewModel)
