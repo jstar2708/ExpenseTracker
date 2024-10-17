@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -27,7 +28,6 @@ import androidx.navigation.NavController
 import androidx.navigation.navOptions
 import com.jaideep.expensetracker.R
 import com.jaideep.expensetracker.common.AddScreen
-import com.jaideep.expensetracker.common.AuthScreen
 import com.jaideep.expensetracker.common.Graph
 import com.jaideep.expensetracker.common.constant.AppConstants.CREATE_SCREEN
 import com.jaideep.expensetracker.model.TextFieldWithIconAndErrorPopUpState
@@ -45,7 +45,7 @@ import com.jaideep.expensetracker.presentation.viewmodel.LoginViewModel
 private fun LoginScreenPreview() {
     AppTheme {
         LoginScreen(passwordState = TextFieldWithIconAndErrorPopUpState(
-            "",
+            text = "",
             isError = false,
             showError = false,
             onValueChange = { _ -> },
@@ -53,27 +53,33 @@ private fun LoginScreenPreview() {
             errorMessage = "",
         ), isLoginCompleted = false, username = "Jaideep Kumar Singh", onLogin = {
 
-        }, userNotPresent = false, navigateToMainScreen = {
+        }, navigateToMainScreen = {
 
-        }, createAccount = false, navigateToCUAccount = {}, navigateToRegisterScreen = {})
+        }, createAccount = false, navigateToCUAccount = {}, onBiometricAuthSuccess = {})
     }
 }
 
 @Composable
 fun LoginScreenRoot(navController: NavController, loginViewModel: LoginViewModel) {
-    LaunchedEffect(key1 = true) {
-        loginViewModel.isUserPresent()
-        loginViewModel.checkAccountCreated()
-    }
-    if (loginViewModel.isUsernameLoading) {
+    if (loginViewModel.isUsernameLoading || loginViewModel.isAccountCountLoading) {
         ExpenseTrackerProgressBar(Modifier.size(50.dp))
+    } else if (loginViewModel.accountCountRetrievalError) {
+        Row(
+            modifier = Modifier.fillMaxSize(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Absolute.Center
+        ) {
+            SimpleText(
+                text = "Error loading accounts count", color = Color.Red
+            )
+        }
     } else {
-        LoginScreen(passwordState = loginViewModel.passwordState,
+        LoginScreen(
+            passwordState = loginViewModel.passwordState,
             isLoginCompleted = loginViewModel.loginComplete,
             onLogin = loginViewModel::onLogin,
             username = loginViewModel.username,
-            userNotPresent = loginViewModel.userNotPresent,
-            createAccount = loginViewModel.createAccount,
+            createAccount = loginViewModel.accountCount,
             navigateToMainScreen = {
                 navController.navigate(Graph.MAIN, navOptions = navOptions {
                     popUpTo(navController.graph.startDestinationId) {
@@ -82,24 +88,17 @@ fun LoginScreenRoot(navController: NavController, loginViewModel: LoginViewModel
                     launchSingleTop = true
                 })
             },
-            navigateToRegisterScreen = {
-                navController.navigate(AuthScreen.REGISTER, navOptions = navOptions {
-                    popUpTo(navController.graph.startDestinationId) {
-                        inclusive = true
-                    }
-                    launchSingleTop = true
-                })
-            },
             navigateToCUAccount = {
-                navController.navigate(
-                    "${AddScreen.CREATE_UPDATE_ACCOUNT}/$CREATE_SCREEN",
+                navController.navigate("${AddScreen.CREATE_UPDATE_ACCOUNT}/$CREATE_SCREEN",
                     navOptions = navOptions {
                         popUpTo(navController.graph.startDestinationId) {
                             inclusive = true
                         }
                         launchSingleTop = true
                     })
-            })
+            },
+            onBiometricAuthSuccess = loginViewModel::onBiometricAuthSuccess
+        )
     }
 }
 
@@ -109,31 +108,21 @@ fun LoginScreen(
     isLoginCompleted: Boolean,
     username: String,
     createAccount: Boolean,
-    userNotPresent: Boolean,
     onLogin: () -> Unit,
     navigateToMainScreen: () -> Unit,
-    navigateToRegisterScreen: () -> Unit,
-    navigateToCUAccount: () -> Unit
+    navigateToCUAccount: () -> Unit,
+    onBiometricAuthSuccess: () -> Unit
 ) {
 
-    BiometricDialog()
-
-    LaunchedEffect(key1 = isLoginCompleted && createAccount) {
+    LaunchedEffect(key1 = isLoginCompleted, key2 = createAccount) {
         if (isLoginCompleted && createAccount) {
             navigateToCUAccount()
         }
-    }
-
-    LaunchedEffect(key1 = isLoginCompleted && !createAccount) {
         if (isLoginCompleted && !createAccount) {
             navigateToMainScreen()
         }
     }
-    LaunchedEffect(key1 = userNotPresent) {
-        if (userNotPresent) {
-            navigateToRegisterScreen()
-        }
-    }
+    BiometricDialog(onBiometricAuthSuccess)
     Surface(
         Modifier
             .fillMaxSize()
@@ -153,7 +142,6 @@ fun LoginScreen(
                 verticalArrangement = Arrangement.Bottom
             ) {
                 Spacer(modifier = Modifier.height(40.dp))
-
                 Image(
                     painter = painterResource(id = R.drawable.app_icon),
                     contentDescription = "App icon"

@@ -30,14 +30,26 @@ private fun SplashScreenPreview() {
 @Composable
 fun SplashScreenRoot(navController: NavHostController, loginViewModel: LoginViewModel) {
     LaunchedEffect(key1 = true) {
+        loginViewModel.checkAccountCreated()
+    }
+    LaunchedEffect(key1 = loginViewModel.isUsernameLoading) {
         loginViewModel.isUserPresent()
-        delay(3000)
-        navController.navigate(AuthScreen.LOGIN, navOptions = navOptions {
-            popUpTo(navController.graph.startDestinationId) {
-                inclusive = true
-            }
-            launchSingleTop = true
-        })
+        if (!loginViewModel.isUsernameLoading && !loginViewModel.userNotPresent) {
+            navController.navigate(AuthScreen.LOGIN, navOptions = navOptions {
+                popUpTo(navController.graph.startDestinationId) {
+                    inclusive = true
+                }
+                launchSingleTop = true
+            })
+        }
+        else if (!loginViewModel.isUsernameLoading && loginViewModel.userNotPresent){
+            navController.navigate(AuthScreen.REGISTER, navOptions = navOptions {
+                popUpTo(navController.graph.startDestinationId) {
+                    inclusive = true
+                }
+                launchSingleTop = true
+            })
+        }
     }
     SplashScreen()
 }

@@ -17,6 +17,7 @@ class RegisterViewModel @Inject constructor(
     private val datastoreRepository: DatastoreRepository
 ) : ViewModel() {
     var registrationComplete by mutableStateOf(false)
+        private set
     var nameState by mutableStateOf(
         TextFieldWithIconAndErrorPopUpState(text = "",
             isError = false,

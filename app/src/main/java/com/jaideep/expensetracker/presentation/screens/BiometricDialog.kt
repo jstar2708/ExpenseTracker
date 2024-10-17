@@ -19,9 +19,11 @@ import com.jaideep.expensetracker.presentation.screens.auth.biometric.BiometricA
 import com.jaideep.expensetracker.presentation.utility.showToast
 
 @Composable
-fun BiometricDialog() {
+fun BiometricDialog(
+    onBiometricAuthSuccess: () -> Unit
+) {
     val context = LocalContext.current
-    val activity = LocalContext.current as FragmentActivity
+    val activity = LocalContext.current as? FragmentActivity
     val resultCode = remember {
         mutableIntStateOf(Int.MIN_VALUE)
     }
@@ -47,30 +49,36 @@ fun BiometricDialog() {
             description = "",
             onSuccess = { authenticators ->
                 val biometricPromptInfo =
-                    BiometricPrompt.PromptInfo.Builder().setTitle("Authenticate")
-                        .setSubtitle("Authenticate subtitle").setNegativeButtonText("Cancel")
-                        .setAllowedAuthenticators(authenticators).build()
-                val biometricPrompt = BiometricPrompt(activity,
-                    executor,
-                    object : BiometricPrompt.AuthenticationCallback() {
-                        override fun onAuthenticationFailed() {
-                            super.onAuthenticationFailed()
-                            context.showToast("Failed to authenticate")
-                        }
+                    BiometricPrompt.PromptInfo.Builder().setTitle("Biometric Authentication")
+                        .setSubtitle("Please put your finger on the sensor to login")
+                        .setNegativeButtonText("Cancel").setAllowedAuthenticators(authenticators)
+                        .build()
+                val biometricPrompt = activity?.let {
+                    BiometricPrompt(
+                        it,
+                        executor,
+                        object : BiometricPrompt.AuthenticationCallback() {
+                            override fun onAuthenticationFailed() {
+                                super.onAuthenticationFailed()
+                                context.showToast("Failed to authenticate")
+                            }
 
-                        override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
-                            super.onAuthenticationSucceeded(result)
-                            context.showToast("Success")
-                        }
+                            override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
+                                super.onAuthenticationSucceeded(result)
+                                onBiometricAuthSuccess()
+                                context.showToast("Success")
 
-                        override fun onAuthenticationError(
-                            errorCode: Int, errString: CharSequence
-                        ) {
-                            super.onAuthenticationError(errorCode, errString)
-                            context.showToast("Error")
-                        }
-                    })
-                biometricPrompt.authenticate(biometricPromptInfo)
+                            }
+
+                            override fun onAuthenticationError(
+                                errorCode: Int, errString: CharSequence
+                            ) {
+                                super.onAuthenticationError(errorCode, errString)
+                                context.showToast("Error")
+                            }
+                        })
+                }
+                biometricPrompt?.authenticate(biometricPromptInfo)
             },
             onError = {
 

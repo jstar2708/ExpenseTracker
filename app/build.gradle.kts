@@ -86,6 +86,7 @@ dependencies {
     implementation(libs.hilt.android)
     implementation(libs.hilt.navigation.compose)
 
+
     implementation(libs.coroutine.core)
     implementation(libs.coroutines.android)
 

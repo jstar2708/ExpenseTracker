@@ -13,22 +13,14 @@ import com.jaideep.expensetracker.presentation.screens.auth.RegisterScreenRoot
 import com.jaideep.expensetracker.presentation.screens.splash.SplashScreenRoot
 import com.jaideep.expensetracker.presentation.viewmodel.LoginViewModel
 
-fun NavGraphBuilder.authNavGraph(navController: NavHostController) {
+fun NavGraphBuilder.authNavGraph(navController: NavHostController, loginViewModel: LoginViewModel) {
     navigation(
         startDestination = AuthScreen.SPLASH, route = Graph.AUTH
     ) {
-        composable(AuthScreen.SPLASH) { backstackEntry ->
-            val startEntry = remember(backstackEntry) {
-                navController.getBackStackEntry(Graph.AUTH)
-            }
-            val loginViewModel: LoginViewModel = hiltViewModel(startEntry)
+        composable(AuthScreen.SPLASH) {
             SplashScreenRoot(navController, loginViewModel)
         }
-        composable(AuthScreen.LOGIN) { backstackEntry ->
-            val startEntry = remember(backstackEntry) {
-                navController.getBackStackEntry(Graph.AUTH)
-            }
-            val loginViewModel: LoginViewModel = hiltViewModel(startEntry)
+        composable(AuthScreen.LOGIN) {
             LoginScreenRoot(navController, loginViewModel)
         }
         composable(AuthScreen.REGISTER) {

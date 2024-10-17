@@ -8,7 +8,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.jaideep.expensetracker.common.AddScreen
-import com.jaideep.expensetracker.common.AuthScreen
 import com.jaideep.expensetracker.common.DetailScreen
 import com.jaideep.expensetracker.common.Graph
 import com.jaideep.expensetracker.common.constant.AppConstants.CREATE_SCREEN
@@ -18,20 +17,20 @@ import com.jaideep.expensetracker.presentation.screens.cu.CUCategoryScreenRoot
 import com.jaideep.expensetracker.presentation.screens.cu.CUTransactionScreenRoot
 import com.jaideep.expensetracker.presentation.screens.details.CategoryDetailsScreenRoot
 import com.jaideep.expensetracker.presentation.screens.details.ProfileScreenRoot
-import com.jaideep.expensetracker.presentation.screens.splash.SplashScreen
 import com.jaideep.expensetracker.presentation.viewmodel.LoginViewModel
 import com.jaideep.expensetracker.presentation.viewmodel.MainViewModel
 
 @Composable
 fun RootNavigationGraph(mainViewModel: MainViewModel) {
     val navHostControllerRoot = rememberNavController()
+    val loginViewModel: LoginViewModel = hiltViewModel()
     NavHost (
         navController = navHostControllerRoot,
         startDestination = Graph.AUTH,
         route = Graph.ROOT
     ) {
 
-        authNavGraph(navController = navHostControllerRoot)
+        authNavGraph(navController = navHostControllerRoot, loginViewModel)
 
         composable(route = Graph.MAIN) {
             BottomNavigationScreen(navHostControllerRoot, mainViewModel)

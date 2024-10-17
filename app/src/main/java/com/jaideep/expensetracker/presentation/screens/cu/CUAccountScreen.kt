@@ -30,7 +30,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.navOptions
 import com.jaideep.expensetracker.R
+import com.jaideep.expensetracker.common.AuthScreen
+import com.jaideep.expensetracker.common.Graph
 import com.jaideep.expensetracker.model.TextFieldWithIconAndErrorPopUpState
 import com.jaideep.expensetracker.presentation.component.HeadingTextBold
 import com.jaideep.expensetracker.presentation.component.SimpleText
@@ -101,7 +104,18 @@ fun CUAccountScreenRoot(
         ) {
             val savedStateHandle = navController.previousBackStackEntry?.savedStateHandle
             savedStateHandle?.set("isAccountSaved", addAccountViewModel.isAccountSaved.value)
-            navController.popBackStack()
+            if (navController.previousBackStackEntry?.destination?.route == AuthScreen.LOGIN
+                || navController.previousBackStackEntry?.destination?.route == AuthScreen.REGISTER) {
+                navController.navigate(Graph.MAIN, navOptions = navOptions {
+                    popUpTo(navController.graph.startDestinationId) {
+                        inclusive = true
+                    }
+                    launchSingleTop = true
+                })
+            }
+            else {
+                navController.popBackStack()
+            }
         }
     }
 }

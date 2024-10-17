@@ -8,6 +8,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jaideep.expensetracker.common.EtDispatcher
+import com.jaideep.expensetracker.common.Resource
 import com.jaideep.expensetracker.common.constant.AppConstants.USER_NAME
 import com.jaideep.expensetracker.data.local.preferences.DatastoreRepository
 import com.jaideep.expensetracker.domain.usecase.calculation.GetAccountsCount
@@ -28,7 +29,10 @@ class LoginViewModel @Inject constructor(
     var userNotPresent by mutableStateOf(true)
     var username by mutableStateOf("")
     var isUsernameLoading by mutableStateOf(true)
-    var createAccount by mutableStateOf(false)
+    var isAccountCountLoading by mutableStateOf(true)
+
+    var accountCountRetrievalError by mutableStateOf(false)
+    var accountCount by mutableStateOf(false)
 
     var passwordState by mutableStateOf(
         TextFieldWithIconAndErrorPopUpState(text = "",
@@ -112,12 +116,31 @@ class LoginViewModel @Inject constructor(
     }
 
     fun checkAccountCreated() = viewModelScope.launch(EtDispatcher.io) {
-        val accountsCount = getAccountsCount().firstOrNull()
-        createAccount = accountsCount == null || accountsCount == 0
+        getAccountsCount().collect {
+            when(it) {
+                is Resource.Error -> {
+                    accountCountRetrievalError = true
+                    isAccountCountLoading = false
+                }
+                is Resource.Loading -> {
+                    isAccountCountLoading = true
+                    accountCountRetrievalError = false
+                }
+                is Resource.Success -> {
+                    accountCountRetrievalError = false
+                    isAccountCountLoading = false
+                    accountCount = it.data < 1
+                }
+            }
+        }
     }
 
     override fun onCleared() {
         super.onCleared()
         Log.e("ON_CLEARED", "loginViewModel")
+    }
+
+    fun onBiometricAuthSuccess() {
+        loginComplete = true
     }
 }
