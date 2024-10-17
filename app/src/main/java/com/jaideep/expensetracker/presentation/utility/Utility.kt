@@ -3,7 +3,6 @@ package com.jaideep.expensetracker.presentation.utility
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
-import androidx.compose.animation.core.rememberTransition
 import com.jaideep.expensetracker.R
 import java.time.LocalDate
 import java.time.ZoneId
@@ -17,6 +16,10 @@ object Utility {
             R.drawable.travel -> "Travel"
             R.drawable.entertainment -> "Entertainment"
             R.drawable.shopping -> "Shopping"
+            R.drawable.hospital -> "Hospital"
+            R.drawable.mobile_recharge -> "Mobile Recharge"
+            R.drawable.salary -> "Salary"
+            R.drawable.medicine -> "Medicine"
             else -> "Other"
         }
     }
@@ -28,6 +31,10 @@ object Utility {
             "Entertainment" -> R.drawable.entertainment
             "Shopping" -> R.drawable.shopping
             "Travel" -> R.drawable.travel
+            "Hospital" -> R.drawable.hospital
+            "Mobile Recharge" -> R.drawable.mobile_recharge
+            "Salary" -> R.drawable.salary
+            "Medicine" -> R.drawable.medicine
             else -> R.drawable.category
         }
     }
@@ -48,8 +55,7 @@ object Utility {
         try {
             return LocalDate.parse(date).atStartOfDay(ZoneId.of("Asia/Kolkata"))
                 .toEpochSecond() * 1000
-        }
-        catch (de: DateTimeParseException) {
+        } catch (de: DateTimeParseException) {
             Log.d("ERROR", "DateTimeParseException occurred while parsing date: $date")
         }
         return 0

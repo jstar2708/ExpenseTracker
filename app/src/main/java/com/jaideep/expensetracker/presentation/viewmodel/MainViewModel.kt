@@ -167,7 +167,12 @@ class MainViewModel @Inject constructor(
                     Category(0, "Fuel", "Fuel"),
                     Category(0, "Entertainment", "Entertainment"),
                     Category(0, "Shopping", "Shopping"),
-                    Category(0, "Travel", "Travel")
+                    Category(0, "Travel", "Travel"),
+                    Category(0, "Salary", "Salary"),
+                    Category(0, "Hospital", "Hospital"),
+                    Category(0, "Medicine", "Medicine"),
+                    Category(0, "Mobile Recharge", "Mobile Recharge"),
+                    Category(0, "Other", "Other")
                 )
             )
             initData()

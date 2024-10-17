@@ -89,7 +89,8 @@ fun LoginScreenRoot(navController: NavController, loginViewModel: LoginViewModel
                 })
             },
             navigateToCUAccount = {
-                navController.navigate("${AddScreen.CREATE_UPDATE_ACCOUNT}/$CREATE_SCREEN",
+                navController.navigate(
+                    "${AddScreen.CREATE_UPDATE_ACCOUNT}/$CREATE_SCREEN",
                     navOptions = navOptions {
                         popUpTo(navController.graph.startDestinationId) {
                             inclusive = true
