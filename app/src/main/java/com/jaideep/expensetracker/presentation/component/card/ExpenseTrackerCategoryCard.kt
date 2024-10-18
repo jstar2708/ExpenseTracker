@@ -1,5 +1,8 @@
 package com.jaideep.expensetracker.presentation.component.card
 
+import androidx.compose.animation.core.EaseOut
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -14,6 +17,11 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -76,8 +84,21 @@ fun ExpenseTrackerCategoryCard(
             )
         }
 
+        var progress by remember {
+            mutableFloatStateOf(0f)
+        }
+
+        val animatedProgress by animateFloatAsState(
+            targetValue = progress, animationSpec = tween(
+                durationMillis = 1000, delayMillis = 500, easing = EaseOut
+            ), label = "progressState"
+        )
+
+        LaunchedEffect(key1 = progressValue) {
+            progress = progressValue
+        }
         LinearProgressIndicator(
-            progress = { progressValue },
+            progress = { animatedProgress },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp)

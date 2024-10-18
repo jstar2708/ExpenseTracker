@@ -23,6 +23,7 @@ import com.jaideep.expensetracker.model.CategoryCardData
 import com.jaideep.expensetracker.presentation.component.HeadingTextBold
 import com.jaideep.expensetracker.presentation.component.SimpleText
 import com.jaideep.expensetracker.presentation.theme.AppTheme
+import com.jaideep.expensetracker.presentation.theme.darkGray
 import com.jaideep.expensetracker.presentation.utility.Utility
 
 @Preview
@@ -63,7 +64,8 @@ fun SummaryCard(
             ) {
                 Column {
                     HeadingTextBold(
-                        text = "Balance", modifier = Modifier
+                        text = "Balance",
+                        modifier = Modifier
                             .wrapContentWidth()
                             .padding(start = 8.dp)
                     )
@@ -86,8 +88,8 @@ fun SummaryCard(
                     iconDescription = "${categoryCardData.categoryName} icon",
                     categoryName = categoryCardData.categoryName,
                     spendValue = "${categoryCardData.amountSpent} / $amountSpentThisMonthFromAcc",
-                    progressValue = if(amountSpentThisMonthFromAcc == 0.0) 0f else (categoryCardData.amountSpent / amountSpentThisMonthFromAcc).toFloat(),
-                    trackColor = Color.Yellow
+                    progressValue = if (amountSpentThisMonthFromAcc == 0.0) 0f else (categoryCardData.amountSpent / amountSpentThisMonthFromAcc).toFloat(),
+                    trackColor = darkGray
                 )
                 Spacer(modifier = Modifier.height(20.dp))
             }

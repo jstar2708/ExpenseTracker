@@ -1,4 +1,5 @@
 package com.jaideep.expensetracker.presentation.theme
+
 import androidx.compose.ui.graphics.Color
 
 val md_theme_light_primary = Color(0xFF0056D0)
@@ -64,5 +65,17 @@ val md_theme_dark_outlineVariant = Color(0xFF44464F)
 val md_theme_dark_scrim = Color(0xFF000000)
 
 
+// Track colors
 val seed = Color(0xFF126EFF)
-val greenColor = Color(0xFF50C878)
+val greenLite = Color(0xFF50C878)
+val pink = Color(0xFFEF0078)
+val orange = Color(0xFFFF8D00)
+val purple = Color(0xFFAA00FF)
+val blue = Color(0xFF304FFE)
+val green = Color(0xFF00E676)
+val yellow = Color(0xFFFFEB3B)
+val darkGray = Color(0xFF37474F)
+val red = Color(0xFFFF3D00)
+val brown = Color(0xFF5D4037)
+val teal = Color(0xFF1DE9B6)
+val black = Color(0xFF212121)

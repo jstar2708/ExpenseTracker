@@ -37,7 +37,8 @@ import com.jaideep.expensetracker.presentation.component.card.ExpenseTrackerCate
 import com.jaideep.expensetracker.presentation.component.other.ExpenseTrackerAppBar
 import com.jaideep.expensetracker.presentation.component.other.ExpenseTrackerProgressBar
 import com.jaideep.expensetracker.presentation.component.other.ExpenseTrackerSpinner
-import com.jaideep.expensetracker.presentation.utility.Utility
+import com.jaideep.expensetracker.presentation.theme.darkGray
+import com.jaideep.expensetracker.presentation.utility.Utility.getCategoryIconId
 import com.jaideep.expensetracker.presentation.viewmodel.CategoryViewModel
 import com.jaideep.expensetracker.presentation.viewmodel.MainViewModel
 import kotlinx.collections.immutable.ImmutableList
@@ -182,16 +183,17 @@ fun CategoryScreen(
             LazyColumn {
                 items(categoryCards) { categoryCardData ->
                     ExpenseTrackerCategoryCard(
-                        iconId = Utility.getCategoryIconId(categoryCardData.iconName),
+                        iconId = getCategoryIconId(categoryCardData.iconName),
                         iconDescription = categoryCardData.iconName,
                         categoryName = categoryCardData.categoryName,
                         spendValue = "$${categoryCardData.amountSpent} / $amountSpentFromAccount",
                         progressValue = if (amountSpentFromAccount == 0.0) 0f else (categoryCardData.amountSpent / amountSpentFromAccount).toFloat(),
-                        trackColor = Color.Yellow,
-                        onClick = onCategoryCardClick
+                        onClick = onCategoryCardClick,
+                        trackColor = darkGray
                     )
                 }
             }
+
         }
     }
 

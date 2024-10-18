@@ -3,7 +3,19 @@ package com.jaideep.expensetracker.presentation.utility
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
+import androidx.compose.ui.graphics.Color
 import com.jaideep.expensetracker.R
+import com.jaideep.expensetracker.presentation.theme.black
+import com.jaideep.expensetracker.presentation.theme.blue
+import com.jaideep.expensetracker.presentation.theme.brown
+import com.jaideep.expensetracker.presentation.theme.darkGray
+import com.jaideep.expensetracker.presentation.theme.green
+import com.jaideep.expensetracker.presentation.theme.orange
+import com.jaideep.expensetracker.presentation.theme.pink
+import com.jaideep.expensetracker.presentation.theme.purple
+import com.jaideep.expensetracker.presentation.theme.red
+import com.jaideep.expensetracker.presentation.theme.seed
+import com.jaideep.expensetracker.presentation.theme.yellow
 import java.time.LocalDate
 import java.time.ZoneId
 import java.time.format.DateTimeParseException
@@ -22,6 +34,22 @@ object Utility {
             R.drawable.medicine -> "Medicine"
             R.drawable.electricity -> "Electricity Bill"
             else -> "Other"
+        }
+    }
+
+    fun getTrackColor(categoryName: String): Color {
+        return when (categoryName) {
+            "Food" -> red
+            "Fuel" -> darkGray
+            "Entertainment" -> green
+            "Shopping" -> yellow
+            "Travel" -> orange
+            "Hospital" -> purple
+            "Mobile Recharge" -> pink
+            "Salary" -> blue
+            "Medicine" -> seed
+            "Electricity Bill" -> brown
+            else -> black
         }
     }
 

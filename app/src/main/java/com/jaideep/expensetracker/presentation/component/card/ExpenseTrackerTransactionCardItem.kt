@@ -31,7 +31,7 @@ import com.jaideep.expensetracker.R
 import com.jaideep.expensetracker.presentation.component.SimpleText
 import com.jaideep.expensetracker.presentation.component.SimpleTextBold
 import com.jaideep.expensetracker.presentation.theme.AppTheme
-import com.jaideep.expensetracker.presentation.theme.greenColor
+import com.jaideep.expensetracker.presentation.theme.greenLite
 
 @Preview
 @Composable
@@ -130,7 +130,7 @@ fun ExpenseTrackerTransactionCardItem(
                 text = amount,
                 modifier = Modifier.padding(4.dp),
                 overflow = TextOverflow.Ellipsis,
-                color = if (isCredit) greenColor else Color.Black
+                color = if (isCredit) greenLite else Color.Black
             )
 
             if (!hideDropDownIcon) {

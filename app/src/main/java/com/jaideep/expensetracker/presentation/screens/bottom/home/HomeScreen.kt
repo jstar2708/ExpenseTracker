@@ -81,24 +81,9 @@ fun HomeScreenRoot(
         homeViewModel.getInitialAccountData()
     }
 
-    if (
-        mainViewModel.isAccountLoading
-        || mainViewModel.isTransactionLoading
-        || mainViewModel.isCategoryLoading
-        || homeViewModel.isSpendTodayLoading
-        || homeViewModel.isAmountSpentThisMonthFromAccLoading
-        || homeViewModel.isSelectedAccountBalanceLoading
-        || homeViewModel.isGetMaxSpentCategoryDataLoading
-        ) {
+    if (mainViewModel.isAccountLoading || mainViewModel.isTransactionLoading || mainViewModel.isCategoryLoading || homeViewModel.isSpendTodayLoading || homeViewModel.isAmountSpentThisMonthFromAccLoading || homeViewModel.isSelectedAccountBalanceLoading || homeViewModel.isGetMaxSpentCategoryDataLoading) {
         ExpenseTrackerProgressBar(Modifier.size(50.dp))
-    } else if (mainViewModel.transactionRetrievalError
-        || mainViewModel.accountRetrievalError
-        || mainViewModel.categoryRetrievalError
-        || homeViewModel.spendTodayError
-        || homeViewModel.amountSpentThisMonthFromAccError
-        || homeViewModel.selectedAccountBalanceError
-        || homeViewModel.getMaxSpentCategoryDataError
-        ) {
+    } else if (mainViewModel.transactionRetrievalError || mainViewModel.accountRetrievalError || mainViewModel.categoryRetrievalError || homeViewModel.spendTodayError || homeViewModel.amountSpentThisMonthFromAccError || homeViewModel.selectedAccountBalanceError || homeViewModel.getMaxSpentCategoryDataError) {
         Row(
             modifier = Modifier.fillMaxSize(),
             verticalAlignment = Alignment.CenterVertically,
@@ -195,8 +180,7 @@ fun HomeScreen(
                         modifier = Modifier.weight(1f)
                     )
                 }
-                ExpenseTrackerSpinner(
-                    values = accounts,
+                ExpenseTrackerSpinner(values = accounts,
                     initialValue = selectedAccount,
                     onValueChanged = { value ->
                         onAccountSpinnerValueChanged(value)
