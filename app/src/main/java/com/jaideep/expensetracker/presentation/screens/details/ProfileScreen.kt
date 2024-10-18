@@ -119,9 +119,10 @@ fun ProfileScreen(
         mutableStateOf(false)
     }
 
-    LaunchedEffect(key1 = showSnackBar) {
+    LaunchedEffect(key1 = showSnackBar.value) {
         if (showSnackBar.value) {
             snackBarHostState.showSnackbar("Coming soon")
+            showSnackBar.value = false
         }
     }
 
@@ -252,7 +253,9 @@ fun ProfileScreen(
                     .height(70.dp)
                     .padding(start = .5.dp, end = .5.dp)
                     .border(width = 1.dp, color = Color.Gray)
-                    .clickable { },
+                    .clickable {
+                        showSnackBar.value = true
+                    },
                 contentAlignment = Alignment.CenterStart
             ) {
                 SimpleText(
