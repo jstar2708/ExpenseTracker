@@ -186,7 +186,7 @@ fun CategoryScreen(
                         iconDescription = categoryCardData.iconName,
                         categoryName = categoryCardData.categoryName,
                         spendValue = "$${categoryCardData.amountSpent} / $amountSpentFromAccount",
-                        progressValue = if (amountSpentFromAccount == 0.0) 0f else ("${categoryCardData.amountSpent} / $amountSpentFromAccount").toFloat(),
+                        progressValue = if (amountSpentFromAccount == 0.0) 0f else (categoryCardData.amountSpent / amountSpentFromAccount).toFloat(),
                         trackColor = Color.Yellow,
                         onClick = onCategoryCardClick
                     )
