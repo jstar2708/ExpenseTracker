@@ -24,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -167,11 +168,9 @@ fun CUCategoryScreen(
                         .padding(8.dp)
                         .height(60.dp),
                         colors = ButtonColors(Color.White, Color.Blue, Color.White, Color.White),
-                        onClick = {
-                            saveCategory()
-                        }) {
+                        onClick = saveCategory) {
                         SimpleTextBold(
-                            text = buttonText, color = Color.Blue
+                            text = buttonText, color = Color.Blue, textAlignment = TextAlign.End
                         )
                     }
                 }

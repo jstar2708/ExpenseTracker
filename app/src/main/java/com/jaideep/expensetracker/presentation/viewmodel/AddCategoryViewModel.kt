@@ -131,7 +131,7 @@ class AddCategoryViewModel @Inject constructor(
 
     fun validateAndSaveCategory() {
         if (checkCategoryError()) {
-            if (_categoryId.value != -1) saveCategory(categoryState.value.text) else updateCategory()
+            if (_categoryId.value == -1) saveCategory(categoryState.value.text) else updateCategory()
         }
     }
 
@@ -144,13 +144,20 @@ class AddCategoryViewModel @Inject constructor(
                         categoryName.value.text,
                         getCategoryIconName(categoryDto.iconId)
                     )
-
                 )
                 exitScreen.value = true
                 isCategorySaved.value = true
             }
         } catch (ex: Exception) {
             isCategorySaved.value = false
+            categoryState.value = TextFieldWithIconAndErrorPopUpState(
+                text = categoryState.value.text,
+                isError = true,
+                showError = true,
+                onValueChange = categoryState.value.onValueChange,
+                onErrorIconClick = categoryState.value.onErrorIconClick,
+                errorMessage = "Unable to update category"
+            )
         }
     }
 
@@ -187,12 +194,6 @@ class AddCategoryViewModel @Inject constructor(
                 )
                 isCategorySaved.value = true
                 exitScreen.value = true
-            } else {
-                _categoryDto.value?.let { categoryDto ->
-                    categoryRepository.updateCategory(
-                        Category(categoryDto.id, categoryName, "Other")
-                    )
-                }
             }
         } catch (ex: Exception) {
             isCategorySaved.value = false

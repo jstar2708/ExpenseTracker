@@ -123,7 +123,7 @@ fun HeadingText(
 @Preview(showBackground = true)
 @Composable
 private fun SimpleTextBoldPreview() {
-    SimpleTextBold(text = "This is a line.")
+    SimpleTextBold(text = "This is a line.", textAlignment = TextAlign.End)
 }
 
 @Composable
@@ -132,7 +132,8 @@ fun SimpleTextBold(
     text: String,
     color: Color = Color.Black,
     overflow: TextOverflow = TextOverflow.Clip,
-    maxLines: Int = Int.MAX_VALUE
+    maxLines: Int = Int.MAX_VALUE,
+    textAlignment: TextAlign = TextAlign.Start
 ) {
     Text(
         modifier = modifier,

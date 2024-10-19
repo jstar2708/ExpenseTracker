@@ -86,7 +86,10 @@ fun FilterDialog(
                 onErrorIconClick = {})
 
             SimpleTextBold(
-                text = "To", color = Color.Black, modifier = Modifier.padding(16.dp, 8.dp)
+                modifier = Modifier.padding(16.dp, 8.dp),
+                text = "To",
+                color = Color.Black,
+                textAlignment = TextAlign.End
             )
 
             TextFieldDatePicker(modifier = Modifier.padding(16.dp, 8.dp),

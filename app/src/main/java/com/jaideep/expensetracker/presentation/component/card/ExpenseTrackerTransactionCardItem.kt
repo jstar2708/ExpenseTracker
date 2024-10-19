@@ -24,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -111,9 +112,10 @@ fun ExpenseTrackerTransactionCardItem(
 
             Column(Modifier.weight(1f)) {
                 SimpleTextBold(
-                    text = categoryName,
                     modifier = Modifier.padding(4.dp),
-                    overflow = TextOverflow.Ellipsis
+                    text = categoryName,
+                    overflow = TextOverflow.Ellipsis,
+                    textAlignment = TextAlign.End
                 )
 
                 if (!expandCard.value) {
@@ -127,10 +129,11 @@ fun ExpenseTrackerTransactionCardItem(
             }
 
             SimpleTextBold(
-                text = amount,
                 modifier = Modifier.padding(4.dp),
+                text = amount,
+                color = if (isCredit) greenLite else Color.Black,
                 overflow = TextOverflow.Ellipsis,
-                color = if (isCredit) greenLite else Color.Black
+                textAlignment = TextAlign.End
             )
 
             if (!hideDropDownIcon) {

@@ -20,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
@@ -92,7 +93,8 @@ fun TextFieldDatePicker(
             DatePicker(state = dateState, title = {
                 SimpleTextBold(
                     modifier = Modifier.padding(start = 24.dp, end = 12.dp, top = 16.dp),
-                    text = "Select Transaction Date"
+                    text = "Select Transaction Date",
+                    textAlignment = TextAlign.End
                 )
             })
         }

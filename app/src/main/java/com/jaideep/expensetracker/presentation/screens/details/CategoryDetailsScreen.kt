@@ -212,7 +212,8 @@ fun CategoryDetailsScreen(
 
             SimpleTextBold(
                 modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
-                text = "Transactions"
+                text = "Transactions",
+                textAlignment = TextAlign.End
             )
 
             if (transactions.isNotEmpty()) {

@@ -31,7 +31,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.jaideep.expensetracker.R
-import com.jaideep.expensetracker.presentation.component.SimpleText
+import com.jaideep.expensetracker.presentation.component.SimpleTextBold
 
 @Preview
 @Composable
@@ -71,15 +71,16 @@ fun ExpenseTrackerCategoryCard(
                 tint = Color.Unspecified
             )
 
-            SimpleText(
-                text = categoryName,
+            SimpleTextBold(
                 modifier = Modifier
                     .weight(1f)
                     .padding(8.dp),
-                overflow = TextOverflow.Ellipsis
+                text = categoryName,
+                overflow = TextOverflow.Ellipsis,
+                textAlignment = TextAlign.End
             )
 
-            SimpleText(
+            SimpleTextBold(
                 text = spendValue, modifier = Modifier.padding(8.dp), textAlignment = TextAlign.End
             )
         }
