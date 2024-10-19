@@ -1,6 +1,6 @@
 package com.jaideep.expensetracker.common.constant.sql
 
-import com.jaideep.expensetracker.common.constant.column.Account
+import com.jaideep.expensetracker.common.constant.sql.table.Account
 
 object AccountSql {
     const val GET_ALL_ACCOUNTS: String = "Select ${Account.ALL} from accounts"

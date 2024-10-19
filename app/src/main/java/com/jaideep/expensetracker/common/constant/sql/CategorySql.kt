@@ -1,6 +1,6 @@
 package com.jaideep.expensetracker.common.constant.sql
 
-import com.jaideep.expensetracker.common.constant.column.Category
+import com.jaideep.expensetracker.common.constant.sql.table.Category
 
 object CategorySql {
     const val GET_CATEGORY_BY_ID =

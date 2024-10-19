@@ -39,10 +39,10 @@ private fun TextFieldWithIconAndErrorPopUpPreview() {
     AppTheme {
         TextFieldWithIconAndErrorPopUp(label = "Enter account",
             icon = Icons.Filled.Wallet,
-            iconColor = Color.White,
+            iconColor = Color.Black,
             borderColor = Color.Black,
             text = "",
-            isError = true,
+            isError = false,
             errorMessage = "",
             showErrorText = false,
             onValueChange = {}) {

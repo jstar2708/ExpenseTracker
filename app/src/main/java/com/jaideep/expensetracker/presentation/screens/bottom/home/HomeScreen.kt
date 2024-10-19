@@ -65,8 +65,7 @@ private fun HomeScreenPreview() {
             spentToday = 0.0,
             selectedAccount = "All Accounts",
             categoryCardData = CategoryCardData("Food", "Food", 0.0),
-            amountSpentThisMonthFromAcc = 0.0,
-            onBackPress = {})
+            amountSpentThisMonthFromAcc = 0.0)
     }
 }
 
@@ -75,7 +74,6 @@ fun HomeScreenRoot(
     navControllerRoot: NavController,
     mainViewModel: MainViewModel,
     homeViewModel: HomeViewModel,
-    onBackPress: () -> Unit
 ) {
     LaunchedEffect(key1 = true) {
         homeViewModel.getInitialAccountData()
@@ -106,8 +104,7 @@ fun HomeScreenRoot(
             spentToday = homeViewModel.spentToday.collectAsState().value,
             selectedAccount = homeViewModel.selectedAccount.collectAsState().value,
             categoryCardData = homeViewModel.getMaxSpentCategoryData.collectAsState().value,
-            amountSpentThisMonthFromAcc = homeViewModel.amountSpentThisMonthFromAcc.collectAsState().value,
-            onBackPress = onBackPress
+            amountSpentThisMonthFromAcc = homeViewModel.amountSpentThisMonthFromAcc.collectAsState().value
         )
     }
 }
@@ -122,7 +119,6 @@ fun HomeScreen(
     selectedAccount: String,
     categoryCardData: CategoryCardData?,
     amountSpentThisMonthFromAcc: Double,
-    onBackPress: () -> Unit,
     onAccountSpinnerValueChanged: (value: String) -> Unit,
 ) {
     val savedStateHandle = navControllerRoot.currentBackStackEntry?.savedStateHandle
@@ -133,10 +129,6 @@ fun HomeScreen(
     val snackBarHostState = remember {
         SnackbarHostState()
     }
-
-//    BackHandler {
-//        onBackPress()
-//    }
 
     Surface(
         modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background
@@ -180,7 +172,8 @@ fun HomeScreen(
                         modifier = Modifier.weight(1f)
                     )
                 }
-                ExpenseTrackerSpinner(values = accounts,
+                ExpenseTrackerSpinner(
+                    values = accounts,
                     initialValue = selectedAccount,
                     onValueChanged = { value ->
                         onAccountSpinnerValueChanged(value)

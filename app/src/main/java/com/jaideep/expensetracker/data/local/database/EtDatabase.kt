@@ -14,9 +14,10 @@ import com.jaideep.expensetracker.data.local.dao.TransactionDao
 import com.jaideep.expensetracker.data.local.dao.TransactionPagingDao
 import com.jaideep.expensetracker.data.local.entities.Account
 import com.jaideep.expensetracker.data.local.entities.Category
+import com.jaideep.expensetracker.data.local.entities.Notification
 import com.jaideep.expensetracker.data.local.entities.Transaction
 
-@Database(entities = [Account::class, Category::class, Transaction::class], version = 1, exportSchema = true)
+@Database(entities = [Account::class, Category::class, Transaction::class, Notification::class], version = 1, exportSchema = true)
 @TypeConverters(value = [Converters::class])
 abstract class EtDatabase : RoomDatabase() {
 

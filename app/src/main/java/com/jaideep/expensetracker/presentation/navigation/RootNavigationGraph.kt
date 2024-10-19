@@ -15,6 +15,7 @@ import com.jaideep.expensetracker.presentation.screens.cu.CUAccountScreenRoot
 import com.jaideep.expensetracker.presentation.screens.cu.CUCategoryScreenRoot
 import com.jaideep.expensetracker.presentation.screens.cu.CUTransactionScreenRoot
 import com.jaideep.expensetracker.presentation.screens.details.CategoryDetailsScreenRoot
+import com.jaideep.expensetracker.presentation.screens.details.NotificationScreenRoot
 import com.jaideep.expensetracker.presentation.screens.details.ProfileScreenRoot
 import com.jaideep.expensetracker.presentation.viewmodel.LoginViewModel
 import com.jaideep.expensetracker.presentation.viewmodel.MainViewModel
@@ -71,6 +72,10 @@ fun RootNavigationGraph(mainViewModel: MainViewModel, loginViewModel: LoginViewM
 
         composable(DetailScreen.PROFILE) {
             ProfileScreenRoot(navHostControllerRoot)
+        }
+
+        composable(DetailScreen.NOTIFICATION) {
+            NotificationScreenRoot()
         }
     }
 }

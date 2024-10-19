@@ -57,7 +57,7 @@ fun ExpenseTrackerCategoryCard(
     onClick: (categoryName: String) -> Unit = {}
 ) {
     Column(modifier = Modifier
-        .wrapContentWidth()
+        .fillMaxWidth()
         .clickable { onClick(categoryName) }
         .padding(8.dp)
         .background(MaterialTheme.colorScheme.background)) {

@@ -1,8 +1,8 @@
 package com.jaideep.expensetracker.common.constant.sql
 
-import com.jaideep.expensetracker.common.constant.column.Account
-import com.jaideep.expensetracker.common.constant.column.Category
-import com.jaideep.expensetracker.common.constant.column.Transaction
+import com.jaideep.expensetracker.common.constant.sql.table.Account
+import com.jaideep.expensetracker.common.constant.sql.table.Category
+import com.jaideep.expensetracker.common.constant.sql.table.Transaction
 
 object TransactionSql {
     const val TRANSACTION_COLUMNS =

@@ -198,3 +198,30 @@ fun SimpleSmallText(
         maxLines = maxLines
     )
 }
+
+@Preview(showBackground = true)
+@Composable
+private fun SimpleSmallTextBoldPreview() {
+    SimpleSmallText(text = "This is small text")
+}
+
+@Composable
+fun SimpleSmallTextBold(
+    modifier: Modifier = Modifier,
+    text: String,
+    color: Color = Color.Black,
+    maxLines: Int = Int.MAX_VALUE,
+    textAlignment: TextAlign = TextAlign.Start
+) {
+    Text(
+        modifier = modifier,
+        text = text,
+        textAlign = textAlignment,
+        fontSize = 14.sp,
+        fontFamily = OpenSansFont.openSans,
+        fontWeight = FontWeight.Bold,
+        color = color,
+        maxLines = maxLines
+    )
+}
+

@@ -1,6 +1,6 @@
 package com.jaideep.expensetracker.common.constant.sql
 
-import com.jaideep.expensetracker.common.constant.column.Transaction
+import com.jaideep.expensetracker.common.constant.sql.table.Transaction
 
 object TransactionPagingSql {
     // Paging

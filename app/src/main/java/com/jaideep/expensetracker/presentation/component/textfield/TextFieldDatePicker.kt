@@ -2,7 +2,6 @@ package com.jaideep.expensetracker.presentation.component.textfield
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -16,7 +15,6 @@ import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -101,25 +99,21 @@ fun TextFieldDatePicker(
     }
 
 
-    Column(
-        horizontalAlignment = Alignment.End
-    ) {
-        TextFieldWithIconAndErrorPopUp(
-            modifier = modifier
-                .background(MaterialTheme.colorScheme.surface)
-                .clickable { showDatePicker.value = true },
-            label = label,
-            isReadOnly = true,
-            icon = icon,
-            enabled = false,
-            iconColor = iconColor,
-            borderColor = borderColor,
-            text = text,
-            isError = isError,
-            errorMessage = errorMessage,
-            showErrorText = showErrorText,
-            onValueChange = onValueChanged,
-            onErrorIconClick = onErrorIconClick
-        )
-    }
+    TextFieldWithIconAndErrorPopUp(
+        modifier = modifier
+            .background(Color.White)
+            .clickable { showDatePicker.value = true },
+        label = label,
+        isReadOnly = true,
+        icon = icon,
+        enabled = false,
+        iconColor = iconColor,
+        borderColor = borderColor,
+        text = text,
+        isError = isError,
+        errorMessage = errorMessage,
+        showErrorText = showErrorText,
+        onValueChange = onValueChanged,
+        onErrorIconClick = onErrorIconClick
+    )
 }

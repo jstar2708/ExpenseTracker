@@ -1,4 +1,4 @@
-package com.jaideep.expensetracker.common.constant.column
+package com.jaideep.expensetracker.common.constant.sql.table
 
 object Account {
     const val ALL = "accounts.*"
@@ -24,4 +24,10 @@ object Category {
     const val ID = "categories.id"
     const val CATEGORY_NAME = "categories.name"
     const val ICON_NAME = "categories.iconName"
+}
+
+object Notification {
+    const val ID = "notifications.id"
+    const val MESSAGE = "notifications.message"
+    const val DATE = "notifications.date"
 }
