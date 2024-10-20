@@ -158,22 +158,17 @@ class NotificationViewModel @Inject constructor(
         }
     }
 
-    fun validateAndSaveNotification() {
-        if (isNotificationValid()) {
-            saveNotification()
-        }
-    }
-
-    private fun saveNotification() = viewModelScope.launch(EtDispatcher.io) {
+    fun saveNotification(message: String, date: String) = viewModelScope.launch(EtDispatcher.io) {
+        val longDate = stringDateToMillis(date)
         notificationRepository.saveNotification(
             Notification(
-                0, messageState.text, stringDateToMillis(dateState.text)
+                0, message, longDate
             )
         )
         snackBarState = SnackBarState(true, "Notification saved successfully")
     }
 
-    private fun isNotificationValid(): Boolean {
+    fun isNotificationValid(): Boolean {
         if (messageState.text.isBlank()) {
             messageState = TextFieldWithIconAndErrorPopUpState(
                 text = messageState.text,
@@ -213,5 +208,25 @@ class NotificationViewModel @Inject constructor(
 
     fun disableSnackBarState() {
         snackBarState = SnackBarState(false, "")
+    }
+
+    fun clearDialogState() {
+        messageState = TextFieldWithIconAndErrorPopUpState(
+            text = "",
+            isError = false,
+            showError = false,
+            onValueChange = { updateMessageTextState(it) },
+            onErrorIconClick = { updateMessageErrorState() },
+            errorMessage = ""
+        )
+
+        dateState = TextFieldWithIconAndErrorPopUpState(
+            text = "",
+            isError = false,
+            showError = false,
+            onValueChange = { updateDateTextState(it) },
+            onErrorIconClick = { updateDateErrorState() },
+            errorMessage = ""
+        )
     }
 }

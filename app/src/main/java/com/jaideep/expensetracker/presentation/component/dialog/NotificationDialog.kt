@@ -38,12 +38,17 @@ private fun NotificationDialogPreview() {
             showError = false,
             errorMessage = "",
             onValueChange = {},
-            onErrorIconClick = {}), messageState = TextFieldWithIconAndErrorPopUpState(text = "",
-            isError = false,
-            showError = false,
-            errorMessage = "",
-            onValueChange = {},
-            onErrorIconClick = {}), saveNotification = {}, hideDialog = {})
+            onErrorIconClick = {}),
+            messageState = TextFieldWithIconAndErrorPopUpState(text = "",
+                isError = false,
+                showError = false,
+                errorMessage = "",
+                onValueChange = {},
+                onErrorIconClick = {}),
+            saveNotification = { _, _ -> },
+            hideDialog = {},
+            clearDialog = {},
+            validateNotification = { true })
     }
 }
 
@@ -51,7 +56,9 @@ private fun NotificationDialogPreview() {
 fun NotificationDialog(
     dateState: TextFieldWithIconAndErrorPopUpState,
     messageState: TextFieldWithIconAndErrorPopUpState,
-    saveNotification: () -> Unit,
+    saveNotification: (message: String, date: String) -> Unit,
+    clearDialog: () -> Unit,
+    validateNotification: () -> Boolean,
     hideDialog: () -> Unit
 ) {
     Dialog(
@@ -104,8 +111,11 @@ fun NotificationDialog(
                     hideDialog()
                 }
                 SmallPrimaryColorButton(text = "Add") {
-                    saveNotification()
-                    hideDialog()
+                    if (validateNotification()) {
+                        saveNotification(messageState.text, dateState.text)
+                        hideDialog()
+                        clearDialog()
+                    }
                 }
             }
         }

@@ -16,7 +16,9 @@ class Converters {
 
     @TypeConverter
     fun toLocalDate(date: Long): LocalDate {
-        return LocalDate.ofEpochDay(date / 86_400_000L)
+        return LocalDate.ofEpochDay(date / 86_400_000L).plusDays(
+            1
+        )
     }
 
     @TypeConverter

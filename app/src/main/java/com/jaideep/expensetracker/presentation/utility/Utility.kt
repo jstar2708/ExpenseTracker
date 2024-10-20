@@ -102,5 +102,5 @@ fun Context.showToast(msg: String) {
 
 fun checkIfDateIsEqualOrBeforeToday(date: LocalDate): Boolean {
     val today = LocalDate.now()
-    return date.isBefore(today) && date.isEqual(today)
+    return date.isBefore(today) || date.isEqual(today)
 }

@@ -69,7 +69,9 @@ private fun NotificationScreenPreview() {
             backPress = {},
             onDeleteClick = {},
             disableSnackBarState = {},
-            saveNotification = {})
+            saveNotification = { _, _ -> },
+            clearDialog = {},
+            validateNotification = { true })
     }
 }
 
@@ -104,9 +106,11 @@ fun NotificationScreenRoot(
             snackBarState = notificationViewModel.snackBarState,
             updateSelectedTab = notificationViewModel::updateSelectedTab,
             backPress = backPress,
-            saveNotification = notificationViewModel::validateAndSaveNotification,
+            saveNotification = notificationViewModel::saveNotification,
             onDeleteClick = notificationViewModel::onNotificationDelete,
-            disableSnackBarState = notificationViewModel::disableSnackBarState
+            disableSnackBarState = notificationViewModel::disableSnackBarState,
+            clearDialog = notificationViewModel::clearDialogState,
+            validateNotification = notificationViewModel::isNotificationValid
         )
     }
 }
@@ -123,7 +127,9 @@ fun NotificationScreen(
     updateSelectedTab: (pos: Int) -> Unit,
     backPress: () -> Unit,
     disableSnackBarState: () -> Unit,
-    saveNotification: () -> Unit,
+    saveNotification: (message: String, date: String) -> Unit,
+    validateNotification: () -> Boolean,
+    clearDialog: () -> Unit,
     onDeleteClick: (notificationDto: NotificationDto) -> Unit
 ) {
     val snackBarHostState = remember {
@@ -141,7 +147,13 @@ fun NotificationScreen(
     }
 
     if (showAddDialog) {
-        NotificationDialog(dateState = dateState, messageState = messageState, saveNotification) {
+        NotificationDialog(
+            dateState = dateState,
+            messageState = messageState,
+            saveNotification = saveNotification,
+            validateNotification = validateNotification,
+            clearDialog = clearDialog
+        ) {
             showAddDialog = false
         }
     }
