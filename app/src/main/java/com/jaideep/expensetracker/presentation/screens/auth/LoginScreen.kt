@@ -62,7 +62,7 @@ private fun LoginScreenPreview() {
 
 @Composable
 fun LoginScreenRoot(navController: NavController, loginViewModel: LoginViewModel) {
-    LaunchedEffect(key1 = loginViewModel.isUsernameLoading, key2 = loginViewModel.userNotPresent) {
+    LaunchedEffect(key1 = loginViewModel.isUsernameLoading) {
         if (!loginViewModel.isUsernameLoading && loginViewModel.userNotPresent) {
             navController.navigate(AuthScreen.REGISTER, navOptions = navOptions {
                 popUpTo(navController.graph.startDestinationId) {
@@ -73,7 +73,7 @@ fun LoginScreenRoot(navController: NavController, loginViewModel: LoginViewModel
         }
     }
 
-    if (loginViewModel.isUsernameLoading || loginViewModel.isAccountCountLoading) {
+    if (loginViewModel.isUsernameLoading || loginViewModel.isAccountCountLoading || loginViewModel.userNotPresent) {
         ExpenseTrackerProgressBar(Modifier.size(50.dp))
     } else if (loginViewModel.accountCountRetrievalError) {
         Row(

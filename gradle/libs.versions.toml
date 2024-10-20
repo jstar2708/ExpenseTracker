@@ -24,6 +24,7 @@ android-application = "8.5.2"
 kotlin = "1.9.0"
 ksp = "1.9.0-1.0.13"
 biometric = "1.1.0"
+workManager = "2.9.1"
 
 [libraries]
 core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "ktx" }
@@ -44,6 +45,7 @@ app-compat = { group = "androidx.appcompat", name = "appcompat", version.ref = "
 hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
 hilt-android-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hilt" }
 hilt-compiler = { group = "androidx.hilt", name = "hilt-compiler", version.ref = "hiltCompiler" }
+hilt-work = { group = "androidx.hilt", name = "hilt-work", version.ref = "hiltCompiler" }
 compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
 hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hiltNavigation" }
 coroutine-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "coroutines" }
@@ -59,7 +61,7 @@ paging-with-room = { group = "androidx.room", name = "room-paging", version.ref 
 kotlin-immutable-lists = { group = "org.jetbrains.kotlinx", name = "kotlinx-collections-immutable", version.ref = "kotlinImmutableLists" }
 datastore = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore" }
 biometric = { group = "androidx.biometric", name = "biometric", version.ref = "biometric" }
-
+work-manager = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "workManager" }
 
 
 [plugins]

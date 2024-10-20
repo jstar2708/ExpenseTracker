@@ -21,6 +21,7 @@ class MainActivity : FragmentActivity() {
     @SuppressLint("SourceLockedOrientationActivity")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        checkUserPresence()
         mainViewModel.isFirstAppInitialization.observe(this) { isFirstInitialization ->
             if (isFirstInitialization) {
                 mainViewModel.addDefaultCategories()
@@ -28,8 +29,6 @@ class MainActivity : FragmentActivity() {
                 mainViewModel.initData()
             }
         }
-        loginViewModel.isUserPresent()
-        loginViewModel.checkAccountCreated()
         mainViewModel.checkFirstAppInitialization()
         setContent {
             this.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
@@ -37,5 +36,11 @@ class MainActivity : FragmentActivity() {
                 RootNavigationGraph(mainViewModel, loginViewModel)
             }
         }
+    }
+
+
+    private fun checkUserPresence() {
+        loginViewModel.isUserPresent()
+        loginViewModel.checkAccountCreated()
     }
 }

@@ -84,6 +84,7 @@ dependencies {
     kapt(libs.hilt.compiler)
     kapt(libs.hilt.android.compiler)
     implementation(libs.hilt.android)
+    implementation(libs.hilt.work)
     implementation(libs.hilt.navigation.compose)
 
 
@@ -105,4 +106,6 @@ dependencies {
 
     implementation(libs.kotlin.immutable.lists)
     implementation(libs.biometric)
+
+    implementation(libs.work.manager)
 }
