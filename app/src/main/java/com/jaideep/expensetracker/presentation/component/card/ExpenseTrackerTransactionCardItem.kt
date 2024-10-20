@@ -38,7 +38,8 @@ import com.jaideep.expensetracker.presentation.theme.greenLite
 @Composable
 private fun ExpenseTrackerTransactionCardItemShowDetailsPreview() {
     AppTheme {
-        ExpenseTrackerTransactionCardItem(iconId = R.drawable.fuel,
+        ExpenseTrackerTransactionCardItem(
+            iconId = R.drawable.fuel,
             iconDescription = "Fuel icon",
             categoryName = "Fuel",
             transactionDescription = "Petrol in scooter",
@@ -48,7 +49,8 @@ private fun ExpenseTrackerTransactionCardItemShowDetailsPreview() {
             onDeleteIconClicked = {},
             onEditIconClicked = {},
             accountName = "PNB",
-            transactionDate = "27 Aug 2002")
+            transactionDate = "27 Aug 2002"
+        )
     }
 }
 
@@ -56,7 +58,8 @@ private fun ExpenseTrackerTransactionCardItemShowDetailsPreview() {
 @Composable
 private fun ExpenseTrackerTransactionCardItemPreview() {
     AppTheme {
-        ExpenseTrackerTransactionCardItem(iconId = R.drawable.fuel,
+        ExpenseTrackerTransactionCardItem(
+            iconId = R.drawable.fuel,
             iconDescription = "Fuel icon",
             categoryName = "Fuel",
             transactionDescription = "Petrol in scooter",
@@ -65,7 +68,8 @@ private fun ExpenseTrackerTransactionCardItemPreview() {
             onDeleteIconClicked = {},
             onEditIconClicked = {},
             accountName = "PNB",
-            transactionDate = "27 Aug 2002")
+            transactionDate = "27 Aug 2002"
+        )
     }
 }
 

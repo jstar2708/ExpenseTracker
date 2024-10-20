@@ -69,6 +69,10 @@ object Utility {
         }
     }
 
+    fun getDateInMillis(date: LocalDate): Long {
+        return date.atStartOfDay(ZoneId.of("Asia/Kolkata")).toEpochSecond() * 1000
+    }
+
     fun getCurrentDateInMillis(): Long {
         return LocalDate.now().atStartOfDay(ZoneId.of("Asia/Kolkata")).toEpochSecond() * 1000
     }
@@ -96,7 +100,7 @@ fun Context.showToast(msg: String) {
     Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
 }
 
-fun checkIfDateIsEqualOrBeforeToday(date: LocalDate) : Boolean{
+fun checkIfDateIsEqualOrBeforeToday(date: LocalDate): Boolean {
     val today = LocalDate.now()
     return date.isBefore(today) && date.isEqual(today)
 }

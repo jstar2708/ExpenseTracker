@@ -13,11 +13,11 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface NotificationDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun saveNotification(notification: NotificationDto)
+    suspend fun saveNotification(notification: Notification)
 
     @Delete
-    suspend fun deleteNotification(notification: NotificationDto)
+    suspend fun deleteNotification(notification: Notification)
 
     @Query(GET_ALL_NOTIFICATIONS)
-    suspend fun getAllNotifications(): Flow<List<NotificationDto>>
+    fun getAllNotifications(): Flow<List<NotificationDto>>
 }

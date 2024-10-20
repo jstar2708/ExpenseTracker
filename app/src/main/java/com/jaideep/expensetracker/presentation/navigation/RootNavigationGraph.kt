@@ -75,7 +75,9 @@ fun RootNavigationGraph(mainViewModel: MainViewModel, loginViewModel: LoginViewM
         }
 
         composable(DetailScreen.NOTIFICATION) {
-            NotificationScreenRoot()
+            NotificationScreenRoot {
+                navHostControllerRoot.popBackStack()
+            }
         }
     }
 }

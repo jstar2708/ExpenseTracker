@@ -65,7 +65,8 @@ private fun HomeScreenPreview() {
             spentToday = 0.0,
             selectedAccount = "All Accounts",
             categoryCardData = CategoryCardData("Food", "Food", 0.0),
-            amountSpentThisMonthFromAcc = 0.0)
+            amountSpentThisMonthFromAcc = 0.0,
+            navigateToNotificationScreen = {})
     }
 }
 
@@ -92,8 +93,7 @@ fun HomeScreenRoot(
             )
         }
     } else {
-        HomeScreen(
-            navControllerRoot = navControllerRoot,
+        HomeScreen(navControllerRoot = navControllerRoot,
             accounts = mainViewModel.accounts.collectAsState().value.toImmutableList(),
             transactions = mainViewModel.transactions.collectAsState().value.toImmutableList(),
             onAccountSpinnerValueChanged = {
@@ -104,8 +104,10 @@ fun HomeScreenRoot(
             spentToday = homeViewModel.spentToday.collectAsState().value,
             selectedAccount = homeViewModel.selectedAccount.collectAsState().value,
             categoryCardData = homeViewModel.getMaxSpentCategoryData.collectAsState().value,
-            amountSpentThisMonthFromAcc = homeViewModel.amountSpentThisMonthFromAcc.collectAsState().value
-        )
+            amountSpentThisMonthFromAcc = homeViewModel.amountSpentThisMonthFromAcc.collectAsState().value,
+            navigateToNotificationScreen = {
+                navControllerRoot.navigate(DetailScreen.NOTIFICATION)
+            })
     }
 }
 
@@ -120,6 +122,7 @@ fun HomeScreen(
     categoryCardData: CategoryCardData?,
     amountSpentThisMonthFromAcc: Double,
     onAccountSpinnerValueChanged: (value: String) -> Unit,
+    navigateToNotificationScreen: () -> Unit
 ) {
     val savedStateHandle = navControllerRoot.currentBackStackEntry?.savedStateHandle
     val resultAccount = savedStateHandle?.get<Boolean>("isAccountSaved")
@@ -142,13 +145,15 @@ fun HomeScreen(
                 )
             }
         }, topBar = {
-            ExpenseTrackerAppBar(title = "Hello Jaideep",
+            ExpenseTrackerAppBar(
+                title = "Hello Jaideep",
                 navigationIcon = Icons.Outlined.AccountCircle,
                 navigationDescription = "User icon",
                 onNavigationIconClick = { navControllerRoot.navigate(DetailScreen.PROFILE) },
                 actionIcon = Icons.Filled.Notifications,
                 actionDescription = "Notification icon",
-                onActionIconClick = { })
+                onActionIconClick = navigateToNotificationScreen
+            )
         }) {
 
             Column(

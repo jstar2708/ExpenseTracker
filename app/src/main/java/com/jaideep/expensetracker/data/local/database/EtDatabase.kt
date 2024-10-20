@@ -10,6 +10,7 @@ import com.jaideep.expensetracker.data.local.dao.CategoryDao
 import com.jaideep.expensetracker.data.local.dao.CrudDao
 import com.jaideep.expensetracker.data.local.dao.DatabaseDao
 import com.jaideep.expensetracker.data.local.dao.EtDao
+import com.jaideep.expensetracker.data.local.dao.NotificationDao
 import com.jaideep.expensetracker.data.local.dao.TransactionDao
 import com.jaideep.expensetracker.data.local.dao.TransactionPagingDao
 import com.jaideep.expensetracker.data.local.entities.Account
@@ -28,6 +29,7 @@ abstract class EtDatabase : RoomDatabase() {
     abstract fun getTransactionDao(): TransactionDao
     abstract fun getDatabaseDao(): DatabaseDao
     abstract fun getCrudDao(): CrudDao
+    abstract fun getNotificationDao(): NotificationDao
 
     companion object {
         @Volatile

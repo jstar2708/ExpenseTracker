@@ -15,6 +15,7 @@ import com.jaideep.expensetracker.data.local.dao.CategoryDao
 import com.jaideep.expensetracker.data.local.dao.CrudDao
 import com.jaideep.expensetracker.data.local.dao.DatabaseDao
 import com.jaideep.expensetracker.data.local.dao.EtDao
+import com.jaideep.expensetracker.data.local.dao.NotificationDao
 import com.jaideep.expensetracker.data.local.dao.TransactionDao
 import com.jaideep.expensetracker.data.local.dao.TransactionPagingDao
 import com.jaideep.expensetracker.data.local.database.EtDatabase
@@ -24,12 +25,14 @@ import com.jaideep.expensetracker.data.local.repositoryimpl.AccountRepositoryImp
 import com.jaideep.expensetracker.data.local.repositoryimpl.CategoryRepositoryImpl
 import com.jaideep.expensetracker.data.local.repositoryimpl.CrudRepositoryImpl
 import com.jaideep.expensetracker.data.local.repositoryimpl.EtRepositoryImpl
+import com.jaideep.expensetracker.data.local.repositoryimpl.NotificationRepositoryImpl
 import com.jaideep.expensetracker.data.local.repositoryimpl.TransactionPagingRepositoryImpl
 import com.jaideep.expensetracker.data.local.repositoryimpl.TransactionRepositoryImpl
 import com.jaideep.expensetracker.domain.repository.AccountRepository
 import com.jaideep.expensetracker.domain.repository.CategoryRepository
 import com.jaideep.expensetracker.domain.repository.CrudRepository
 import com.jaideep.expensetracker.domain.repository.EtRepository
+import com.jaideep.expensetracker.domain.repository.NotificationRepository
 import com.jaideep.expensetracker.domain.repository.TransactionPagingRepository
 import com.jaideep.expensetracker.domain.repository.TransactionRepository
 import dagger.Module
@@ -105,6 +108,12 @@ object AppModule {
 
     @Provides
     @Singleton
+    fun providesNotificationDao(etDatabase: EtDatabase) : NotificationDao {
+        return etDatabase.getNotificationDao()
+    }
+
+    @Provides
+    @Singleton
     fun providesDatabaseDao(etDatabase: EtDatabase): DatabaseDao {
         return etDatabase.getDatabaseDao()
     }
@@ -121,6 +130,11 @@ object AppModule {
         return EtRepositoryImpl(etDao)
     }
 
+    @Provides
+    @Singleton
+    fun providesNotificationRepository(notificationDao: NotificationDao) : NotificationRepository {
+        return NotificationRepositoryImpl(notificationDao)
+    }
     @Provides
     @Singleton
     fun providesCategoryRepository(categoryDao: CategoryDao): CategoryRepository {

@@ -40,7 +40,7 @@ private fun ExpenseTrackerNotificationCardPreview() {
 
 @Composable
 fun ExpenseTrackerNotificationCard(
-    notificationDto: NotificationDto, onDeleteClick: (id: Int) -> Unit
+    notificationDto: NotificationDto, onDeleteClick: (notificationDto: NotificationDto) -> Unit
 ) {
     var expandCard by remember {
         mutableStateOf(false)
@@ -63,14 +63,14 @@ fun ExpenseTrackerNotificationCard(
                 SimpleText(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 8.dp, vertical = 4.dp),
+                        .padding(horizontal = 8.dp).padding(bottom = 8.dp),
                     text = notificationDto.message
                 )
             }
             Icon(
-                modifier = Modifier.clickable {
+                modifier = Modifier.padding(horizontal = 8.dp).clickable {
                     expandCard = false
-                    onDeleteClick(notificationDto.id)
+                    onDeleteClick(notificationDto)
                 }, imageVector = Icons.Filled.Delete, contentDescription = ""
             )
         }

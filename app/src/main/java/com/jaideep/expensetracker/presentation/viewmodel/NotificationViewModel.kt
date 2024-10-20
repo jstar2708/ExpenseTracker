@@ -1,16 +1,20 @@
 package com.jaideep.expensetracker.presentation.viewmodel
 
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jaideep.expensetracker.common.EtDispatcher
 import com.jaideep.expensetracker.common.Resource
+import com.jaideep.expensetracker.data.local.entities.Notification
 import com.jaideep.expensetracker.domain.repository.NotificationRepository
 import com.jaideep.expensetracker.domain.usecase.GetAllNotificationUseCase
+import com.jaideep.expensetracker.model.SnackBarState
 import com.jaideep.expensetracker.model.TextFieldWithIconAndErrorPopUpState
 import com.jaideep.expensetracker.model.dto.NotificationDto
+import com.jaideep.expensetracker.presentation.utility.Utility.getDateInMillis
 import com.jaideep.expensetracker.presentation.utility.Utility.stringDateToMillis
 import com.jaideep.expensetracker.presentation.utility.checkIfDateIsEqualOrBeforeToday
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -37,17 +41,21 @@ class NotificationViewModel @Inject constructor(
             checkIfDateIsEqualOrBeforeToday(notificationDto.date)
         }
     }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
+        private set
 
     var upcomingNotifications = _notifications.map { notificationDtoList ->
         notificationDtoList.filter { notificationDto ->
             !checkIfDateIsEqualOrBeforeToday(notificationDto.date)
         }
     }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
+        private set
 
     var notificationRetrievalError by mutableStateOf(false)
+        private set
     var isNotificationLoading by mutableStateOf(true)
-
-    var isNotificationSaved by mutableStateOf(false)
+        private set
+    var snackBarState: SnackBarState by mutableStateOf(SnackBarState(false, ""))
+        private set
 
     var messageState by mutableStateOf(
         TextFieldWithIconAndErrorPopUpState(
@@ -59,6 +67,7 @@ class NotificationViewModel @Inject constructor(
             errorMessage = ""
         )
     )
+        private set
 
     var dateState by mutableStateOf(
         TextFieldWithIconAndErrorPopUpState(
@@ -70,10 +79,17 @@ class NotificationViewModel @Inject constructor(
             errorMessage = ""
         )
     )
+        private set
 
-    var selectedTab by mutableStateOf(0)
+    var selectedTab by mutableIntStateOf(0)
+        private set
+
     fun updateSelectedTab(pos: Int) {
         selectedTab = pos
+    }
+
+    fun initData() {
+        getAllNotifications()
     }
 
     private fun updateDateErrorState() {
@@ -143,7 +159,6 @@ class NotificationViewModel @Inject constructor(
     }
 
     fun validateAndSaveNotification() {
-        isNotificationSaved = false
         if (isNotificationValid()) {
             saveNotification()
         }
@@ -151,13 +166,11 @@ class NotificationViewModel @Inject constructor(
 
     private fun saveNotification() = viewModelScope.launch(EtDispatcher.io) {
         notificationRepository.saveNotification(
-            NotificationDto(
-                0,
-                messageState.text,
-                LocalDate.ofEpochDay((stringDateToMillis(dateState.text)) / 86_400_000L)
+            Notification(
+                0, messageState.text, stringDateToMillis(dateState.text)
             )
         )
-        isNotificationSaved = true
+        snackBarState = SnackBarState(true, "Notification saved successfully")
     }
 
     private fun isNotificationValid(): Boolean {
@@ -184,5 +197,21 @@ class NotificationViewModel @Inject constructor(
             return false
         }
         return true
+    }
+
+    fun onNotificationDelete(notificationDto: NotificationDto) =
+        viewModelScope.launch(EtDispatcher.io) {
+            notificationRepository.deleteNotification(
+                Notification(
+                    notificationDto.id,
+                    notificationDto.message,
+                    getDateInMillis(notificationDto.date)
+                )
+            )
+            snackBarState = SnackBarState(true, "Notification deleted successfully")
+        }
+
+    fun disableSnackBarState() {
+        snackBarState = SnackBarState(false, "")
     }
 }

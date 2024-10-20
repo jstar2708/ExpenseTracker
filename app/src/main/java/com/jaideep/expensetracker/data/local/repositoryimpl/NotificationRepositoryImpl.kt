@@ -10,11 +10,11 @@ import javax.inject.Inject
 class NotificationRepositoryImpl @Inject constructor(
     private val notificationDao: NotificationDao
 ) : NotificationRepository {
-    override suspend fun saveNotification(notification: NotificationDto) {
+    override suspend fun saveNotification(notification: Notification) {
         notificationDao.saveNotification(notification)
     }
 
-    override suspend fun deleteNotification(notification: NotificationDto) {
+    override suspend fun deleteNotification(notification: Notification) {
         notificationDao.deleteNotification(notification)
     }
 

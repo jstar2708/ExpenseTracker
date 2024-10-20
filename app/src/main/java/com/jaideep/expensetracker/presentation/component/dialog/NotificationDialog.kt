@@ -43,19 +43,19 @@ private fun NotificationDialogPreview() {
             showError = false,
             errorMessage = "",
             onValueChange = {},
-            onErrorIconClick = {}
-
-        ))
+            onErrorIconClick = {}), saveNotification = {}, hideDialog = {})
     }
 }
 
 @Composable
 fun NotificationDialog(
     dateState: TextFieldWithIconAndErrorPopUpState,
-    messageState: TextFieldWithIconAndErrorPopUpState
+    messageState: TextFieldWithIconAndErrorPopUpState,
+    saveNotification: () -> Unit,
+    hideDialog: () -> Unit
 ) {
     Dialog(
-        onDismissRequest = { /*TODO*/ }, properties = DialogProperties(
+        onDismissRequest = hideDialog, properties = DialogProperties(
             dismissOnBackPress = true, dismissOnClickOutside = true, usePlatformDefaultWidth = true
         )
     ) {
@@ -98,14 +98,14 @@ fun NotificationDialog(
             )
             Spacer(modifier = Modifier.height(16.dp))
             Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly
+                modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly
             ) {
                 SmallPrimaryColorButton(text = "Cancel") {
-
+                    hideDialog()
                 }
                 SmallPrimaryColorButton(text = "Add") {
-
+                    saveNotification()
+                    hideDialog()
                 }
             }
         }
