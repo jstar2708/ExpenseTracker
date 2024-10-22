@@ -1,6 +1,7 @@
 package com.jaideep.expensetracker.data.local.dao
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
@@ -31,4 +32,6 @@ interface AccountDao {
 
     @Query(GET_ACCOUNTS_COUNT)
     fun getTotalAccountsCount(): Int
+    @Delete
+    fun deleteAccount(account: Account)
 }

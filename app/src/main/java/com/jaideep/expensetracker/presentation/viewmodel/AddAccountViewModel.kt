@@ -27,6 +27,7 @@ class AddAccountViewModel @Inject constructor(
     private val getAllAccountsUseCase: GetAllAccountsUseCase
 ) : ViewModel() {
 
+    private val _account = MutableStateFlow<Account?>(null)
     private val _accounts: MutableStateFlow<List<AccountDto>> = MutableStateFlow(ArrayList())
     private val _accountDto: MutableStateFlow<AccountDto?> = MutableStateFlow(null)
     private val _accountId: MutableStateFlow<Int> = MutableStateFlow(-1)
@@ -52,9 +53,10 @@ class AddAccountViewModel @Inject constructor(
             errorMessage = ""
         )
     )
-    var accountRetrievalError by mutableStateOf(false)
+    var isEdit by mutableStateOf(false)
+    var accountListRetrievalError by mutableStateOf(false)
         private set
-    var isAccountLoading by mutableStateOf(true)
+    var isAccountListLoading by mutableStateOf(true)
         private set
     var screenTitle by mutableStateOf("Add Account")
         private set
@@ -63,18 +65,38 @@ class AddAccountViewModel @Inject constructor(
     var exitScreen = mutableStateOf(false)
         private set
     var isAccountSaved = mutableStateOf(false)
+    var accountRetrievalError by mutableStateOf(false)
+        private set
+    var isAccountByIdLoading by mutableStateOf(false)
+        private set
+    var isAccountDeleted by mutableStateOf(false)
+        private set
 
     fun initData(accountId: Int) {
-        _accountId.value = accountId
+        if (accountId != -1) {
+            isEdit = true
+            _accountId.value = accountId
+            getAccountById()
+        }
         getAllAccounts()
+    }
+
+    private fun getAccountById() = viewModelScope.launch(EtDispatcher.io) {
+        isAccountByIdLoading = true
+        try {
+            _account.value = accountRepository.getAccountById(_accountId.value)
+        } catch (ex: Exception) {
+            accountRetrievalError = true
+        }
+        isAccountByIdLoading = false
     }
 
     private fun getAllAccounts() = viewModelScope.launch(EtDispatcher.io) {
         getAllAccountsUseCase().collectLatest {
             when (it) {
                 is Resource.Loading -> {
-                    isAccountLoading = true
-                    accountRetrievalError = false
+                    isAccountListLoading = true
+                    accountListRetrievalError = false
                 }
 
                 is Resource.Success -> {
@@ -84,13 +106,13 @@ class AddAccountViewModel @Inject constructor(
                             .first { accountDto -> accountDto.id == _accountId.value }
                         fillAccountData()
                     }
-                    isAccountLoading = false
-                    accountRetrievalError = false
+                    isAccountListLoading = false
+                    accountListRetrievalError = false
                 }
 
                 is Resource.Error -> {
-                    isAccountLoading = false
-                    accountRetrievalError = true
+                    isAccountListLoading = false
+                    accountListRetrievalError = true
                 }
             }
         }
@@ -203,6 +225,20 @@ class AddAccountViewModel @Inject constructor(
             return false
         }
         return true
+    }
+
+    fun deleteAccount() = viewModelScope.launch(EtDispatcher.io) {
+        try {
+            val account = _account.value
+            if (account != null) {
+                accountRepository.deleteAccount(account)
+                isAccountDeleted = true
+            } else {
+                isAccountDeleted = false
+            }
+        } catch (ex: Exception) {
+            isAccountByIdLoading = false
+        }
     }
 
     private fun saveAccount(

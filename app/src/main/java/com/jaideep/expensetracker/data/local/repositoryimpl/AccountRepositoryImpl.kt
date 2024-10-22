@@ -25,6 +25,10 @@ class AccountRepositoryImpl @Inject constructor(
         accountDao.updateAccount(account)
     }
 
+    override suspend fun deleteAccount(account: Account) {
+        accountDao.deleteAccount(account)
+    }
+
     override suspend fun getTotalAccountsCount(): Int {
         return accountDao.getTotalAccountsCount()
     }

@@ -65,7 +65,9 @@ private fun AddAccountScreenPreview() {
                 errorMessage = ""
             ),
             exitScreen = false,
-            saveAccount = {}) {
+            saveAccount = {},
+            isEdit = true,
+            backPress = {}) {
 
         }
     }
@@ -82,9 +84,9 @@ fun CUAccountScreenRoot(
         addAccountViewModel.initData(accountId)
     }
 
-    if (addAccountViewModel.isAccountLoading) {
+    if (addAccountViewModel.isAccountListLoading) {
         ExpenseTrackerProgressBar(Modifier.size(50.dp))
-    } else if (addAccountViewModel.accountRetrievalError) {
+    } else if (addAccountViewModel.accountListRetrievalError) {
         Row(
             modifier = Modifier.fillMaxSize(),
             verticalAlignment = Alignment.CenterVertically,
@@ -95,41 +97,42 @@ fun CUAccountScreenRoot(
             )
         }
     } else {
-        CUAccountScreen(
+        CUAccountScreen(isEdit = addAccountViewModel.isEdit,
             screenTitle = addAccountViewModel.screenTitle,
             screenDetail = addAccountViewModel.screenDetail,
             exitScreen = addAccountViewModel.exitScreen.value,
             accountState = addAccountViewModel.accountState.value,
             amountState = addAccountViewModel.amountState.value,
-            saveAccount = addAccountViewModel::validateAndSaveAccount
-        ) {
-            val savedStateHandle = navController.previousBackStackEntry?.savedStateHandle
-            savedStateHandle?.set("isAccountSaved", addAccountViewModel.isAccountSaved.value)
-            if (navController.previousBackStackEntry?.destination?.route == AuthScreen.LOGIN
-                || navController.previousBackStackEntry?.destination?.route == AuthScreen.REGISTER) {
-                navController.navigate(Graph.MAIN, navOptions = navOptions {
-                    popUpTo(navController.graph.startDestinationId) {
-                        inclusive = true
-                    }
-                    launchSingleTop = true
-                })
-            }
-            else {
-                navController.popBackStack()
-            }
-        }
+            saveAccount = addAccountViewModel::validateAndSaveAccount,
+            deleteAccount = addAccountViewModel::deleteAccount,
+            backPress = {
+                val savedStateHandle = navController.previousBackStackEntry?.savedStateHandle
+                savedStateHandle?.set("isAccountSaved", addAccountViewModel.isAccountSaved.value)
+                if (navController.previousBackStackEntry?.destination?.route == AuthScreen.LOGIN || navController.previousBackStackEntry?.destination?.route == AuthScreen.REGISTER) {
+                    navController.navigate(Graph.MAIN, navOptions = navOptions {
+                        popUpTo(navController.graph.startDestinationId) {
+                            inclusive = true
+                        }
+                        launchSingleTop = true
+                    })
+                } else {
+                    navController.popBackStack()
+                }
+            })
     }
 }
 
 @Composable
 fun CUAccountScreen(
+    isEdit: Boolean,
     screenTitle: String,
     screenDetail: String,
     accountState: TextFieldWithIconAndErrorPopUpState,
     amountState: TextFieldWithIconAndErrorPopUpState,
     exitScreen: Boolean,
     saveAccount: () -> Unit,
-    backPress: () -> Unit
+    backPress: () -> Unit,
+    deleteAccount: () -> Unit
 ) {
     LaunchedEffect(key1 = exitScreen) {
         if (exitScreen) {
@@ -199,17 +202,39 @@ fun CUAccountScreen(
                         showErrorText = amountState.showError
                     )
                     Spacer(modifier = Modifier.height(10.dp))
-                    Button(modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(8.dp)
-                        .height(60.dp),
-                        colors = ButtonColors(Color.White, Color.Blue, Color.White, Color.White),
-                        onClick = {
-                            saveAccount()
-                        }) {
-                        SimpleTextBold(
-                            text = "Save", color = Color.Blue, textAlignment = TextAlign.End
-                        )
+                    Row(Modifier.fillMaxWidth()) {
+                        if (isEdit) {
+                            Button(
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .padding(8.dp)
+                                    .height(60.dp),
+                                colors = ButtonColors(
+                                    Color.White, Color.Blue, Color.White, Color.White
+                                ),
+                                onClick = deleteAccount
+                            ) {
+                                SimpleTextBold(
+                                    text = "Delete",
+                                    color = Color.Blue,
+                                    textAlignment = TextAlign.End
+                                )
+                            }
+                        }
+                        Button(modifier = Modifier
+                            .weight(1f)
+                            .padding(8.dp)
+                            .height(60.dp),
+                            colors = ButtonColors(
+                                Color.White, Color.Blue, Color.White, Color.White
+                            ),
+                            onClick = {
+                                saveAccount()
+                            }) {
+                            SimpleTextBold(
+                                text = "Save", color = Color.Blue, textAlignment = TextAlign.End
+                            )
+                        }
                     }
                 }
             }
