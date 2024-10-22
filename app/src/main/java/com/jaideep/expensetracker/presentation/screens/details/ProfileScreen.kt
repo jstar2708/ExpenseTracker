@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.jaideep.expensetracker.R
+import com.jaideep.expensetracker.common.DetailScreen
 import com.jaideep.expensetracker.presentation.component.HeadingTextBold
 import com.jaideep.expensetracker.presentation.component.MediumBoldText
 import com.jaideep.expensetracker.presentation.component.SimpleSmallText
@@ -58,7 +59,8 @@ fun ProfileScreenPreview() {
             toggleDialog = {},
             showDialog = false,
             hideDialog = {},
-            clearAllData = {})
+            clearAllData = {},
+            navigateToNotificationScreen = {})
     }
 }
 
@@ -93,7 +95,10 @@ fun ProfileScreenRoot(
             onBackPress = { navController.popBackStack() },
             toggleDialog = profileViewModel::toggleDialog,
             hideDialog = profileViewModel::hideDialog,
-            clearAllData = profileViewModel::clearAllData)
+            clearAllData = profileViewModel::clearAllData,
+            navigateToNotificationScreen = {
+                navController.navigate(DetailScreen.NOTIFICATION)
+            })
     }
 }
 
@@ -108,7 +113,8 @@ fun ProfileScreen(
     toggleDialog: () -> Unit,
     hideDialog: () -> Unit,
     clearAllData: () -> Unit,
-    onBackPress: () -> Unit
+    onBackPress: () -> Unit,
+    navigateToNotificationScreen: () -> Unit
 ) {
 
     val snackBarHostState = remember {
@@ -143,7 +149,8 @@ fun ProfileScreen(
         }
     }) {
         if (showDialog) {
-            ExpenseTrackerDialog(title = "Clear data",
+            ExpenseTrackerDialog(
+                title = "Clear data",
                 message = "Are you sure you want to clear all data ?",
                 okButtonText = "Yes",
                 cancelButtonText = "No",
@@ -240,8 +247,7 @@ fun ProfileScreen(
                     .border(width = 1.dp, color = Color.Gray)
                     .clickable {
                         toggleDialog()
-                    },
-                contentAlignment = Alignment.CenterStart
+                    }, contentAlignment = Alignment.CenterStart
             ) {
                 SimpleText(
                     text = "Clear all data", modifier = Modifier.padding(start = 8.dp)
@@ -253,9 +259,7 @@ fun ProfileScreen(
                     .height(70.dp)
                     .padding(start = .5.dp, end = .5.dp)
                     .border(width = 1.dp, color = Color.Gray)
-                    .clickable {
-                        showSnackBar.value = true
-                    },
+                    .clickable(onClick = navigateToNotificationScreen),
                 contentAlignment = Alignment.CenterStart
             ) {
                 SimpleText(

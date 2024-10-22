@@ -70,9 +70,9 @@ interface EtDao {
     @Query(GET_TOTAL_TRANSACTIONS_COUNT)
     fun getTotalTransactions(): Int
     @Query(GET_LAST_TRANSACTION_DATE)
-    fun getLastTransactionDate(): LocalDate
+    fun getLastTransactionDate(): LocalDate?
     @Query(GET_MOST_FREQUENTLY_USED_ACC)
     fun getMostFrequentlyUsedAccount(): String
     @Query(GET_FIRST_TRANSACTION_DATE)
-    fun getFirstTransactionDate(): LocalDate
+    fun getFirstTransactionDate(): LocalDate?
 }

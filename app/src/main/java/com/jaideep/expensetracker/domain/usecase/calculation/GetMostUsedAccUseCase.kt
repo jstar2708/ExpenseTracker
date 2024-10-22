@@ -11,7 +11,8 @@ class GetMostUsedAccUseCase @Inject constructor(
 ) {
     suspend operator fun invoke() = flow {
         emit(Resource.Loading())
-        emit(Resource.Success(etRepository.getMostFrequentlyUsedAccount()))
+        val mostUsedAcc = etRepository.getMostFrequentlyUsedAccount() ?: "None"
+        emit(Resource.Success(mostUsedAcc))
     }.catch {
         emit(Resource.Error("Error while fetching the most frequently used account"))
     }

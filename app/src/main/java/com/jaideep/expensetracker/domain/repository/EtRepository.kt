@@ -32,9 +32,9 @@ interface EtRepository {
 
     fun getTotalExpenditure(): Double
     fun getTotalTransactions(): Int
-    fun getLastTransactionDate(): LocalDate
-    fun getFirstTransactionDate(): LocalDate
-    fun getMostFrequentlyUsedAccount(): String
+    fun getLastTransactionDate(): LocalDate?
+    fun getFirstTransactionDate(): LocalDate?
+    fun getMostFrequentlyUsedAccount(): String?
     fun getAmountSpentFromAllAccountThisYear(startOfYear: Long): Flow<Double>
     fun getTotalAmountSpentFromAccountThisYear(
         accountName: String,

@@ -79,11 +79,11 @@ class EtRepositoryImpl @Inject constructor(
         return etDao.getTotalTransactions()
     }
 
-    override fun getLastTransactionDate(): LocalDate {
+    override fun getLastTransactionDate(): LocalDate? {
         return etDao.getLastTransactionDate()
     }
 
-    override fun getFirstTransactionDate(): LocalDate {
+    override fun getFirstTransactionDate(): LocalDate? {
         return etDao.getFirstTransactionDate()
     }
 
