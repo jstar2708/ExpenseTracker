@@ -65,6 +65,7 @@ class AddAccountViewModel @Inject constructor(
     var exitScreen = mutableStateOf(false)
         private set
     var isAccountSaved = mutableStateOf(false)
+        private set
     var accountRetrievalError by mutableStateOf(false)
         private set
     var isAccountByIdLoading by mutableStateOf(false)
@@ -194,7 +195,7 @@ class AddAccountViewModel @Inject constructor(
     private fun checkAccountError(): Boolean {
         val isAccountBlank = accountState.value.text.isBlank()
         val duplicateAccount =
-            _accounts.value.stream().anyMatch { it.accountName == accountState.value.text }
+            if (_account.value != null) checkDuplicateErrorForUpdateQuery() else checkDuplicateErrorForSaveQuery()
         if (isAccountBlank || duplicateAccount) {
             accountState.value = TextFieldWithIconAndErrorPopUpState(
                 text = accountState.value.text,
@@ -203,11 +204,20 @@ class AddAccountViewModel @Inject constructor(
                 onValueChange = accountState.value.onValueChange,
                 onErrorIconClick = accountState.value.onErrorIconClick,
                 errorMessage = if (isAccountBlank) "Account cannot be blank" else "Account already exists"
-
             )
             return false
         }
         return true
+    }
+
+    private fun checkDuplicateErrorForSaveQuery(): Boolean {
+        return _accounts.value.stream().anyMatch { it.accountName == accountState.value.text }
+    }
+
+    private fun checkDuplicateErrorForUpdateQuery(): Boolean {
+        return _accounts.value.stream()
+            .filter { account -> account.accountName != accountState.value.text }
+            .anyMatch { it.accountName == accountState.value.text }
     }
 
     private fun checkAmountError(): Boolean {

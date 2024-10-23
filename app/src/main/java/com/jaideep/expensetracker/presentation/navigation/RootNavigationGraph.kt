@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.jaideep.expensetracker.common.AddScreen
@@ -82,8 +83,10 @@ fun RootNavigationGraph(mainViewModel: MainViewModel, loginViewModel: LoginViewM
         }
 
         composable(DetailScreen.ACCOUNT_LIST) {
-            AccountListScreenRoot(mainViewModel = mainViewModel,
+            AccountListScreenRoot(
+                mainViewModel = mainViewModel,
                 onBackPress = navHostControllerRoot::popBackStack,
+                savedStateHandle = navHostControllerRoot.currentBackStackEntry?.savedStateHandle,
                 navigateToEditAccountScreen = { accountId ->
                     navHostControllerRoot.navigate("${AddScreen.CREATE_UPDATE_ACCOUNT}/$accountId")
                 })

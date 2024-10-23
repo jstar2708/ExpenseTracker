@@ -67,9 +67,8 @@ private fun AddAccountScreenPreview() {
             exitScreen = false,
             saveAccount = {},
             isEdit = true,
-            backPress = {}) {
-
-        }
+            backPress = {},
+            deleteAccount = {})
     }
 }
 
@@ -84,16 +83,16 @@ fun CUAccountScreenRoot(
         addAccountViewModel.initData(accountId)
     }
 
-    if (addAccountViewModel.isAccountListLoading) {
+    if (addAccountViewModel.isAccountListLoading || addAccountViewModel.isAccountByIdLoading) {
         ExpenseTrackerProgressBar(Modifier.size(50.dp))
-    } else if (addAccountViewModel.accountListRetrievalError) {
+    } else if (addAccountViewModel.accountListRetrievalError || addAccountViewModel.accountRetrievalError) {
         Row(
             modifier = Modifier.fillMaxSize(),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Absolute.Center
         ) {
             SimpleText(
-                text = "Error loading accounts list", color = Color.Red
+                text = "Error loading accounts data", color = Color.Red
             )
         }
     } else {
@@ -107,7 +106,9 @@ fun CUAccountScreenRoot(
             deleteAccount = addAccountViewModel::deleteAccount,
             backPress = {
                 val savedStateHandle = navController.previousBackStackEntry?.savedStateHandle
-                savedStateHandle?.set("isAccountSaved", addAccountViewModel.isAccountSaved.value)
+                savedStateHandle?.set(
+                    "isAccountSaved", addAccountViewModel.isAccountSaved.value
+                )
                 if (navController.previousBackStackEntry?.destination?.route == AuthScreen.LOGIN || navController.previousBackStackEntry?.destination?.route == AuthScreen.REGISTER) {
                     navController.navigate(Graph.MAIN, navOptions = navOptions {
                         popUpTo(navController.graph.startDestinationId) {
@@ -232,7 +233,9 @@ fun CUAccountScreen(
                                 saveAccount()
                             }) {
                             SimpleTextBold(
-                                text = "Save", color = Color.Blue, textAlignment = TextAlign.End
+                                text = if (isEdit) "Update" else "Save",
+                                color = Color.Blue,
+                                textAlignment = TextAlign.End
                             )
                         }
                     }
