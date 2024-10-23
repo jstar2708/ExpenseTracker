@@ -94,7 +94,7 @@ fun HomeScreenRoot(
         }
     } else {
         HomeScreen(navControllerRoot = navControllerRoot,
-            accounts = mainViewModel.accounts.collectAsState().value.toImmutableList(),
+            accounts = mainViewModel.accountsNames.collectAsState().value.toImmutableList(),
             transactions = mainViewModel.transactions.collectAsState().value.toImmutableList(),
             onAccountSpinnerValueChanged = {
                 homeViewModel.updateSelectedAccount(it)

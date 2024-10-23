@@ -16,6 +16,7 @@ object AddScreen {
 }
 
 object DetailScreen {
+    const val ACCOUNT_LIST = "account_list"
     const val NOTIFICATION = "notification"
     const val CATEGORY_DETAILS = "category_details"
     const val CATEGORY_DETAILS_ROUTE = "category_details/{categoryName}"

@@ -163,7 +163,7 @@ fun TransactionScreenRoot(
         TransactionScreen(
             navControllerRoot = navHostControllerRoot,
             backPress = backPress,
-            accounts = mainViewModel.accounts.collectAsState().value.toImmutableList(),
+            accounts = mainViewModel.accountsNames.collectAsState().value.toImmutableList(),
             onAccountSpinnerValueChanged = { accountName, isCredit, isDebit ->
                 transactionViewModel.updateSelectedAccount(accountName)
                 mainViewModel.updateTransactionMethod(

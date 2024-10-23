@@ -60,7 +60,8 @@ fun ProfileScreenPreview() {
             showDialog = false,
             hideDialog = {},
             clearAllData = {},
-            navigateToNotificationScreen = {})
+            navigateToNotificationScreen = {},
+            navigateToAccountListScreen = {})
     }
 }
 
@@ -98,6 +99,9 @@ fun ProfileScreenRoot(
             clearAllData = profileViewModel::clearAllData,
             navigateToNotificationScreen = {
                 navController.navigate(DetailScreen.NOTIFICATION)
+            },
+            navigateToAccountListScreen = {
+                navController.navigate(DetailScreen.ACCOUNT_LIST)
             })
     }
 }
@@ -114,7 +118,8 @@ fun ProfileScreen(
     hideDialog: () -> Unit,
     clearAllData: () -> Unit,
     onBackPress: () -> Unit,
-    navigateToNotificationScreen: () -> Unit
+    navigateToNotificationScreen: () -> Unit,
+    navigateToAccountListScreen: () -> Unit
 ) {
 
     val snackBarHostState = remember {
@@ -225,6 +230,19 @@ fun ProfileScreen(
             }
             Spacer(modifier = Modifier.size(40.dp))
 
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(70.dp)
+                    .padding(start = .5.dp, end = .5.dp)
+                    .border(width = 1.dp, color = Color.Gray)
+                    .clickable(onClick = navigateToAccountListScreen),
+                contentAlignment = Alignment.CenterStart
+            ) {
+                SimpleText(
+                    text = "Accounts", modifier = Modifier.padding(start = 8.dp)
+                )
+            }
             Box(
                 modifier = Modifier
                     .fillMaxWidth()

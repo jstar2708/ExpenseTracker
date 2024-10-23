@@ -57,11 +57,13 @@ class MainViewModel @Inject constructor(
     private val categoryRepository: CategoryRepository
 ) : ViewModel() {
     private val _accounts: MutableStateFlow<List<AccountDto>> = MutableStateFlow(ArrayList())
-    var accounts: StateFlow<List<String>> = _accounts.map { list ->
+    var accounts = _accounts.asStateFlow()
+    var accountsNames: StateFlow<List<String>> = _accounts.map { list ->
         list.asFlow().map { it.accountName }.toList().toMutableList().apply {
             this.add(0, "All Accounts")
         }
     }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
+
 
     private val _categories: MutableStateFlow<List<CategoryDto>> = MutableStateFlow(ArrayList())
     var categories: StateFlow<List<CategoryDto>> = _categories.asStateFlow()

@@ -94,7 +94,7 @@ fun CategoryScreenRoot(
     } else {
         CategoryScreen(
             navControllerRoot = navHostControllerRoot,
-            accounts = mainViewModel.accounts.collectAsState().value.toImmutableList(),
+            accounts = mainViewModel.accountsNames.collectAsState().value.toImmutableList(),
             categoryCards = mainViewModel.categoryCardsData.collectAsState().value.toImmutableList(),
             durations = categoryViewModel.durationList,
             accountSpinnerValue = categoryViewModel.accountValue.value,

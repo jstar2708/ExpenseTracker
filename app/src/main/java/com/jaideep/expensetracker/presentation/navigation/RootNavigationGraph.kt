@@ -14,6 +14,7 @@ import com.jaideep.expensetracker.presentation.screens.bottom.BottomNavigationSc
 import com.jaideep.expensetracker.presentation.screens.cu.CUAccountScreenRoot
 import com.jaideep.expensetracker.presentation.screens.cu.CUCategoryScreenRoot
 import com.jaideep.expensetracker.presentation.screens.cu.CUTransactionScreenRoot
+import com.jaideep.expensetracker.presentation.screens.details.AccountListScreenRoot
 import com.jaideep.expensetracker.presentation.screens.details.CategoryDetailsScreenRoot
 import com.jaideep.expensetracker.presentation.screens.details.NotificationScreenRoot
 import com.jaideep.expensetracker.presentation.screens.details.ProfileScreenRoot
@@ -78,6 +79,14 @@ fun RootNavigationGraph(mainViewModel: MainViewModel, loginViewModel: LoginViewM
             NotificationScreenRoot {
                 navHostControllerRoot.popBackStack()
             }
+        }
+
+        composable(DetailScreen.ACCOUNT_LIST) {
+            AccountListScreenRoot(mainViewModel = mainViewModel,
+                onBackPress = navHostControllerRoot::popBackStack,
+                navigateToEditAccountScreen = { accountId ->
+                    navHostControllerRoot.navigate("${AddScreen.CREATE_UPDATE_ACCOUNT}/$accountId")
+                })
         }
     }
 }
