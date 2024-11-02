@@ -33,7 +33,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.navOptions
 import com.jaideep.expensetracker.R
-import com.jaideep.expensetracker.common.AuthScreen
 import com.jaideep.expensetracker.common.Graph
 import com.jaideep.expensetracker.model.TextFieldWithIconAndErrorPopUpState
 import com.jaideep.expensetracker.presentation.component.HeadingTextBold
@@ -96,7 +95,8 @@ fun CUAccountScreenRoot(
             )
         }
     } else {
-        CUAccountScreen(isEdit = addAccountViewModel.isEdit,
+        CUAccountScreen(
+            isEdit = addAccountViewModel.isEdit,
             screenTitle = addAccountViewModel.screenTitle,
             screenDetail = addAccountViewModel.screenDetail,
             exitScreen = addAccountViewModel.exitScreen.value,
@@ -109,7 +109,7 @@ fun CUAccountScreenRoot(
                 savedStateHandle?.set(
                     "isAccountSaved", addAccountViewModel.isAccountSaved.value
                 )
-                if (navController.previousBackStackEntry?.destination?.route == AuthScreen.LOGIN || navController.previousBackStackEntry?.destination?.route == AuthScreen.REGISTER) {
+                if (navController.previousBackStackEntry?.destination?.route == null) {
                     navController.navigate(Graph.MAIN, navOptions = navOptions {
                         popUpTo(navController.graph.startDestinationId) {
                             inclusive = true
@@ -119,7 +119,8 @@ fun CUAccountScreenRoot(
                 } else {
                     navController.popBackStack()
                 }
-            })
+            },
+        )
     }
 }
 

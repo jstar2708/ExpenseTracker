@@ -5,9 +5,11 @@ import android.app.Application
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -40,6 +42,7 @@ import com.jaideep.expensetracker.model.dto.TransactionDto
 import com.jaideep.expensetracker.presentation.component.MediumBoldText
 import com.jaideep.expensetracker.presentation.component.SimpleText
 import com.jaideep.expensetracker.presentation.component.button.ExpenseTrackerBlueButton
+import com.jaideep.expensetracker.presentation.component.button.SmallPrimaryColorButton
 import com.jaideep.expensetracker.presentation.component.card.ExpenseTrackerTransactionCardItem
 import com.jaideep.expensetracker.presentation.component.card.SummaryCard
 import com.jaideep.expensetracker.presentation.component.other.ExpenseTrackerAppBar
@@ -91,6 +94,20 @@ fun HomeScreenRoot(
             SimpleText(
                 text = "Error loading user data", color = Color.Red
             )
+        }
+    } else if (mainViewModel.isAccountsCountZero) {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            SimpleText(
+                text = "You need to create a account to continue"
+            )
+            Spacer(modifier = Modifier.height(10.dp))
+            SmallPrimaryColorButton(text = "Create Account") {
+                navControllerRoot.navigate("${AddScreen.CREATE_UPDATE_ACCOUNT}/${CREATE_SCREEN}")
+            }
         }
     } else {
         HomeScreen(navControllerRoot = navControllerRoot,

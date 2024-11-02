@@ -8,7 +8,7 @@ object EtSql {
     const val GET_ACCOUNT_BALANCE_BY_NAME =
         "Select ${Account.BALANCE} from accounts where" + " ${Account.NAME} = :accountName"
 
-    const val GET_ACCOUNT_BALANCE_FOR_ALL_ACCOUNTS = "Select sum(${Account.BALANCE}) from accounts"
+    const val GET_ACCOUNT_BALANCE_FOR_ALL_ACCOUNTS = "Select IFNULL(sum(${Account.BALANCE}), 0) from accounts"
 
     const val GET_AMOUNT_SPENT_FROM_ACCOUNT_TODAY =
         "Select IFNULL(sum(${Transaction.AMOUNT}), 0.0) from transactions" + " inner join accounts on ${Account.ID} = ${Transaction.ACCOUNT_ID} where " + " ${Account.NAME} = :accountName and ${Transaction.IS_CREDIT} = 0 and ${Transaction.CREATED_ON} = :date"

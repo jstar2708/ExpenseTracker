@@ -5,9 +5,11 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -42,6 +44,7 @@ import com.jaideep.expensetracker.common.constant.AppConstants.CREATE_SCREEN
 import com.jaideep.expensetracker.model.DialogState
 import com.jaideep.expensetracker.model.dto.TransactionDto
 import com.jaideep.expensetracker.presentation.component.SimpleText
+import com.jaideep.expensetracker.presentation.component.button.SmallPrimaryColorButton
 import com.jaideep.expensetracker.presentation.component.card.ExpenseTrackerTransactionCardItem
 import com.jaideep.expensetracker.presentation.component.dialog.ExpenseTrackerDialog
 import com.jaideep.expensetracker.presentation.component.dialog.FilterDialog
@@ -159,6 +162,20 @@ fun TransactionScreenRoot(
                 text = "Error loading user data", color = Color.Red
             )
         }
+    } else if (mainViewModel.isAccountsCountZero) {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            SimpleText(
+                text = "You need to create a account to continue"
+            )
+            Spacer(modifier = Modifier.height(10.dp))
+            SmallPrimaryColorButton(text = "Create Account") {
+                navHostControllerRoot.navigate("${AddScreen.CREATE_UPDATE_ACCOUNT}/${CREATE_SCREEN}")
+            }
+        }
     } else {
         TransactionScreen(
             navControllerRoot = navHostControllerRoot,
@@ -263,8 +280,7 @@ fun TransactionScreen(
                     onOkClick = deleteTransaction,
                     onCancelClicked = hideDeleteDialog
                 )
-            }
-            else if (dialogState.showDialog) {
+            } else if (dialogState.showDialog) {
                 FilterDialog(
                     dialogState = dialogState,
                     updateTransactionList = updateTransactionList,

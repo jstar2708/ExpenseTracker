@@ -178,13 +178,22 @@ fun NotificationScreen(
     }) {
         Column(Modifier.padding(it)) {
             ExpenseTrackerTabLayout(values = tabList, onClick = updateSelectedTab)
-            LazyColumn {
-                val list =
-                    if (selectedTab == 0) upcomingNotificationList else completedNotificationList
-                items(list.size) { index ->
-                    ExpenseTrackerNotificationCard(
-                        notificationDto = list[index], onDeleteClick = onDeleteClick
-                    )
+            val list = if (selectedTab == 0) upcomingNotificationList else completedNotificationList
+            if (list.isEmpty()) {
+                Row(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    SimpleText(text = "No notifications")
+                }
+            } else {
+                LazyColumn {
+                    items(list.size) { index ->
+                        ExpenseTrackerNotificationCard(
+                            notificationDto = list[index], onDeleteClick = onDeleteClick
+                        )
+                    }
                 }
             }
         }

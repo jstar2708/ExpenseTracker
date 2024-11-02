@@ -124,6 +124,8 @@ class MainViewModel @Inject constructor(
         private set
     var categoryCardDataRetrievalError by mutableStateOf(false)
         private set
+    var isAccountsCountZero by mutableStateOf(false)
+        private set
 
     fun initData() {
         getAllAccounts()
@@ -195,6 +197,7 @@ class MainViewModel @Inject constructor(
                     _hasAccountsLoaded.value = true
                     isAccountLoading = false
                     accountRetrievalError = false
+                    isAccountsCountZero = it.data.isEmpty()
                     _hasAccountsLoaded.collectLatest { hasAccountLoaded ->
                         if (hasAccountLoaded && _transactions.value.isEmpty()) {
                             getTransactionPagingSource()

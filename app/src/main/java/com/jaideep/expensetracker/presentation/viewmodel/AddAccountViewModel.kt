@@ -16,7 +16,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import javax.inject.Inject
@@ -104,7 +104,7 @@ class AddAccountViewModel @Inject constructor(
                     _accounts.value = it.data
                     if (_accountId.value != -1) {
                         _accountDto.value = _accounts.value.asFlow()
-                            .first { accountDto -> accountDto.id == _accountId.value }
+                            .firstOrNull { accountDto -> accountDto.id == _accountId.value }
                         fillAccountData()
                     }
                     isAccountListLoading = false
@@ -249,6 +249,7 @@ class AddAccountViewModel @Inject constructor(
         } catch (ex: Exception) {
             isAccountByIdLoading = false
         }
+        exitScreen.value = true
     }
 
     private fun saveAccount(
@@ -273,4 +274,23 @@ class AddAccountViewModel @Inject constructor(
         isAccountSaved.value = true
         exitScreen.value = true
     }
+
+//    fun resetScreenData() {
+//        accountState.value = TextFieldWithIconAndErrorPopUpState(
+//            text = "",
+//            isError = false,
+//            showError = false,
+//            onValueChange = { updateAccountTextState(it) },
+//            onErrorIconClick = { updateAccountErrorState() },
+//            errorMessage = ""
+//        )
+//        amountState.value = TextFieldWithIconAndErrorPopUpState(
+//            text = "",
+//            isError = false,
+//            showError = false,
+//            onValueChange = { updateAmountTextState(it) },
+//            onErrorIconClick = { updateAmountErrorState() },
+//            errorMessage = ""
+//        )
+//    }
 }

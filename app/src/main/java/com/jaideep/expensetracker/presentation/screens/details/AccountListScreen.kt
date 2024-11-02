@@ -2,8 +2,11 @@ package com.jaideep.expensetracker.presentation.screens.details
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -89,11 +92,20 @@ fun AccountListScreen(
             actionDescription = "",
             onActionIconClick = {})
     }) {
-        Column(modifier = Modifier.padding(it)) {
+        Column(
+            modifier = Modifier.padding(it),
+            verticalArrangement = Arrangement.Center
+        ) {
             if (accountList.isEmpty()) {
-                SimpleText(text = "No accounts created")
+                Row(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    SimpleText(text = "No accounts created!")
+                }
             } else {
-                LazyColumn {
+                LazyColumn(Modifier.fillMaxSize()) {
                     items(accountList.size) { idx ->
                         Box(
                             modifier = Modifier
