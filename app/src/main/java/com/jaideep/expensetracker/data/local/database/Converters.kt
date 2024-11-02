@@ -5,20 +5,19 @@ import com.jaideep.expensetracker.data.local.entities.Category
 import com.jaideep.expensetracker.model.dto.CategoryDto
 import com.jaideep.expensetracker.presentation.utility.Utility.getCategoryIconId
 import com.jaideep.expensetracker.presentation.utility.Utility.getCategoryIconName
+import java.time.Instant
 import java.time.LocalDate
-import java.time.ZoneId
+import java.time.ZoneOffset
 
 class Converters {
     @TypeConverter
     fun toLong(date: LocalDate): Long {
-        return date.atStartOfDay(ZoneId.of("Asia/Kolkata")).toEpochSecond() * 1000
+        return date.atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli()
     }
 
     @TypeConverter
     fun toLocalDate(date: Long): LocalDate {
-        return LocalDate.ofEpochDay(date / 86_400_000L).plusDays(
-            1
-        )
+        return Instant.ofEpochMilli(date).atZone(ZoneOffset.UTC).toLocalDate()
     }
 
     @TypeConverter

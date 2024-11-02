@@ -17,7 +17,7 @@ import com.jaideep.expensetracker.presentation.theme.red
 import com.jaideep.expensetracker.presentation.theme.seed
 import com.jaideep.expensetracker.presentation.theme.yellow
 import java.time.LocalDate
-import java.time.ZoneId
+import java.time.ZoneOffset
 import java.time.format.DateTimeParseException
 
 object Utility {
@@ -70,25 +70,26 @@ object Utility {
     }
 
     fun getDateInMillis(date: LocalDate): Long {
-        return date.atStartOfDay(ZoneId.of("Asia/Kolkata")).toEpochSecond() * 1000
+        return date.atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli()
     }
 
     fun getCurrentDateInMillis(): Long {
-        return LocalDate.now().atStartOfDay(ZoneId.of("Asia/Kolkata")).toEpochSecond() * 1000
+        return LocalDate.now().atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli()
     }
 
     fun getStartDateOfMonthInMillis(): Long {
-        return LocalDate.now().withDayOfMonth(1).toEpochDay() * 86_400_000L
+        return LocalDate.now().atStartOfDay(ZoneOffset.UTC).withDayOfMonth(1).toInstant()
+            .toEpochMilli()
     }
 
     fun getStartDateOfYearInMillis(): Long {
-        return LocalDate.now().withDayOfYear(1).toEpochDay() * 86_400_000L
+        return LocalDate.now().atStartOfDay(ZoneOffset.UTC).withDayOfYear(1).toInstant()
+            .toEpochMilli()
     }
 
     fun stringDateToMillis(date: String): Long {
         try {
-            return LocalDate.parse(date).atStartOfDay(ZoneId.of("Asia/Kolkata"))
-                .toEpochSecond() * 1000
+            return LocalDate.parse(date).atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli()
         } catch (de: DateTimeParseException) {
             Log.d("ERROR", "DateTimeParseException occurred while parsing date: $date")
         }

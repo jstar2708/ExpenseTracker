@@ -18,7 +18,10 @@ import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
+import java.time.Clock
 import java.time.LocalDate
+import java.time.ZoneId
+import java.time.ZoneOffset
 import javax.inject.Inject
 
 @HiltViewModel
@@ -267,7 +270,7 @@ class AddAccountViewModel @Inject constructor(
                     0,
                     accountName,
                     balance.toDouble(),
-                    LocalDate.ofEpochDay(System.currentTimeMillis() / 86_400_000L)
+                    LocalDate.now()
                 )
             )
         }

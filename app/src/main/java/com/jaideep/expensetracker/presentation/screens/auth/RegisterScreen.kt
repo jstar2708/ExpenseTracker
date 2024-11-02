@@ -26,7 +26,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import androidx.navigation.navOptions
 import com.jaideep.expensetracker.R
 import com.jaideep.expensetracker.common.AddScreen
 import com.jaideep.expensetracker.common.constant.AppConstants.CREATE_SCREEN
@@ -36,7 +35,6 @@ import com.jaideep.expensetracker.presentation.component.button.SmallPrimaryColo
 import com.jaideep.expensetracker.presentation.component.textfield.PasswordTextFieldWithIconAndErrorPopUp
 import com.jaideep.expensetracker.presentation.component.textfield.TextFieldWithIconAndErrorPopUp
 import com.jaideep.expensetracker.presentation.theme.AppTheme
-import com.jaideep.expensetracker.presentation.viewmodel.LoginViewModel
 import com.jaideep.expensetracker.presentation.viewmodel.RegisterViewModel
 
 @Preview()
@@ -74,12 +72,11 @@ fun RegisterScreenRoot(navController: NavController) {
         onRegister = registerViewModel::onRegister,
         isRegistrationCompleted = registerViewModel.registrationComplete,
         navigateToCUAccount = {
-            navController.navigate("${AddScreen.CREATE_UPDATE_ACCOUNT}/$CREATE_SCREEN").apply {
-                navOptions {
-                    popUpTo(navController.graph.startDestinationId) {
-                        inclusive = true
-                    }
+            navController.navigate("${AddScreen.CREATE_UPDATE_ACCOUNT}/$CREATE_SCREEN") {
+                popUpTo(navController.graph.startDestinationId) {
+                    inclusive = true
                 }
+                launchSingleTop = true
             }
         })
 }
