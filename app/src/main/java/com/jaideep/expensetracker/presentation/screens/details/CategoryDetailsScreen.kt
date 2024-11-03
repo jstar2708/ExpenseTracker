@@ -48,6 +48,7 @@ import com.jaideep.expensetracker.presentation.viewmodel.CategoryDetailsViewMode
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
+import java.util.Locale
 
 @Preview
 @Composable
@@ -228,7 +229,9 @@ fun CategoryDetailsScreen(
                             iconDescription = "Category icon",
                             categoryName = transactions[i].categoryName,
                             transactionDescription = transactions[i].message,
-                            amount = transactions[i].amount.toString(),
+                            amount = String.format(
+                                Locale.getDefault(), "%.2f", transactions[i].amount
+                            ),
                             isCredit = transactions[i].isCredit,
                             transactionId = transactions[i].transactionId,
                             onDeleteIconClicked = {},

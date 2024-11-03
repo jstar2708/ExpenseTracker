@@ -25,6 +25,7 @@ import com.jaideep.expensetracker.presentation.component.SimpleText
 import com.jaideep.expensetracker.presentation.theme.AppTheme
 import com.jaideep.expensetracker.presentation.theme.darkGray
 import com.jaideep.expensetracker.presentation.utility.Utility
+import java.util.Locale
 
 @Preview
 @Composable
@@ -71,12 +72,15 @@ fun SummaryCard(
                     )
                     Spacer(modifier = Modifier.size(4.dp))
                     SimpleText(
-                        text = "Spent Today \$$spentToday",
-                        modifier = Modifier.padding(start = 8.dp, end = 8.dp)
+                        text = "Spent Today \$${
+                            String.format(
+                                Locale.getDefault(), "%.2f", accountBalance
+                            )
+                        },", modifier = Modifier.padding(start = 8.dp, end = 8.dp)
                     )
                 }
                 HeadingTextBold(
-                    text = "$$accountBalance",
+                    text = String.format(Locale.getDefault(), "%.2f", accountBalance),
                     modifier = Modifier.weight(1f),
                     textAlignment = TextAlign.Center
                 )
@@ -87,7 +91,15 @@ fun SummaryCard(
                     iconId = Utility.getCategoryIconId(categoryCardData.iconName),
                     iconDescription = "${categoryCardData.categoryName} icon",
                     categoryName = categoryCardData.categoryName,
-                    spendValue = "${categoryCardData.amountSpent} / $amountSpentThisMonthFromAcc",
+                    spendValue = "${
+                        String.format(
+                            Locale.getDefault(), "%.1f", categoryCardData.amountSpent
+                        )
+                    } / ${
+                        String.format(
+                            Locale.getDefault(), "%.1f", amountSpentThisMonthFromAcc
+                        )
+                    }",
                     progressValue = if (amountSpentThisMonthFromAcc == 0.0) 0f else (categoryCardData.amountSpent / amountSpentThisMonthFromAcc).toFloat(),
                     trackColor = darkGray
                 )

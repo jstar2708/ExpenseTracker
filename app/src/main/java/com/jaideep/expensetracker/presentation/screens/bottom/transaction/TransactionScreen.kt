@@ -60,6 +60,7 @@ import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import java.time.LocalDate
+import java.util.Locale
 
 @Preview(showSystemUi = true, showBackground = true)
 @Composable
@@ -334,7 +335,9 @@ fun TransactionScreen(
                             iconDescription = "Category icon",
                             categoryName = transactions[it].categoryName,
                             transactionDescription = transactions[it].message,
-                            amount = transactions[it].amount.toString(),
+                            amount = String.format(
+                                Locale.getDefault(), "%.2f", transactions[it].amount
+                            ),
                             isCredit = transactions[it].isCredit,
                             transactionId = transactions[it].transactionId,
                             onDeleteIconClicked = onTransactionDeleteClicked,

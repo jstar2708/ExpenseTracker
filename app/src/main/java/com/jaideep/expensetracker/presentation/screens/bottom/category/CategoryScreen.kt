@@ -47,6 +47,7 @@ import com.jaideep.expensetracker.presentation.viewmodel.MainViewModel
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
+import java.util.Locale
 
 @Preview
 @Composable
@@ -203,7 +204,7 @@ fun CategoryScreen(
                         iconId = getCategoryIconId(categoryCardData.iconName),
                         iconDescription = categoryCardData.iconName,
                         categoryName = categoryCardData.categoryName,
-                        spendValue = "$${categoryCardData.amountSpent} / $amountSpentFromAccount",
+                        spendValue = "$${String.format(Locale.getDefault(), "%.1f", categoryCardData.amountSpent)} / ${String.format(Locale.getDefault(), "%.1f", amountSpentFromAccount)}",
                         progressValue = if (amountSpentFromAccount == 0.0) 0f else (categoryCardData.amountSpent / amountSpentFromAccount).toFloat(),
                         onClick = onCategoryCardClick,
                         trackColor = darkGray
