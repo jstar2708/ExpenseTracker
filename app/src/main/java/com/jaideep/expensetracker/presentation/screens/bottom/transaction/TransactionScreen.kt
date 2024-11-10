@@ -54,6 +54,7 @@ import com.jaideep.expensetracker.presentation.component.other.ExpenseTrackerSpi
 import com.jaideep.expensetracker.presentation.component.other.ExpenseTrackerTabLayout
 import com.jaideep.expensetracker.presentation.theme.AppTheme
 import com.jaideep.expensetracker.presentation.utility.Utility.getCategoryIconId
+import com.jaideep.expensetracker.presentation.utility.getStringFromDouble
 import com.jaideep.expensetracker.presentation.viewmodel.MainViewModel
 import com.jaideep.expensetracker.presentation.viewmodel.TransactionViewModel
 import kotlinx.collections.immutable.ImmutableList
@@ -335,9 +336,7 @@ fun TransactionScreen(
                             iconDescription = "Category icon",
                             categoryName = transactions[it].categoryName,
                             transactionDescription = transactions[it].message,
-                            amount = String.format(
-                                Locale.getDefault(), "%.2f", transactions[it].amount
-                            ),
+                            amount = getStringFromDouble(transactions[it].amount),
                             isCredit = transactions[it].isCredit,
                             transactionId = transactions[it].transactionId,
                             onDeleteIconClicked = onTransactionDeleteClicked,

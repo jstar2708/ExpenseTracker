@@ -44,11 +44,11 @@ import com.jaideep.expensetracker.presentation.component.other.ExpenseTrackerApp
 import com.jaideep.expensetracker.presentation.component.other.ExpenseTrackerProgressBar
 import com.jaideep.expensetracker.presentation.component.other.ExpenseTrackerSpinner
 import com.jaideep.expensetracker.presentation.utility.Utility.getCategoryIconId
+import com.jaideep.expensetracker.presentation.utility.getStringFromDouble
 import com.jaideep.expensetracker.presentation.viewmodel.CategoryDetailsViewModel
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
-import java.util.Locale
 
 @Preview
 @Composable
@@ -229,9 +229,7 @@ fun CategoryDetailsScreen(
                             iconDescription = "Category icon",
                             categoryName = transactions[i].categoryName,
                             transactionDescription = transactions[i].message,
-                            amount = String.format(
-                                Locale.getDefault(), "%.2f", transactions[i].amount
-                            ),
+                            amount = getStringFromDouble(transactions[i].amount),
                             isCredit = transactions[i].isCredit,
                             transactionId = transactions[i].transactionId,
                             onDeleteIconClicked = {},

@@ -19,6 +19,7 @@ import com.jaideep.expensetracker.presentation.theme.yellow
 import java.time.LocalDate
 import java.time.ZoneOffset
 import java.time.format.DateTimeParseException
+import java.util.Locale
 
 object Utility {
     fun getCategoryIconName(categoryId: Int): String {
@@ -104,4 +105,31 @@ fun Context.showToast(msg: String) {
 fun checkIfDateIsEqualOrBeforeToday(date: LocalDate): Boolean {
     val today = LocalDate.now()
     return date.isBefore(today) || date.isEqual(today)
+}
+
+fun Double.getDecimalPart(): String {
+    try {
+        val parts = this.toString().split(".")
+        return if (parts.size > 1) parts[1] else "0"
+    } catch (exception: NumberFormatException) {
+        return "0"
+    }
+}
+
+fun getStringFromDouble(value: Double) : String {
+    var decimalPart = value.getDecimalPart()
+    while (decimalPart.isNotEmpty() && decimalPart[decimalPart.length - 1] == '0') {
+        decimalPart = decimalPart.dropLast(1)
+    }
+    return String.format(
+        Locale.getDefault(), formatString(decimalPart), value
+    )
+}
+
+private fun formatString(value: String): String {
+    return when (value.length) {
+        0 -> "%.0f"
+        1 -> "%.1f"
+        else -> "%.2f"
+    }
 }
