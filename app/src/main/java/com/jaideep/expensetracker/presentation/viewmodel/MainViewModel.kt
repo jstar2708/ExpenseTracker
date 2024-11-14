@@ -12,8 +12,10 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.jaideep.expensetracker.common.EtDispatcher
 import com.jaideep.expensetracker.common.Resource
+import com.jaideep.expensetracker.common.constant.AppConstants.CURRENCY
 import com.jaideep.expensetracker.common.constant.TransactionMethod
 import com.jaideep.expensetracker.data.local.entities.Category
+import com.jaideep.expensetracker.data.local.preferences.DatastoreRepository
 import com.jaideep.expensetracker.domain.repository.CategoryRepository
 import com.jaideep.expensetracker.domain.repository.TransactionPagingRepository
 import com.jaideep.expensetracker.domain.usecase.GetAllAccountsUseCase
@@ -54,8 +56,11 @@ class MainViewModel @Inject constructor(
     private val getAllCategoriesUseCase: GetAllCategoriesUseCase,
     private val getInitialTransactionsUseCase: GetInitialTransactionsUseCase,
     private val getAllCategoryCardsDataUseCase: GetAllCategoryCardsDataUseCase,
-    private val categoryRepository: CategoryRepository
+    private val categoryRepository: CategoryRepository,
+    private val datastoreRepository: DatastoreRepository
 ) : ViewModel() {
+    private val _currentCurrencySymbol: MutableStateFlow<String> = MutableStateFlow(String())
+    var currentCurrencySymbol = _currentCurrencySymbol.asStateFlow()
     private val _accounts: MutableStateFlow<List<AccountDto>> = MutableStateFlow(ArrayList())
     var accounts = _accounts.asStateFlow()
     var accountsNames: StateFlow<List<String>> = _accounts.map { list ->
@@ -128,8 +133,13 @@ class MainViewModel @Inject constructor(
         private set
 
     fun initData() {
+        getCurrentCurrencyFromDataStore()
         getAllAccounts()
         getAllCategories()
+    }
+
+    private fun getCurrentCurrencyFromDataStore() = viewModelScope.launch(EtDispatcher.io) {
+        _currentCurrencySymbol.value = datastoreRepository.getString(CURRENCY) ?: "₹"
     }
 
     private fun getAllCategoryCardsData() = viewModelScope.launch(EtDispatcher.io) {
@@ -417,5 +427,9 @@ class MainViewModel @Inject constructor(
         categoryCardsDataJob.value = RunJobForData(
             data = categoryCardPayload, job = getAllCategoryCardsData()
         )
+    }
+
+    fun updateCurrencySymbol() = viewModelScope.launch(EtDispatcher.io) {
+        datastoreRepository.putString(CURRENCY, "₹")
     }
 }

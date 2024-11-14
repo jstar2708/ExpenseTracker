@@ -125,7 +125,7 @@ class RegisterViewModel @Inject constructor(
             )
             hasError = true
         }
-        if (passwordState.text.isBlank() && passwordState.text.length < 6) {
+        if (passwordState.text.isBlank() || passwordState.text.length < 6) {
             passwordState = TextFieldWithIconAndErrorPopUpState(
                 text = passwordState.text,
                 isError = true,
@@ -136,7 +136,7 @@ class RegisterViewModel @Inject constructor(
             )
             hasError = true
         }
-        if (confirmPasswordState.text.isBlank() && confirmPasswordState.text != passwordState.text) {
+        if (confirmPasswordState.text.isBlank() || confirmPasswordState.text != passwordState.text) {
             confirmPasswordState = TextFieldWithIconAndErrorPopUpState(
                 text = confirmPasswordState.text,
                 isError = true,

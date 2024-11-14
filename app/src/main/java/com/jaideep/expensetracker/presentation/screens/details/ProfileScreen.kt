@@ -51,7 +51,8 @@ import com.jaideep.expensetracker.presentation.viewmodel.ProfileViewModel
 @Composable
 fun ProfileScreenPreview() {
     AppTheme {
-        ProfileScreen(userName = "Jaideep Kumar Singh",
+        ProfileScreen(
+            userName = "Jaideep Kumar Singh",
             mostFrequentlyUsedAcc = "PNB",
             avgMonthlyExpenditure = "434",
             totalExpenditure = "7896",
@@ -65,14 +66,17 @@ fun ProfileScreenPreview() {
             navigateToAccountListScreen = {},
             hideCurrencyDialog = {},
             openCurrencyDialog = {},
-            showCurrencyDialog = false)
+            showCurrencyDialog = false,
+            updateCurrencyIntoDatastore = {},
+            currency = "₹"
+        )
     }
 }
 
 
 @Composable
 fun ProfileScreenRoot(
-    navController: NavController
+    currency: String, navController: NavController
 ) {
     val profileViewModel = hiltViewModel<ProfileViewModel>()
     LaunchedEffect(key1 = true) {
@@ -103,6 +107,7 @@ fun ProfileScreenRoot(
             toggleDialog = profileViewModel::toggleDialog,
             hideDialog = profileViewModel::hideDialog,
             clearAllData = profileViewModel::clearAllData,
+            currency = currency,
             navigateToNotificationScreen = {
                 navController.navigate(DetailScreen.NOTIFICATION)
             },
@@ -110,7 +115,8 @@ fun ProfileScreenRoot(
                 navController.navigate(DetailScreen.ACCOUNT_LIST)
             },
             openCurrencyDialog = profileViewModel::openCurrencyDialog,
-            hideCurrencyDialog = profileViewModel::hideDialog
+            hideCurrencyDialog = profileViewModel::hideCurrencyDialog,
+            updateCurrencyIntoDatastore = profileViewModel::updateCurrencyIntoDatastore
         )
     }
 }
@@ -122,6 +128,7 @@ fun ProfileScreen(
     totalTransactions: String,
     avgMonthlyExpenditure: String,
     mostFrequentlyUsedAcc: String,
+    currency: String,
     showDialog: Boolean,
     showCurrencyDialog: Boolean,
     toggleDialog: () -> Unit,
@@ -131,7 +138,8 @@ fun ProfileScreen(
     navigateToNotificationScreen: () -> Unit,
     navigateToAccountListScreen: () -> Unit,
     openCurrencyDialog: () -> Unit,
-    hideCurrencyDialog: () -> Unit
+    hideCurrencyDialog: () -> Unit,
+    updateCurrencyIntoDatastore: (symbol: String) -> Unit
 ) {
 
     val snackBarHostState = remember {
@@ -176,7 +184,9 @@ fun ProfileScreen(
             )
         }
         if (showCurrencyDialog) {
-            CurrencyListDialog({}, {})
+            CurrencyListDialog(
+                hideDialog = hideCurrencyDialog, updateCurrency = updateCurrencyIntoDatastore
+            )
         }
         Column(
             modifier = Modifier
@@ -200,7 +210,8 @@ fun ProfileScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     HeadingTextBold(
-                        text = "$$totalExpenditure", color = MaterialTheme.colorScheme.primary
+                        text = "$currency$totalExpenditure",
+                        color = MaterialTheme.colorScheme.primary
                     )
                     SimpleSmallText(text = "Total Expenditure", textAlignment = TextAlign.Center)
                 }
@@ -224,7 +235,8 @@ fun ProfileScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     HeadingTextBold(
-                        text = "$$avgMonthlyExpenditure", color = MaterialTheme.colorScheme.primary
+                        text = "$currency$avgMonthlyExpenditure",
+                        color = MaterialTheme.colorScheme.primary
                     )
                     SimpleSmallText(
                         text = "Average Monthly Expenditure", textAlignment = TextAlign.Center

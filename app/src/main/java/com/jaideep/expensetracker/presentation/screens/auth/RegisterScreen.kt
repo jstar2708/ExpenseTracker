@@ -64,7 +64,9 @@ private fun RegisterScreenPreview() {
 }
 
 @Composable
-fun RegisterScreenRoot(navController: NavController) {
+fun RegisterScreenRoot(
+    navController: NavController
+) {
     val registerViewModel = hiltViewModel<RegisterViewModel>()
     RegisterScreen(nameState = registerViewModel.nameState,
         passwordState = registerViewModel.passwordState,

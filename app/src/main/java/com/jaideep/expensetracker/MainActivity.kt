@@ -25,6 +25,8 @@ class MainActivity : FragmentActivity() {
         mainViewModel.isFirstAppInitialization.observe(this) { isFirstInitialization ->
             if (isFirstInitialization) {
                 mainViewModel.addDefaultCategories()
+                mainViewModel.updateCurrencySymbol()
+
             } else {
                 mainViewModel.initData()
             }

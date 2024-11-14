@@ -5,4 +5,5 @@ object AppConstants {
     const val TRANSACTION_COUNT = 5
     const val ET_PREFERENCES = "et_preferences"
     const val USER_NAME = "username"
+    const val CURRENCY = "currency"
 }

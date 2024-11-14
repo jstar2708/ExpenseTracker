@@ -35,13 +35,15 @@ private fun SummaryCardPreview() {
             accountBalance = 0.0,
             spentToday = 0.0,
             categoryCardData = CategoryCardData("Food", "Food", 0.0),
-            amountSpentThisMonthFromAcc = 0.0
+            amountSpentThisMonthFromAcc = 0.0,
+            currency = "₹"
         )
     }
 }
 
 @Composable
 fun SummaryCard(
+    currency: String,
     accountBalance: Double,
     spentToday: Double,
     categoryCardData: CategoryCardData?,
@@ -72,12 +74,12 @@ fun SummaryCard(
                     )
                     Spacer(modifier = Modifier.size(4.dp))
                     SimpleText(
-                        text = "Spent Today ${getStringFromDouble(spentToday)}",
+                        text = "Spent Today $currency${getStringFromDouble(spentToday)}",
                         modifier = Modifier.padding(start = 8.dp, end = 8.dp)
                     )
                 }
                 HeadingTextBold(
-                    text = getStringFromDouble(accountBalance),
+                    text = "$currency${getStringFromDouble(accountBalance)}",
                     modifier = Modifier.weight(1f),
                     textAlignment = TextAlign.Center
                 )
@@ -88,9 +90,9 @@ fun SummaryCard(
                     iconId = Utility.getCategoryIconId(categoryCardData.iconName),
                     iconDescription = "${categoryCardData.categoryName} icon",
                     categoryName = categoryCardData.categoryName,
-                    spendValue = "${
+                    spendValue = "$currency${
                         getStringFromDouble(categoryCardData.amountSpent)
-                    } / ${
+                    } / $currency${
                         getStringFromDouble(amountSpentThisMonthFromAcc)
                     }",
                     progressValue = if (amountSpentThisMonthFromAcc == 0.0) 0f else (categoryCardData.amountSpent / amountSpentThisMonthFromAcc).toFloat(),

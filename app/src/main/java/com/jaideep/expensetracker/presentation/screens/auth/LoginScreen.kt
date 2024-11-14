@@ -37,7 +37,7 @@ import com.jaideep.expensetracker.presentation.component.SimpleText
 import com.jaideep.expensetracker.presentation.component.button.SmallPrimaryColorButton
 import com.jaideep.expensetracker.presentation.component.other.ExpenseTrackerProgressBar
 import com.jaideep.expensetracker.presentation.component.textfield.PasswordTextFieldWithIconAndErrorPopUp
-import com.jaideep.expensetracker.presentation.screens.BiometricDialog
+import com.jaideep.expensetracker.presentation.component.dialog.BiometricDialog
 import com.jaideep.expensetracker.presentation.theme.AppTheme
 import com.jaideep.expensetracker.presentation.viewmodel.LoginViewModel
 

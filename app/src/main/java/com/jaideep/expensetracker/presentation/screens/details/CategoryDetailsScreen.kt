@@ -59,6 +59,7 @@ private fun CategoryDetailsScreenPreview() {
         transactions = persistentListOf(),
         dialogState = DialogState(false, "", "", false, ""),
         selectedAccount = "All Accounts",
+        currency = "₹",
         toggleDialogVisibility = { },
         onBackPress = { },
         onAccountSpinnerValueChanged = {},
@@ -71,7 +72,11 @@ private fun CategoryDetailsScreenPreview() {
 }
 
 @Composable
-fun CategoryDetailsScreenRoot(navHostController: NavHostController, categoryName: String?) {
+fun CategoryDetailsScreenRoot(
+    currency: String,
+    navHostController: NavHostController,
+    categoryName: String?
+) {
     val categoryDetailViewModel: CategoryDetailsViewModel = hiltViewModel()
     if (categoryName != null) {
         LaunchedEffect(key1 = true) {
@@ -99,6 +104,7 @@ fun CategoryDetailsScreenRoot(navHostController: NavHostController, categoryName
                 accounts = categoryDetailViewModel.accounts.collectAsState().value.toImmutableList(),
                 transactions = categoryDetailViewModel.transactions.collectAsState().value.toImmutableList(),
                 toggleDialogVisibility = categoryDetailViewModel::toggleDialogVisibility,
+                currency = currency,
                 onBackPress = { navHostController.popBackStack() },
                 onAccountSpinnerValueChanged = categoryDetailViewModel::onAccountSpinnerValueChanged,
                 clearDialogDate = categoryDetailViewModel::clearDialogDate,
@@ -130,6 +136,7 @@ fun CategoryDetailsScreen(
     categoryName: String,
     dialogState: DialogState,
     selectedAccount: String,
+    currency: String,
     accounts: ImmutableList<String>,
     transactions: ImmutableList<TransactionDto>,
     toggleDialogVisibility: () -> Unit,
@@ -229,11 +236,11 @@ fun CategoryDetailsScreen(
                             iconDescription = "Category icon",
                             categoryName = transactions[i].categoryName,
                             transactionDescription = transactions[i].message,
-                            amount = getStringFromDouble(transactions[i].amount),
+                            amount = "$currency${getStringFromDouble(transactions[i].amount)}",
                             isCredit = transactions[i].isCredit,
                             transactionId = transactions[i].transactionId,
                             onDeleteIconClicked = {},
-                            onEditIconClicked = { },
+                            onEditIconClicked = {},
                             accountName = transactions[i].accountName,
                             transactionDate = transactions[i].createdOn.toString()
                         )

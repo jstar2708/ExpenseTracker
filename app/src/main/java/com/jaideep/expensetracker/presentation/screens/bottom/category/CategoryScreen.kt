@@ -69,12 +69,14 @@ private fun CategoryScreenPreview() {
         onDurationSpinnerValueChange = {},
         onCategoryCardClick = {},
         backPress = {},
-        amountSpentFromAccount = 1000.0
+        amountSpentFromAccount = 1000.0,
+        currency = "₹"
     )
 }
 
 @Composable
 fun CategoryScreenRoot(
+    currency: String,
     navHostControllerRoot: NavHostController,
     mainViewModel: MainViewModel,
     categoryViewModel: CategoryViewModel,
@@ -136,6 +138,7 @@ fun CategoryScreenRoot(
             onCategoryCardClick = { categoryName -> navHostControllerRoot.navigate("${DetailScreen.CATEGORY_DETAILS}/$categoryName") },
 
             backPress = backPress,
+            currency = currency,
             amountSpentFromAccount = (if (categoryViewModel.durationValue.value.endsWith("h")) categoryViewModel.amountSpentThisMonthFromAcc else categoryViewModel.amountSpentThisYearFromAcc).collectAsState().value
         )
     }
@@ -150,6 +153,7 @@ fun CategoryScreen(
     accountSpinnerValue: String,
     durationSpinnerValue: String,
     amountSpentFromAccount: Double,
+    currency: String,
     onAccountSpinnerValueChange: (value: String) -> Unit,
     onDurationSpinnerValueChange: (value: String) -> Unit,
     onCategoryCardClick: (categoryName: String) -> Unit,
@@ -204,7 +208,7 @@ fun CategoryScreen(
                         iconId = getCategoryIconId(categoryCardData.iconName),
                         iconDescription = categoryCardData.iconName,
                         categoryName = categoryCardData.categoryName,
-                        spendValue = "${getStringFromDouble(categoryCardData.amountSpent)} / ${
+                        spendValue = "$currency${getStringFromDouble(categoryCardData.amountSpent)} / $currency${
                             getStringFromDouble(amountSpentFromAccount)
                         }",
                         progressValue = if (amountSpentFromAccount == 0.0) 0f else (categoryCardData.amountSpent / amountSpentFromAccount).toFloat(),

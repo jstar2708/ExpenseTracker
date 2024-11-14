@@ -61,13 +61,13 @@ import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import java.time.LocalDate
-import java.util.Locale
 
 @Preview(showSystemUi = true, showBackground = true)
 @Composable
 fun TransactionScreenPreview() {
     AppTheme {
-        TransactionScreen(navControllerRoot = NavController(Application()),
+        TransactionScreen(
+            navControllerRoot = NavController(Application()),
             backPress = {},
             accounts = persistentListOf("All accounts", "Cash"),
             onAccountSpinnerValueChanged = { _, _, _ -> },
@@ -140,12 +140,15 @@ fun TransactionScreenPreview() {
             clearDialogDate = {},
             onTransactionDeleteClicked = {},
             deleteTransaction = {},
-            hideDeleteDialog = {})
+            hideDeleteDialog = {},
+            currency = "₹"
+        )
     }
 }
 
 @Composable
 fun TransactionScreenRoot(
+    currency: String,
     navHostControllerRoot: NavHostController,
     mainViewModel: MainViewModel,
     transactionViewModel: TransactionViewModel,
@@ -199,6 +202,7 @@ fun TransactionScreenRoot(
             updateCurrentTabValue = transactionViewModel::updateCurrentTab,
             selectedAccount = transactionViewModel.selectedAccount.value,
             selectedTab = transactionViewModel.selectedTabValue.intValue,
+            currency = currency,
             toggleDialogVisibility = transactionViewModel::toggleDialogVisibility,
             updateTransactionList = {
                 mainViewModel.updateTransactionMethod(
@@ -228,6 +232,7 @@ fun TransactionScreen(
     transactions: ImmutableList<TransactionDto>,
     tabItemsList: ImmutableList<String>,
     selectedAccount: String,
+    currency: String,
     selectedTab: Int,
     dialogState: DialogState,
     showDeleteDialog: Boolean,
@@ -336,7 +341,7 @@ fun TransactionScreen(
                             iconDescription = "Category icon",
                             categoryName = transactions[it].categoryName,
                             transactionDescription = transactions[it].message,
-                            amount = getStringFromDouble(transactions[it].amount),
+                            amount = "$currency${getStringFromDouble(transactions[it].amount)}",
                             isCredit = transactions[it].isCredit,
                             transactionId = transactions[it].transactionId,
                             onDeleteIconClicked = onTransactionDeleteClicked,

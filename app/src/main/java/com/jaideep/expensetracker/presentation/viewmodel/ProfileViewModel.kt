@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jaideep.expensetracker.common.EtDispatcher
 import com.jaideep.expensetracker.common.Resource
+import com.jaideep.expensetracker.common.constant.AppConstants.CURRENCY
 import com.jaideep.expensetracker.data.local.preferences.DatastoreRepository
 import com.jaideep.expensetracker.domain.repository.CrudRepository
 import com.jaideep.expensetracker.domain.usecase.calculation.GetAvgMonthlyExpUseCase
@@ -207,5 +208,9 @@ class ProfileViewModel @Inject constructor(
 
     fun hideCurrencyDialog() {
         showCurrencyDialog = false
+    }
+
+    fun updateCurrencyIntoDatastore(symbol: String) = viewModelScope.launch(EtDispatcher.io) {
+        datastoreRepository.putString(CURRENCY, symbol)
     }
 }

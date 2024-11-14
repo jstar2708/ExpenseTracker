@@ -32,11 +32,14 @@ fun BottomNavigationGraph(
         modifier = Modifier.padding(value),
         route = Graph.MAIN
     ) {
+        val currency = mainViewModel.currentCurrencySymbol.value
+
         composable(MainScreen.HOME) { backStackEntry ->
             val startEntry = remember(backStackEntry) {
                 navHostControllerRoot.getBackStackEntry(Graph.MAIN)
             }
             HomeScreenRoot(
+                currency = currency,
                 navControllerRoot = navHostControllerRoot,
                 mainViewModel = mainViewModel,
                 homeViewModel = hiltViewModel<HomeViewModel>(startEntry)
@@ -47,6 +50,7 @@ fun BottomNavigationGraph(
                 navHostControllerRoot.getBackStackEntry(Graph.MAIN)
             }
             TransactionScreenRoot(
+                currency,
                 navHostControllerRoot,
                 mainViewModel,
                 transactionViewModel = hiltViewModel<TransactionViewModel>(startEntry)
@@ -59,7 +63,7 @@ fun BottomNavigationGraph(
                 navHostControllerRoot.getBackStackEntry(Graph.MAIN)
             }
             CategoryScreenRoot(
-                navHostControllerRoot, mainViewModel, hiltViewModel<CategoryViewModel>(startEntry)
+                currency, navHostControllerRoot, mainViewModel, hiltViewModel<CategoryViewModel>(startEntry)
             ) {
                 bottomNavController.popBackStack()
             }

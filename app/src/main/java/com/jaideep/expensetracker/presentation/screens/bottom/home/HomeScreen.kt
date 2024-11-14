@@ -69,7 +69,8 @@ private fun HomeScreenPreview() {
             selectedAccount = "All Accounts",
             categoryCardData = CategoryCardData("Food", "Food", 0.0),
             amountSpentThisMonthFromAcc = 0.0,
-            navigateToNotificationScreen = {})
+            navigateToNotificationScreen = {},
+            currency = "₹")
     }
 }
 
@@ -78,6 +79,7 @@ fun HomeScreenRoot(
     navControllerRoot: NavController,
     mainViewModel: MainViewModel,
     homeViewModel: HomeViewModel,
+    currency: String,
 ) {
     LaunchedEffect(key1 = true) {
         homeViewModel.getInitialAccountData()
@@ -124,7 +126,8 @@ fun HomeScreenRoot(
             amountSpentThisMonthFromAcc = homeViewModel.amountSpentThisMonthFromAcc.collectAsState().value,
             navigateToNotificationScreen = {
                 navControllerRoot.navigate(DetailScreen.NOTIFICATION)
-            })
+            },
+            currency = currency)
     }
 }
 
@@ -135,6 +138,7 @@ fun HomeScreen(
     transactions: ImmutableList<TransactionDto>,
     accountBalance: Double,
     spentToday: Double,
+    currency: String,
     selectedAccount: String,
     categoryCardData: CategoryCardData?,
     amountSpentThisMonthFromAcc: Double,
@@ -194,14 +198,19 @@ fun HomeScreen(
                         modifier = Modifier.weight(1f)
                     )
                 }
-                ExpenseTrackerSpinner(values = accounts,
+                ExpenseTrackerSpinner(
+                    values = accounts,
                     initialValue = selectedAccount,
                     onValueChanged = { value ->
                         onAccountSpinnerValueChanged(value)
                     })
 
                 SummaryCard(
-                    accountBalance, spentToday, categoryCardData, amountSpentThisMonthFromAcc
+                    currency,
+                    accountBalance,
+                    spentToday,
+                    categoryCardData,
+                    amountSpentThisMonthFromAcc
                 )
 
                 TransactionSummary(transactions)

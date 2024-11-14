@@ -1,4 +1,4 @@
-package com.jaideep.expensetracker.presentation.screens
+package com.jaideep.expensetracker.presentation.component.dialog
 
 
 import android.content.Intent
