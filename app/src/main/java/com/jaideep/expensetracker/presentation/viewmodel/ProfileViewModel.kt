@@ -60,6 +60,7 @@ class ProfileViewModel @Inject constructor(
         private set
     var mostFrequentlyUsedAccRetrievalError by mutableStateOf(false)
         private set
+    var showCurrencyDialog by mutableStateOf(false)
 
     fun initData() {
         getUserName()
@@ -198,5 +199,13 @@ class ProfileViewModel @Inject constructor(
 
     private fun clearDatastore() = viewModelScope.launch(EtDispatcher.io) {
         datastoreRepository.clearDatastore()
+    }
+
+    fun openCurrencyDialog() {
+        showCurrencyDialog = true
+    }
+
+    fun hideCurrencyDialog() {
+        showCurrencyDialog = false
     }
 }

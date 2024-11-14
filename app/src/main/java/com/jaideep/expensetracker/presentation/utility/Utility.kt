@@ -116,7 +116,7 @@ fun Double.getDecimalPart(): String {
     }
 }
 
-fun getStringFromDouble(value: Double) : String {
+fun getStringFromDouble(value: Double): String {
     var decimalPart = value.getDecimalPart()
     while (decimalPart.isNotEmpty() && decimalPart[decimalPart.length - 1] == '0') {
         decimalPart = decimalPart.dropLast(1)

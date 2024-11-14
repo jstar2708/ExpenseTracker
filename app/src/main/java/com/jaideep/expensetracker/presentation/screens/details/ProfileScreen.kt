@@ -40,6 +40,7 @@ import com.jaideep.expensetracker.presentation.component.HeadingTextBold
 import com.jaideep.expensetracker.presentation.component.MediumBoldText
 import com.jaideep.expensetracker.presentation.component.SimpleSmallText
 import com.jaideep.expensetracker.presentation.component.SimpleText
+import com.jaideep.expensetracker.presentation.component.dialog.CurrencyListDialog
 import com.jaideep.expensetracker.presentation.component.dialog.ExpenseTrackerDialog
 import com.jaideep.expensetracker.presentation.component.other.ExpenseTrackerAppBar
 import com.jaideep.expensetracker.presentation.component.other.ExpenseTrackerProgressBar
@@ -61,7 +62,10 @@ fun ProfileScreenPreview() {
             hideDialog = {},
             clearAllData = {},
             navigateToNotificationScreen = {},
-            navigateToAccountListScreen = {})
+            navigateToAccountListScreen = {},
+            hideCurrencyDialog = {},
+            openCurrencyDialog = {},
+            showCurrencyDialog = false)
     }
 }
 
@@ -87,11 +91,13 @@ fun ProfileScreenRoot(
             )
         }
     } else {
-        ProfileScreen(userName = profileViewModel.userName,
+        ProfileScreen(
+            userName = profileViewModel.userName,
             mostFrequentlyUsedAcc = profileViewModel.mostFrequentlyUsedAccount,
             avgMonthlyExpenditure = profileViewModel.avgMonthlyExpenditure,
             totalExpenditure = profileViewModel.totalExpenditure,
             totalTransactions = profileViewModel.totalTransactions,
+            showCurrencyDialog = profileViewModel.showCurrencyDialog,
             showDialog = profileViewModel.showDialog,
             onBackPress = { navController.popBackStack() },
             toggleDialog = profileViewModel::toggleDialog,
@@ -102,7 +108,10 @@ fun ProfileScreenRoot(
             },
             navigateToAccountListScreen = {
                 navController.navigate(DetailScreen.ACCOUNT_LIST)
-            })
+            },
+            openCurrencyDialog = profileViewModel::openCurrencyDialog,
+            hideCurrencyDialog = profileViewModel::hideDialog
+        )
     }
 }
 
@@ -114,12 +123,15 @@ fun ProfileScreen(
     avgMonthlyExpenditure: String,
     mostFrequentlyUsedAcc: String,
     showDialog: Boolean,
+    showCurrencyDialog: Boolean,
     toggleDialog: () -> Unit,
     hideDialog: () -> Unit,
     clearAllData: () -> Unit,
     onBackPress: () -> Unit,
     navigateToNotificationScreen: () -> Unit,
-    navigateToAccountListScreen: () -> Unit
+    navigateToAccountListScreen: () -> Unit,
+    openCurrencyDialog: () -> Unit,
+    hideCurrencyDialog: () -> Unit
 ) {
 
     val snackBarHostState = remember {
@@ -162,6 +174,9 @@ fun ProfileScreen(
                 onOkClick = clearAllData,
                 onCancelClicked = hideDialog
             )
+        }
+        if (showCurrencyDialog) {
+            CurrencyListDialog({}, {})
         }
         Column(
             modifier = Modifier
@@ -284,7 +299,20 @@ fun ProfileScreen(
                     text = "Notifications", modifier = Modifier.padding(start = 8.dp)
                 )
             }
-
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(70.dp)
+                    .padding(start = .5.dp, end = .5.dp)
+                    .border(width = 1.dp, color = Color.Gray)
+                    .clickable(onClick = openCurrencyDialog),
+                contentAlignment = Alignment.CenterStart
+            ) {
+                SimpleText(
+                    text = "Currency", modifier = Modifier.padding(start = 8.dp)
+                )
+            }
         }
     }
 }
+
