@@ -30,6 +30,7 @@ import com.jaideep.expensetracker.model.TransactionMethodDataForDates
 import com.jaideep.expensetracker.model.dto.AccountDto
 import com.jaideep.expensetracker.model.dto.CategoryDto
 import com.jaideep.expensetracker.model.dto.TransactionDto
+import com.jaideep.expensetracker.presentation.utility.Utility.stringDateToMillis
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -322,12 +323,8 @@ class MainViewModel @Inject constructor(
             }
         }
         if (startDate != null && endDate != null && startDate.isNotBlank() && endDate.isNotBlank()) {
-            val startDateLong =
-                LocalDate.parse(startDate).atStartOfDay(ZoneId.of("Asia/Kolkata")).toEpochSecond()
-                    .times(1000)
-            val endDateLong =
-                LocalDate.parse(endDate).atStartOfDay(ZoneId.of("Asia/Kolkata")).toEpochSecond()
-                    .times(1000)
+            val startDateLong = stringDateToMillis(startDate)
+            val endDateLong = stringDateToMillis(endDate)
             _transactionMethodData.value = TransactionMethodDataForDates(
                 transactionMethod, accountName, startDateLong, endDateLong
             )
