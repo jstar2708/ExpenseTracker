@@ -5,7 +5,8 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class DatastoreRepositoryImpl @Inject constructor(
@@ -25,16 +26,18 @@ class DatastoreRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getString(key: String): String? {
+    override suspend fun getString(key: String): Flow<String?> {
         val datastoreKey = stringPreferencesKey(key)
-        val preferences = datastore.data.first()
-        return preferences[datastoreKey]
+        return datastore.data.map { preferences ->
+            preferences[datastoreKey]
+        }
     }
 
-    override suspend fun getInt(key: String): Int? {
+    override suspend fun getInt(key: String): Flow<Int?> {
         val datastoreKey = intPreferencesKey(key)
-        val preferences = datastore.data.first()
-        return preferences[datastoreKey]
+        return datastore.data.map { preferences ->
+            preferences[datastoreKey]
+        }
     }
 
     override suspend fun clearDatastore() {

@@ -14,8 +14,6 @@ import com.jaideep.expensetracker.data.local.preferences.DatastoreRepository
 import com.jaideep.expensetracker.domain.usecase.calculation.GetAccountsCount
 import com.jaideep.expensetracker.model.TextFieldWithIconAndErrorPopUpState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -72,18 +70,19 @@ class LoginViewModel @Inject constructor(
     }
 
     private fun verifyPassword() = viewModelScope.launch(EtDispatcher.io) {
-        val password = datastoreRepository.getString(PASSWORD)
-        if (password == passwordState.text) {
-            loginComplete = true
-        } else {
-            passwordState = TextFieldWithIconAndErrorPopUpState(
-                text = passwordState.text,
-                isError = true,
-                showError = passwordState.showError,
-                errorMessage = "Passwords do not match",
-                onValueChange = passwordState.onValueChange,
-                onErrorIconClick = passwordState.onErrorIconClick
-            )
+        datastoreRepository.getString(PASSWORD).collect { password ->
+            if (password == passwordState.text) {
+                loginComplete = true
+            } else {
+                passwordState = TextFieldWithIconAndErrorPopUpState(
+                    text = passwordState.text,
+                    isError = true,
+                    showError = passwordState.showError,
+                    errorMessage = "Passwords do not match",
+                    onValueChange = passwordState.onValueChange,
+                    onErrorIconClick = passwordState.onErrorIconClick
+                )
+            }
         }
     }
 
@@ -105,27 +104,30 @@ class LoginViewModel @Inject constructor(
 
     fun isUserPresent() = viewModelScope.launch(EtDispatcher.io) {
         isUsernameLoading = true
-        val username = datastoreRepository.getString(USER_NAME)
-        if (username != null) {
-            this@LoginViewModel.username = username
-            userNotPresent = false
-        } else {
-            userNotPresent = true
+        datastoreRepository.getString(USER_NAME).collect {
+            if (it != null) {
+                this@LoginViewModel.username = it
+                userNotPresent = false
+            } else {
+                userNotPresent = true
+            }
+            isUsernameLoading = false
         }
-        isUsernameLoading = false
     }
 
     fun checkAccountCreated() = viewModelScope.launch(EtDispatcher.io) {
         getAccountsCount().collect {
-            when(it) {
+            when (it) {
                 is Resource.Error -> {
                     accountCountRetrievalError = true
                     isAccountCountLoading = false
                 }
+
                 is Resource.Loading -> {
                     isAccountCountLoading = true
                     accountCountRetrievalError = false
                 }
+
                 is Resource.Success -> {
                     accountCountRetrievalError = false
                     isAccountCountLoading = false

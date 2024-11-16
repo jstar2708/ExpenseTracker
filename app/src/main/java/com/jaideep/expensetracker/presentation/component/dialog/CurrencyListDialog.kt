@@ -49,9 +49,6 @@ fun CurrencyListDialog(
             colors = CardDefaults.cardColors(containerColor = Color.White)
         ) {
             val currencyList = Currency.getAvailableCurrencies().toImmutableList()
-            val listOfIsRadioButtonEnabled = rememberSaveable {
-                Array(currencyList.size) { false }.toMutableList()
-            }
             var selectedSymbol by rememberSaveable {
                 mutableStateOf(Currency.getInstance("INR").symbol)
             }
@@ -74,10 +71,8 @@ fun CurrencyListDialog(
                         )
 
                         RadioButton(modifier = Modifier.weight(.3f),
-                            selected = listOfIsRadioButtonEnabled[index],
+                            selected = selectedSymbol == currencyList[index].symbol,
                             onClick = {
-                                listOfIsRadioButtonEnabled.map { false }
-                                listOfIsRadioButtonEnabled[index] = true
                                 selectedSymbol = currencyList[index].symbol
                             })
                     }
@@ -96,6 +91,7 @@ fun CurrencyListDialog(
                 Spacer(modifier = Modifier.weight(.15f))
                 SmallPrimaryColorButton(modifier = Modifier.weight(.5f), text = "Ok") {
                     updateCurrency(selectedSymbol)
+                    hideDialog()
                 }
                 Spacer(modifier = Modifier.weight(.15f))
             }

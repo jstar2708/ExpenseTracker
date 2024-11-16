@@ -78,8 +78,7 @@ private fun HomeScreenPreview() {
 fun HomeScreenRoot(
     navControllerRoot: NavController,
     mainViewModel: MainViewModel,
-    homeViewModel: HomeViewModel,
-    currency: String,
+    homeViewModel: HomeViewModel
 ) {
     LaunchedEffect(key1 = true) {
         homeViewModel.getInitialAccountData()
@@ -127,7 +126,7 @@ fun HomeScreenRoot(
             navigateToNotificationScreen = {
                 navControllerRoot.navigate(DetailScreen.NOTIFICATION)
             },
-            currency = currency)
+            currency = mainViewModel.currentCurrencySymbol.collectAsState().value)
     }
 }
 

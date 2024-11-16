@@ -46,6 +46,7 @@ import com.jaideep.expensetracker.presentation.component.other.ExpenseTrackerSpi
 import com.jaideep.expensetracker.presentation.utility.Utility.getCategoryIconId
 import com.jaideep.expensetracker.presentation.utility.getStringFromDouble
 import com.jaideep.expensetracker.presentation.viewmodel.CategoryDetailsViewModel
+import com.jaideep.expensetracker.presentation.viewmodel.MainViewModel
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
@@ -73,9 +74,7 @@ private fun CategoryDetailsScreenPreview() {
 
 @Composable
 fun CategoryDetailsScreenRoot(
-    currency: String,
-    navHostController: NavHostController,
-    categoryName: String?
+    mainViewModel: MainViewModel, navHostController: NavHostController, categoryName: String?
 ) {
     val categoryDetailViewModel: CategoryDetailsViewModel = hiltViewModel()
     if (categoryName != null) {
@@ -104,7 +103,7 @@ fun CategoryDetailsScreenRoot(
                 accounts = categoryDetailViewModel.accounts.collectAsState().value.toImmutableList(),
                 transactions = categoryDetailViewModel.transactions.collectAsState().value.toImmutableList(),
                 toggleDialogVisibility = categoryDetailViewModel::toggleDialogVisibility,
-                currency = currency,
+                currency = mainViewModel.currentCurrencySymbol.collectAsState().value,
                 onBackPress = { navHostController.popBackStack() },
                 onAccountSpinnerValueChanged = categoryDetailViewModel::onAccountSpinnerValueChanged,
                 clearDialogDate = categoryDetailViewModel::clearDialogDate,

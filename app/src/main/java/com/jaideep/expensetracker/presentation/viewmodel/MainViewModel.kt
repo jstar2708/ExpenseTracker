@@ -139,7 +139,9 @@ class MainViewModel @Inject constructor(
     }
 
     private fun getCurrentCurrencyFromDataStore() = viewModelScope.launch(EtDispatcher.io) {
-        _currentCurrencySymbol.value = datastoreRepository.getString(CURRENCY) ?: "₹"
+        datastoreRepository.getString(CURRENCY).collectLatest { value ->
+            _currentCurrencySymbol.value = value ?: "₹"
+        }
     }
 
     private fun getAllCategoryCardsData() = viewModelScope.launch(EtDispatcher.io) {
@@ -429,7 +431,8 @@ class MainViewModel @Inject constructor(
         )
     }
 
-    fun updateCurrencySymbol() = viewModelScope.launch(EtDispatcher.io) {
-        datastoreRepository.putString(CURRENCY, "₹")
+    fun updateCurrencySymbol(symbol: String = "₹") = viewModelScope.launch(EtDispatcher.io) {
+        datastoreRepository.putString(CURRENCY, symbol)
+        _currentCurrencySymbol.value = symbol
     }
 }

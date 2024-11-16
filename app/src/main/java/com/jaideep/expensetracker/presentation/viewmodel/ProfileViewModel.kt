@@ -173,9 +173,14 @@ class ProfileViewModel @Inject constructor(
                 }
 
                 is Resource.Success -> {
-                    userName = it.data
+                    if (it.data != null) {
+                        userName = it.data
+                        usernameRetrievalError = false
+                    }
+                    else {
+                        usernameRetrievalError = true
+                    }
                     isUsernameLoading = false
-                    usernameRetrievalError = false
                 }
             }
         }
@@ -208,9 +213,5 @@ class ProfileViewModel @Inject constructor(
 
     fun hideCurrencyDialog() {
         showCurrencyDialog = false
-    }
-
-    fun updateCurrencyIntoDatastore(symbol: String) = viewModelScope.launch(EtDispatcher.io) {
-        datastoreRepository.putString(CURRENCY, symbol)
     }
 }

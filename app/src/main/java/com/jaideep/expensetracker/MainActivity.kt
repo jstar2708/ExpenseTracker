@@ -40,7 +40,6 @@ class MainActivity : FragmentActivity() {
         }
     }
 
-
     private fun checkUserPresence() {
         loginViewModel.isUserPresent()
         loginViewModel.checkAccountCreated()

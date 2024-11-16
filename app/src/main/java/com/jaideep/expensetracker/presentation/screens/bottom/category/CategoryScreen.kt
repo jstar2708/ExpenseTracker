@@ -76,7 +76,6 @@ private fun CategoryScreenPreview() {
 
 @Composable
 fun CategoryScreenRoot(
-    currency: String,
     navHostControllerRoot: NavHostController,
     mainViewModel: MainViewModel,
     categoryViewModel: CategoryViewModel,
@@ -138,7 +137,7 @@ fun CategoryScreenRoot(
             onCategoryCardClick = { categoryName -> navHostControllerRoot.navigate("${DetailScreen.CATEGORY_DETAILS}/$categoryName") },
 
             backPress = backPress,
-            currency = currency,
+            currency = mainViewModel.currentCurrencySymbol.collectAsState().value,
             amountSpentFromAccount = (if (categoryViewModel.durationValue.value.endsWith("h")) categoryViewModel.amountSpentThisMonthFromAcc else categoryViewModel.amountSpentThisYearFromAcc).collectAsState().value
         )
     }

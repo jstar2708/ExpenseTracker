@@ -3,6 +3,8 @@ package com.jaideep.expensetracker.presentation.screens.details
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,6 +16,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.MaterialTheme
@@ -23,6 +27,7 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -45,6 +50,7 @@ import com.jaideep.expensetracker.presentation.component.dialog.ExpenseTrackerDi
 import com.jaideep.expensetracker.presentation.component.other.ExpenseTrackerAppBar
 import com.jaideep.expensetracker.presentation.component.other.ExpenseTrackerProgressBar
 import com.jaideep.expensetracker.presentation.theme.AppTheme
+import com.jaideep.expensetracker.presentation.viewmodel.MainViewModel
 import com.jaideep.expensetracker.presentation.viewmodel.ProfileViewModel
 
 @Preview
@@ -76,7 +82,7 @@ fun ProfileScreenPreview() {
 
 @Composable
 fun ProfileScreenRoot(
-    currency: String, navController: NavController
+    navController: NavController, mainViewModel: MainViewModel
 ) {
     val profileViewModel = hiltViewModel<ProfileViewModel>()
     LaunchedEffect(key1 = true) {
@@ -107,7 +113,7 @@ fun ProfileScreenRoot(
             toggleDialog = profileViewModel::toggleDialog,
             hideDialog = profileViewModel::hideDialog,
             clearAllData = profileViewModel::clearAllData,
-            currency = currency,
+            currency = mainViewModel.currentCurrencySymbol.collectAsState().value,
             navigateToNotificationScreen = {
                 navController.navigate(DetailScreen.NOTIFICATION)
             },
@@ -116,7 +122,7 @@ fun ProfileScreenRoot(
             },
             openCurrencyDialog = profileViewModel::openCurrencyDialog,
             hideCurrencyDialog = profileViewModel::hideCurrencyDialog,
-            updateCurrencyIntoDatastore = profileViewModel::updateCurrencyIntoDatastore
+            updateCurrencyIntoDatastore = mainViewModel::updateCurrencySymbol
         )
     }
 }
@@ -188,10 +194,12 @@ fun ProfileScreen(
                 hideDialog = hideCurrencyDialog, updateCurrency = updateCurrencyIntoDatastore
             )
         }
+        val scrollState = rememberScrollState()
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(it),
+                .padding(it)
+                .verticalScroll(scrollState),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Image(

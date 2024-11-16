@@ -27,7 +27,6 @@ fun RootNavigationGraph(mainViewModel: MainViewModel, loginViewModel: LoginViewM
     NavHost(
         navController = navHostControllerRoot, startDestination = Graph.AUTH, route = Graph.ROOT
     ) {
-        val currency = mainViewModel.currentCurrencySymbol.value
         authNavGraph(navController = navHostControllerRoot, loginViewModel)
 
         composable(route = Graph.MAIN) {
@@ -68,12 +67,12 @@ fun RootNavigationGraph(mainViewModel: MainViewModel, loginViewModel: LoginViewM
             })
         ) { navBackStackEntry ->
             val categoryName = navBackStackEntry.arguments?.getString("categoryName")
-            CategoryDetailsScreenRoot(currency, navHostControllerRoot, categoryName)
+            CategoryDetailsScreenRoot(mainViewModel, navHostControllerRoot, categoryName)
         }
 
         composable(DetailScreen.PROFILE) {
             ProfileScreenRoot(
-                currency, navHostControllerRoot
+                navHostControllerRoot, mainViewModel
             )
         }
 

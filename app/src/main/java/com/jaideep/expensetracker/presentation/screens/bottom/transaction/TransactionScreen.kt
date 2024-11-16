@@ -148,7 +148,6 @@ fun TransactionScreenPreview() {
 
 @Composable
 fun TransactionScreenRoot(
-    currency: String,
     navHostControllerRoot: NavHostController,
     mainViewModel: MainViewModel,
     transactionViewModel: TransactionViewModel,
@@ -202,7 +201,7 @@ fun TransactionScreenRoot(
             updateCurrentTabValue = transactionViewModel::updateCurrentTab,
             selectedAccount = transactionViewModel.selectedAccount.value,
             selectedTab = transactionViewModel.selectedTabValue.intValue,
-            currency = currency,
+            currency = mainViewModel.currentCurrencySymbol.collectAsState().value,
             toggleDialogVisibility = transactionViewModel::toggleDialogVisibility,
             updateTransactionList = {
                 mainViewModel.updateTransactionMethod(
