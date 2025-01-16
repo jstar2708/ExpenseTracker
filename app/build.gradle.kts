@@ -8,7 +8,7 @@ plugins {
 
 android {
     namespace = "com.jaideep.expensetracker"
-    compileSdk = 34
+    compileSdk = 35
 
 //    ksp {
 //        room {
@@ -22,7 +22,7 @@ android {
     defaultConfig {
         applicationId = "com.jaideep.expensetracker"
         minSdk = 26
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
